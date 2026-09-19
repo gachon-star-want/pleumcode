@@ -73,6 +73,9 @@ impl EditTools {
         working_dir: Option<&Path>,
     ) -> CallToolResult {
         let path = resolve_path(&params.path, working_dir);
+        if let Err(msg) = guard_write(&path, working_dir) {
+            return CallToolResult::error(vec![visible_text(msg)]);
+        }
 
         if let Some(parent) = path.parent() {
             if !parent.as_os_str().is_empty() && !parent.exists() {
@@ -114,6 +117,9 @@ impl EditTools {
         working_dir: Option<&Path>,
     ) -> CallToolResult {
         let path = resolve_path(&params.path, working_dir);
+        if let Err(msg) = guard_write(&path, working_dir) {
+            return CallToolResult::error(vec![visible_text(msg)]);
+        }
 
         let content = match fs::read_to_string(&path) {
             Ok(c) => c,
@@ -209,6 +215,15 @@ fn apply_line_limit(content: &str, line: Option<u32>, limit: Option<u32>) -> Str
         .unwrap_or(lines.len())
         .min(lines.len());
     lines[start..end].concat()
+}
+
+/// Hard sandbox policy for in-process writes (see `crate::sandbox`); no opt-out.
+fn guard_write(path: &Path, working_dir: Option<&Path>) -> Result<(), String> {
+    let workspace = match working_dir {
+        Some(dir) => dir.to_path_buf(),
+        None => std::env::current_dir().map_err(|e| format!("sandbox: no workspace: {e}"))?,
+    };
+    crate::sandbox::check_write(path, &workspace)
 }
 
 pub fn resolve_path(path: &str, working_dir: Option<&Path>) -> PathBuf {
@@ -486,6 +501,44 @@ mod tests {
             fs::read_to_string(dir.path().join("relative.txt")).unwrap(),
             "relative write"
         );
+    }
+
+    #[test]
+    fn test_write_and_edit_refuse_paths_outside_workspace() {
+        // Parent under $HOME: outside both the workspace and the (writable) temp dir.
+        let base = tempfile::Builder::new()
+            .prefix("pleum-edit-sbx")
+            .tempdir_in(dirs::home_dir().unwrap())
+            .unwrap();
+        let ws = base.path().join("ws");
+        fs::create_dir(&ws).unwrap();
+        let outside = base.path().join("outside/nested/f.txt");
+        fs::create_dir(base.path().join("victim")).unwrap();
+        let victim = base.path().join("victim/f.txt");
+        fs::write(&victim, "before").unwrap();
+        let tools = EditTools::new();
+
+        let w = tools.file_write_with_cwd(
+            FileWriteParams {
+                path: outside.to_str().unwrap().to_string(),
+                content: "x".to_string(),
+            },
+            Some(&ws),
+        );
+        assert_eq!(w.is_error, Some(true));
+        // refused before create_dir_all: no directory was created outside either
+        assert!(!base.path().join("outside").exists());
+
+        let e = tools.file_edit_with_cwd(
+            FileEditParams {
+                path: victim.to_str().unwrap().to_string(),
+                before: "before".to_string(),
+                after: "after".to_string(),
+            },
+            Some(&ws),
+        );
+        assert_eq!(e.is_error, Some(true));
+        assert_eq!(fs::read_to_string(&victim).unwrap(), "before");
     }
 
     #[test]

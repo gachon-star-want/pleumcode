@@ -39,6 +39,7 @@ pub mod prompt_template;
 pub mod providers;
 pub mod recipe;
 pub mod recipe_deeplink;
+pub mod sandbox;
 pub mod scheduler;
 pub mod scheduler_trait;
 pub mod security;

@@ -565,7 +565,14 @@ async fn run_command(
 ) -> Result<ExecutionOutput, String> {
     let timeout_secs = Some(resolve_shell_timeout(timeout_secs));
 
-    let mut command = build_shell_command(command_line, working_dir, login_path, session_id);
+    let command = build_shell_command(command_line, working_dir, login_path, session_id);
+    // Hard OS sandbox (pleumcode): no opt-out. Fails closed if unsupported on this platform.
+    let workspace = match working_dir {
+        Some(dir) => dir.to_path_buf(),
+        None => std::env::current_dir().map_err(|e| format!("sandbox: no workspace: {e}"))?,
+    };
+    let mut command = crate::sandbox::wrap(command, &workspace)
+        .map_err(|e| format!("Refusing to run shell command: {e}"))?;
 
     command.stdout(Stdio::piped());
     command.stderr(Stdio::piped());
@@ -1269,6 +1276,43 @@ mod tests {
         assert_ne!(path_a, path_b);
         assert_eq!(std::fs::read_to_string(&path_a).unwrap(), "aaa");
         assert_eq!(std::fs::read_to_string(&path_b).unwrap(), "bbb");
+    }
+
+    // The shell tool must run inside the OS sandbox: writes outside the workspace
+    // fail even though the command string itself is innocuous.
+    #[cfg(target_os = "macos")]
+    #[tokio::test]
+    async fn shell_tool_is_sandboxed() {
+        // Parent under $HOME (not the temp dir, which is writable by policy).
+        let base = tempfile::Builder::new()
+            .prefix("pleum-shell-sbx")
+            .tempdir_in(dirs::home_dir().unwrap())
+            .unwrap();
+        let ws = base.path().join("ws");
+        std::fs::create_dir(&ws).unwrap();
+        let run = |command: &str| {
+            let tool = ShellTool::new_for_test().unwrap();
+            let params = ShellParams {
+                command: command.to_string(),
+                timeout_secs: None,
+            };
+            let ws = ws.clone();
+            async move {
+                tool.shell_with_cwd(params, Some(&ws), None, CancellationToken::new())
+                    .await
+            }
+        };
+
+        assert_ne!(run("echo ok > inside.txt").await.is_error, Some(true));
+        assert!(ws.join("inside.txt").exists());
+
+        let escaped = run("bash -c 'echo x > ../outside.txt'").await;
+        assert!(
+            !base.path().join("outside.txt").exists(),
+            "{}",
+            extract_text(&escaped)
+        );
+        assert!(extract_text(&escaped).contains("exited with code"));
     }
 
     #[test]
