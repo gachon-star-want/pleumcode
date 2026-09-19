@@ -13,7 +13,7 @@ use crate::agents::state_machine::ops_llm::{ADVERTISED_TOOLS_NOTE, LLM_OPERATION
 use crate::agents::state_machine::ops_tool_approval::request_executable;
 use crate::agents::state_machine::{
     applied, messages_since_kickoff, not_applicable, yielded_with, ConversationEffect, Emitter,
-    PleumEffect, Operation, OperationResult, SlashCommand,
+    Operation, OperationResult, PleumEffect, SlashCommand,
 };
 use crate::agents::tool_execution::{
     tool_stream, ToolCallResult, ToolStreamItem, CHAT_MODE_TOOL_SKIPPED_RESPONSE, DECLINED_RESPONSE,

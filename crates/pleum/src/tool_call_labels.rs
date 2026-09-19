@@ -228,7 +228,7 @@ async fn complete_label(
 mod tests {
     use super::*;
     use crate::agents::{AgentConfig, PleumPlatform};
-    use crate::config::{PleumMode, PermissionManager};
+    use crate::config::{PermissionManager, PleumMode};
     use crate::providers::base::{MessageStream, ProviderUsage, Usage};
     use crate::session::{SessionManager, SessionType};
     use async_trait::async_trait;

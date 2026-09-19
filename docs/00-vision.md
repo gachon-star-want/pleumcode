@@ -48,5 +48,5 @@ PleumRouter를 쓰는 사람들이 "우리 것"으로 코딩 에이전트를 한
 - [x] provider json 배선 — core 무수정으로 로드·게이트웨이 도달 확인 (진짜 키로 200 확인은 남음)
 - [x] goose → pleum 전면 리네임 — `pleum/rebrand.py`, 상세·매핑·병합 절차는 04 "전면 리네임" (바이너리 이름 충돌·시각 흔적은 미결)
 - [x] 바이너리 `pleumcode` / `ui/`·`documentation/` 삭제 / plum 워드마크 배너 — 04 "후속 결정"
-- [~] OS 커널 샌드박스 — macOS 첫 컷 완료(셸+write/edit). Linux/Windows·hooks·MCP spawn은 미완, 그 OS에선 fail-closed
+- [~] OS 커널 샌드박스 — macOS + Linux(bubblewrap) 완료(셸+write/edit, Linux는 Docker 컨테이너에서 검증). Windows·hooks·MCP spawn·seccomp은 미완, 미지원 OS에선 fail-closed
 - [~] 채택순서 1~6 — 1번(메모리 파일)은 **AGENTS.md 최우선 + CLAUDE.md fallback**으로 완료(`PLEUM.md`는 만들지 않음). 남은 것: 권한 정책 파일, shadow-git, 린트 게이트, staged-diff, 세션 재개

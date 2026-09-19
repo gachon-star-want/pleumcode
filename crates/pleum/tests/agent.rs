@@ -3040,7 +3040,7 @@ mod tests {
         use super::*;
         use async_trait::async_trait;
         use pleum::agents::{AgentConfig, SessionConfig};
-        use pleum::config::{ExtensionConfig, PleumMode, PermissionManager};
+        use pleum::config::{ExtensionConfig, PermissionManager, PleumMode};
         use pleum::conversation::message::{Message, MessageContent};
         use pleum::providers::base::{stream_from_single_message, MessageStream, Provider};
         use pleum::session::{SessionManager, SessionType};

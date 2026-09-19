@@ -3,7 +3,7 @@ use std::sync::Arc;
 use anyhow::Result;
 use async_trait::async_trait;
 use pleum::agents::state_machine::{
-    yielded_with, Emitter, PleumEffect, Inference, InferenceInput, Operation, OperationResult,
+    yielded_with, Emitter, Inference, InferenceInput, Operation, OperationResult, PleumEffect,
     StateMachine, Step,
 };
 use pleum::agents::AgentEvent;

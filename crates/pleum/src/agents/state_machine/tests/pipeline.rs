@@ -16,8 +16,8 @@ use crate::agents::mcp_client::McpClientTrait;
 use crate::agents::prompt_manager::PromptManager;
 use crate::agents::state_machine::{
     BangShellOperation, CompactionOperation, DoctorOperation, Emitter, EntryHookOperation,
-    ExitOnErrorOperation, PleumEffect, PleumInferenceProvider, PleumInferenceRequestPreparer,
-    InferenceRunner, MaxTurnsOperation, Operation, ProjectOperation, RecipeOperation,
+    ExitOnErrorOperation, InferenceRunner, MaxTurnsOperation, Operation, PleumEffect,
+    PleumInferenceProvider, PleumInferenceRequestPreparer, ProjectOperation, RecipeOperation,
     RetryOperation, SkillOperation, SlashCommandOperation, StateMachine, StatusOperation,
     SteerOperation, SteerQueue, Step, StopHookOperation, ToolApprovalOperation,
     ToolExecutionOperation, ToolPairCompactionOperation, UnknownToolOperation,

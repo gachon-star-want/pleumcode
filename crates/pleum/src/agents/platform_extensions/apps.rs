@@ -7,7 +7,7 @@ use crate::agents::tool_execution::ToolCallContext;
 use crate::config::paths::Paths;
 use crate::conversation::message::Message;
 use crate::pleum_apps::McpAppResource;
-use crate::pleum_apps::{PleumApp, McpAppCache, WindowProps};
+use crate::pleum_apps::{McpAppCache, PleumApp, WindowProps};
 use crate::prompt_template::render_template;
 use crate::providers::base::{Provider, ProviderUsage};
 use async_trait::async_trait;

@@ -1,6 +1,6 @@
 use super::*;
 use crate::config::paths::Paths;
-use crate::pleum_apps::{fetch_mcp_apps, mark_deletable_apps, PleumApp, McpAppCache};
+use crate::pleum_apps::{fetch_mcp_apps, mark_deletable_apps, McpAppCache, PleumApp};
 
 const APPS_EXTENSION_NAME: &str = "apps";
 

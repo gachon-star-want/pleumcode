@@ -16,7 +16,7 @@ pub use pleum::acp::{map_permission_response, PermissionDecision};
 use pleum::agents::PleumPlatform;
 use pleum::builtin_extension::register_builtin_extensions;
 use pleum::config::paths::Paths;
-use pleum::config::{PleumMode, PermissionManager};
+use pleum::config::{PermissionManager, PleumMode};
 use pleum::providers::api_client::{ApiClient, AuthMethod as ApiAuthMethod};
 use pleum::providers::base::Provider;
 use pleum::providers::openai::OpenAiProvider;

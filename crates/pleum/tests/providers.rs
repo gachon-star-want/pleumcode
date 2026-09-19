@@ -3,7 +3,7 @@ use dotenvy::dotenv;
 use futures::StreamExt;
 use pleum::acp::ACP_CURRENT_MODEL;
 use pleum::agents::{Agent, AgentConfig, AgentEvent, PleumPlatform, PromptManager, SessionConfig};
-use pleum::config::{ExtensionConfig, PleumMode, PermissionManager};
+use pleum::config::{ExtensionConfig, PermissionManager, PleumMode};
 use pleum::conversation::message::{ActionRequiredData, Message, MessageContent};
 use pleum::permission::Permission;
 use pleum::providers::anthropic::ANTHROPIC_DEFAULT_MODEL;

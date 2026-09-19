@@ -16,11 +16,11 @@ use base64::Engine;
 use chrono::{DateTime, Utc};
 use futures::future::BoxFuture;
 use futures::{StreamExt, TryStreamExt};
+use jsonwebtoken::jwk::JwkSet;
+use jsonwebtoken::{decode, decode_header, DecodingKey, Validation};
 use pleum_providers::errors::ProviderError;
 use pleum_providers::formats::openai_responses::responses_api_to_streaming_message;
 use pleum_providers::model::ModelConfig;
-use jsonwebtoken::jwk::JwkSet;
-use jsonwebtoken::{decode, decode_header, DecodingKey, Validation};
 use rmcp::model::{ContentBlock, Role, Tool};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
@@ -1068,8 +1068,8 @@ impl Provider for ChatGptCodexProvider {
 mod tests {
     use super::*;
     use crate::conversation::message::Message;
-    use pleum_test_support::TEST_IMAGE_B64;
     use jsonwebtoken::{Algorithm, EncodingKey, Header};
+    use pleum_test_support::TEST_IMAGE_B64;
     use rmcp::model::{CallToolRequestParams, CallToolResult, ContentBlock, ErrorCode, ErrorData};
     use rmcp::object;
     use test_case::test_case;

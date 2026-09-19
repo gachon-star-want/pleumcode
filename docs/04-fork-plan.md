@@ -130,25 +130,50 @@ sandbox-exec)나 컨테이너/microVM 중 하나를 goose-cli 실행 진입점�
 `crates/pleum/src/agents/platform_extensions/developer/`에(업스트림 v1.51.0에선 `crates/goose/...`), 서브에이전트 위임은 `summon` platform extension
 (`platform_extensions/summon.rs`)에 있다. v0.2 verify wrapper와 v0.3 디스패치는 이 위치를 기준으로 설계한다.
 
-### OS 샌드박스 v0.1 첫 컷 (macOS만)
+### OS 샌드박스 v0.1 (macOS + Linux)
 
 설계는 Codex 방식의 분리: **에이전트 프로세스는 그대로 두고(모델 API 통신 필요), 도구가 spawn하는 명령만
 샌드박스에 넣는다.** 런타임 opt-out 없음(env·config 키 없음).
 
-- `crates/pleum/src/sandbox.rs` — `wrap()`(Seatbelt `sandbox-exec`, 경로는 `-D` 파라미터로 전달해 프로파일에
-  문자열 삽입 없음)과 `check_write()`(프로세스 내부 쓰기용 동일 정책).
+- `crates/pleum/src/sandbox.rs` — `wrap()`과 `check_write()`(프로세스 내부 쓰기용 동일 정책).
+  - **macOS**: Seatbelt `sandbox-exec`. 경로는 `-D` 파라미터로 전달해 프로파일에 문자열 삽입 없음.
+  - **Linux**: bubblewrap(`bwrap`). 읽기 전용 루트 + 네트워크·pid·ipc 격리(`--unshare-all`) + capability 전부 제거.
+    `bwrap`이 없으면 fail-closed(에러 메시지에 설치 안내).
 - 정책: 쓰기는 canonical 워크스페이스 + 임시 디렉토리만 / 네트워크 전면 차단 / `.git/hooks`·`.git/config`
-  쓰기 금지(나중에 호스트에서 실행되는 탈출 경로) / `~/.ssh`·`~/.aws`·`~/.gnupg`·goose 설정 디렉토리
+  쓰기 금지(나중에 호스트에서 실행되는 탈출 경로) / `~/.ssh`·`~/.aws`·`~/.gnupg`·pleum 설정 디렉토리
   읽기 금지(출력이 곧 모델 컨텍스트로 가므로).
-- 연결: `developer/shell.rs`의 `run_command`(셸 도구)와 `developer/edit.rs`의 `write`/`edit`. 후자는 goose
-  프로세스 안에서 도는 도구라 Seatbelt가 못 막으므로 `check_write`로 별도 가드(디렉토리 생성 **전에** 검사).
-  심볼릭 링크·dangling 링크·`..` 탈출 모두 차단, 테스트로 검증.
-- **미지원 OS는 fail-closed**: 명령을 실행하지 않고 에러를 낸다.
+- **Linux 전용 강화**: 읽기 전용 마운트는 쓰기만 막을 뿐 **파일시스템 경로형 유닉스 소켓 `connect()`는 막지
+  못한다**(`--unshare-net`도 무관). 그래서 `/run`(docker.sock, systemd·dbus 세션 버스)을 빈 tmpfs로 가리고
+  `/tmp`도 호스트 것이 아닌 **비공개 tmpfs**로 둔다(ssh-agent·X11 소켓이 흔히 여기 있음). 셸 도구가 잘린 출력을
+  저장하는 디렉토리는 `wrap(..., readable)`로 읽기 전용 노출해 모델의 "`head`/`sed`로 읽어라" 안내가 계속
+  동작한다. macOS는 유닉스 소켓 연결이 기본 거부라 해당 없음.
+- 연결: `developer/shell.rs`의 `run_command`(셸 도구)와 `developer/edit.rs`의 `write`/`edit`. 후자는 pleum
+  프로세스 안에서 도는 도구라 OS 샌드박스가 못 막으므로 `check_write`로 별도 가드(디렉토리 생성 **전에** 검사).
+  심볼릭 링크·dangling 링크·`..` 탈출 모두 차단.
+- **미지원 OS(Windows 포함)는 fail-closed**: 명령을 실행하지 않고 에러를 낸다.
+
+**검증**: macOS 로컬 + **Linux는 Docker 컨테이너(debian bookworm, bubblewrap 0.8.0, arm64)**에서 같은 테스트
+7개 통과. 실제 Linux 데스크톱/서버 커널에서의 실행은 아직 안 해 봤다. 테스트가 비공개 `/tmp`, 읽기 전용
+노출, 자격증명 마스킹, 별도 net namespace를 각각 검증하고, 정상 명령이 실제로 도는지의 양성 대조도 넣었다
+(bwrap이 시작에 실패해도 "비밀을 못 읽음"이 성립해 가짜 통과가 되는 것을 막기 위함 — 실제로 첫 실행에서
+이 문제가 있었다).
+
+**Linux 실행 조건 (제약)**
+- `bwrap` 설치 필요, 그리고 비특권 user namespace가 허용돼야 한다(Ubuntu 24.04+는 AppArmor로 기본 제한 —
+  bwrap용 프로파일 필요).
+- **Docker 안에서 pleumcode를 돌리면 기본 설정에서는 명령이 실행되지 않는다**: 컨테이너가 `/proc` 일부를
+  마스킹해 `bwrap --proc /proc`이 실패한다(`Can't mount proc ... Operation not permitted`). `--proc`을
+  빼면 호스트 `/proc`이 보여 다른 프로세스의 환경변수를 읽을 수 있으므로 우회하지 않는다. 컨테이너에는
+  `--cap-add SYS_ADMIN --security-opt seccomp=unconfined --security-opt systempaths=unconfined`가 필요하다.
 
 **아직 안 막힌 것 (v1.0-beta 전 필수)**
 
-- Linux(bubblewrap+Landlock)·Windows 백엔드 — 지금 두 OS에서는 셸 도구가 동작하지 않는다.
-- `hooks/mod.rs`의 `sh -c`, stdio MCP 확장 spawn(`extension_manager.rs`), `goose-mcp`의 자체 spawn/파일
+- **Windows 백엔드** — Windows에서는 셸 도구가 동작하지 않는다.
+- Linux: **seccomp/Landlock 층이 없다.** `/run`·`/tmp` 밖의 경로형 유닉스 소켓(예: `$HOME` 아래)은 여전히 연결
+  가능하다. 완전한 해법은 `AF_UNIX connect`를 거부하는 seccomp 필터.
+- macOS: 프로파일이 `(allow mach-lookup)`를 통째로 허용한다 — 호스트 서비스(XPC/launchd 등)로의 IPC가 열려
+  있어 정밀한 허용 목록으로 좁혀야 한다.
+- `hooks/mod.rs`의 `sh -c`, stdio MCP 확장 spawn(`extension_manager.rs`), `pleum-mcp`의 자체 spawn/파일
   쓰기는 샌드박스 밖. 특히 hooks는 CVE-2025-59536과 같은 종류라 trust prompt 순서 점검과 함께 다뤄야 한다.
 - 자식 프로세스가 환경변수(`PLEUM_API_KEY` 등)를 그대로 상속 — `env`만 쳐도 키가 모델 컨텍스트로 간다.
 - 네트워크 전면 차단이라 자식의 `npm install`/`git fetch`/`cargo fetch`가 실패한다(PleumRouter 화이트리스트는

@@ -412,6 +412,7 @@ impl ShellTool {
             working_dir,
             login_path_ref,
             session_id,
+            &[self.output_dir.path()],
             notification_emitter,
             cancellation_token,
         )
@@ -554,12 +555,14 @@ fn resolve_shell_timeout(timeout_secs: Option<u64>) -> u64 {
     })
 }
 
+#[allow(clippy::too_many_arguments)]
 async fn run_command(
     command_line: &str,
     timeout_secs: Option<u64>,
     working_dir: Option<&std::path::Path>,
     login_path: Option<&str>,
     session_id: Option<&str>,
+    readable: &[&std::path::Path],
     notification_emitter: Option<ToolCallNotificationEmitter>,
     cancellation_token: CancellationToken,
 ) -> Result<ExecutionOutput, String> {
@@ -571,7 +574,7 @@ async fn run_command(
         Some(dir) => dir.to_path_buf(),
         None => std::env::current_dir().map_err(|e| format!("sandbox: no workspace: {e}"))?,
     };
-    let mut command = crate::sandbox::wrap(command, &workspace)
+    let mut command = crate::sandbox::wrap(command, &workspace, readable)
         .map_err(|e| format!("Refusing to run shell command: {e}"))?;
 
     command.stdout(Stdio::piped());
@@ -1280,7 +1283,7 @@ mod tests {
 
     // The shell tool must run inside the OS sandbox: writes outside the workspace
     // fail even though the command string itself is innocuous.
-    #[cfg(target_os = "macos")]
+    #[cfg(any(target_os = "macos", target_os = "linux"))]
     #[tokio::test]
     async fn shell_tool_is_sandboxed() {
         // Parent under $HOME (not the temp dir, which is writable by policy).

@@ -6,7 +6,7 @@ use rmcp::model::Role;
 
 use crate::agents::state_machine::{
     applied, messages_since_kickoff, not_applicable, yielded_with, ConversationEffect, Emitter,
-    PleumEffect, Operation, OperationResult, SlashCommand,
+    Operation, OperationResult, PleumEffect, SlashCommand,
 };
 use crate::conversation::message::Message;
 use crate::conversation::Conversation;

@@ -9,7 +9,7 @@ use tracing_futures::Instrument;
 use crate::agents::state_machine::ops_llm::{chat_span, record_chat_usage};
 use crate::agents::state_machine::{
     applied, last_effective_role, messages_since_kickoff, not_applicable, trailing_error, yielded,
-    yielded_with, ConversationEffect, Emitter, PleumEffect, Operation, OperationResult,
+    yielded_with, ConversationEffect, Emitter, Operation, OperationResult, PleumEffect,
     SlashCommand,
 };
 use crate::context_mgmt::compact_messages;

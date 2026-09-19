@@ -632,8 +632,8 @@ pub fn shutdown_otlp() {
 mod tests {
     use super::*;
     use crate::session_context::{session_host, session_user};
-    use pleum_test_support::otel::clear_otel_env;
     use opentelemetry_sdk::metrics::Temporality;
+    use pleum_test_support::otel::clear_otel_env;
     use std::sync::atomic::{AtomicUsize, Ordering};
     use test_case::test_case;
     use tracing::{Event, Subscriber};

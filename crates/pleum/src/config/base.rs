@@ -2,10 +2,10 @@ use crate::config::paths::Paths;
 use crate::config::PleumMode;
 use crate::providers::private_file::{private_file_target_path, write_private_file};
 use fs2::FileExt;
-use pleum_providers::thinking::ThinkingEffort;
 #[cfg(feature = "system-keyring")]
 use keyring::Entry;
 use once_cell::sync::OnceCell;
+use pleum_providers::thinking::ThinkingEffort;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use serde_yaml::Mapping;

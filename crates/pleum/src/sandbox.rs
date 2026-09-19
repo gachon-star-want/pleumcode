@@ -7,14 +7,18 @@
 //! Policy (Codex-style split: the agent process itself stays unsandboxed so it
 //! can reach the model API; only the commands it spawns are confined):
 //! - writes only inside the workspace and the temp dir (`.git/hooks` and
-//!   `.git/config` stay read-only: a hook is a later, unsandboxed host exec)
+//!   `.git/config` stay read-only: a hook is a later, unsandboxed host exec).
+//!   On Linux the temp dir is a private tmpfs, not the host's.
 //! - no network at all
 //! - credential dirs (`~/.ssh`, `~/.aws`, `~/.gnupg`, pleum config) unreadable,
 //!   since anything a command prints ends up in the model's context
 //!
-//! macOS only (Seatbelt via `sandbox-exec`). Every other OS fails closed:
-//! `wrap` returns an error and the command is not run.
-//! ponytail: Linux (bubblewrap) is the next backend; not implemented yet.
+//! Backends: macOS Seatbelt (`sandbox-exec`) and Linux bubblewrap (`bwrap`, namespaces:
+//! read-only root, private net/pid/ipc). Every other OS, and Linux without `bwrap`, fails
+//! closed: `wrap` returns an error and the command is not run.
+//! ponytail: the Linux backend has no seccomp/Landlock layer on top of the namespaces yet, so a
+//! path-based unix socket outside /run and /tmp (e.g. under $HOME) is still reachable.
+//! The complete fix is a seccomp filter denying AF_UNIX connect.
 
 use std::io;
 use std::path::{Path, PathBuf};
@@ -52,32 +56,111 @@ const PROFILE: &str = r#"(version 1)
 "#;
 
 /// Returns `cmd` re-targeted so it runs inside the sandbox, confined to `workspace`.
+/// `readable` are host paths the command must still be able to read even where the
+/// backend hides the host's temp dir (the shell tool's saved full-output files).
 /// Program, args, env and cwd are preserved. Fails closed if the sandbox is unavailable.
-pub fn wrap(cmd: Command, workspace: &Path) -> io::Result<Command> {
-    #[cfg(target_os = "macos")]
+pub fn wrap(cmd: Command, workspace: &Path, readable: &[&Path]) -> io::Result<Command> {
+    let home = std::env::var_os("HOME")
+        .map(PathBuf::from)
+        .ok_or_else(|| io::Error::other("sandbox: cannot resolve $HOME"))?;
+    wrap_with(
+        cmd,
+        workspace,
+        readable,
+        &home,
+        &crate::config::paths::Paths::config_dir(),
+    )
+}
+
+/// `wrap` with `$HOME` and the pleum config dir passed in (both are made unreadable).
+fn wrap_with(
+    cmd: Command,
+    workspace: &Path,
+    readable: &[&Path],
+    home: &Path,
+    config_dir: &Path,
+) -> io::Result<Command> {
+    #[cfg(any(target_os = "macos", target_os = "linux"))]
     {
+        // Both backends match canonical paths (macOS `/private/var`, Linux bind mounts).
         let real = |p: &Path| std::fs::canonicalize(p);
         let ws = real(workspace)?;
         let tmp = real(&std::env::temp_dir())?;
-        let home = std::env::var_os("HOME")
-            .map(PathBuf::from)
-            .and_then(|h| real(&h).ok())
-            .ok_or_else(|| io::Error::other("sandbox: cannot resolve $HOME"))?;
-        // Config dir may not exist yet; canonicalize the parent chain we can and fall back.
-        let pleum_cfg = crate::config::paths::Paths::config_dir();
-        let pleum_cfg = real(&pleum_cfg).unwrap_or(pleum_cfg);
-
+        let home = real(home).unwrap_or_else(|_| home.to_path_buf());
+        // May not exist yet.
+        let config_dir = real(config_dir).unwrap_or_else(|_| config_dir.to_path_buf());
         let std_cmd = cmd.as_std();
-        let mut out = Command::new(SANDBOX_EXEC);
-        out.arg("-p").arg(PROFILE);
-        for (k, v) in [
-            ("WS", &ws),
-            ("TMP", &tmp),
-            ("HOME", &home),
-            ("PLEUM_CONFIG", &pleum_cfg),
-        ] {
-            out.arg("-D").arg(format!("{k}={}", v.display()));
-        }
+
+        // macOS reads everything already and denies unix-socket connects by default.
+        #[cfg(target_os = "macos")]
+        let _ = readable;
+        #[cfg(target_os = "macos")]
+        let mut out = {
+            let mut out = Command::new(SANDBOX_EXEC);
+            out.arg("-p").arg(PROFILE);
+            for (k, v) in [
+                ("WS", &ws),
+                ("TMP", &tmp),
+                ("HOME", &home),
+                ("PLEUM_CONFIG", &config_dir),
+            ] {
+                out.arg("-D").arg(format!("{k}={}", v.display()));
+            }
+            if let Some(dir) = std_cmd.get_current_dir() {
+                out.current_dir(dir);
+            }
+            out
+        };
+
+        #[cfg(target_os = "linux")]
+        let mut out = {
+            let bwrap = which::which("bwrap").map_err(|_| {
+                io::Error::new(
+                    io::ErrorKind::NotFound,
+                    "sandbox: `bwrap` (bubblewrap) not found; install it (e.g. `apt install bubblewrap`)",
+                )
+            })?;
+            let mut out = Command::new(bwrap);
+            // Read-only view of the whole filesystem, private net/pid/ipc/uts, no capabilities.
+            out.args([
+                "--unshare-all",
+                "--die-with-parent",
+                "--new-session",
+                "--cap-drop",
+                "ALL",
+            ])
+            .args(["--ro-bind", "/", "/", "--dev", "/dev", "--proc", "/proc"]);
+            // `--ro-bind / /` stops writes but not connect() to path-based unix sockets
+            // (docker.sock, the systemd/dbus session bus, ssh-agent, X11), so hide the places
+            // they live: /run and a private /tmp instead of the host's. Order matters: these
+            // tmpfs mounts come first so the workspace and readable paths bind on top.
+            out.args(["--tmpfs", "/run"]);
+            out.arg("--tmpfs").arg(&tmp);
+            out.arg("--bind").arg(&ws).arg(&ws);
+            for p in readable {
+                let p = real(p)?;
+                out.arg("--ro-bind").arg(&p).arg(&p);
+            }
+            // Later mounts win: re-lock the git exec paths, then blank the credential dirs.
+            for rel in [".git/hooks", ".git/config"] {
+                let p = ws.join(rel);
+                if p.exists() {
+                    out.arg("--ro-bind").arg(&p).arg(&p);
+                }
+            }
+            let secrets = [".ssh", ".aws", ".gnupg"].map(|d| home.join(d));
+            for p in secrets.iter().chain([&config_dir]) {
+                if p.is_dir() {
+                    out.arg("--tmpfs").arg(p);
+                }
+            }
+            if let Some(dir) = std_cmd.get_current_dir() {
+                out.arg("--chdir").arg(dir);
+            }
+            out.arg("--");
+            out
+        };
+
         out.arg(std_cmd.get_program()).args(std_cmd.get_args());
         for (k, v) in std_cmd.get_envs() {
             match v {
@@ -85,14 +168,11 @@ pub fn wrap(cmd: Command, workspace: &Path) -> io::Result<Command> {
                 None => out.env_remove(k),
             };
         }
-        if let Some(dir) = std_cmd.get_current_dir() {
-            out.current_dir(dir);
-        }
         Ok(out)
     }
-    #[cfg(not(target_os = "macos"))]
+    #[cfg(not(any(target_os = "macos", target_os = "linux")))]
     {
-        let _ = (cmd, workspace);
+        let _ = (cmd, workspace, readable, home, config_dir);
         Err(io::Error::new(
             io::ErrorKind::Unsupported,
             "sandbox: no OS sandbox backend for this platform; refusing to run command unconfined",
@@ -100,9 +180,9 @@ pub fn wrap(cmd: Command, workspace: &Path) -> io::Result<Command> {
     }
 }
 
-/// In-process counterpart of the Seatbelt write policy, for tools that write files
+/// In-process counterpart of the OS write policy, for tools that write files
 /// inside the agent process (where `wrap` can't reach). Same rules: workspace + temp
-/// dir only, `.git/hooks` and `.git/config` excluded. Keep in sync with `PROFILE`.
+/// dir only, `.git/hooks` and `.git/config` excluded. Keep in sync with `PROFILE` and the bwrap mounts.
 ///
 /// Symlinks are resolved before the check, and a not-yet-existing tail may not
 /// contain `..`, so neither `link -> /etc` nor `new/../../x` can escape.
@@ -140,7 +220,7 @@ pub fn check_write(path: &Path, workspace: &Path) -> Result<(), String> {
     Ok(())
 }
 
-#[cfg(all(test, target_os = "macos"))]
+#[cfg(all(test, any(target_os = "macos", target_os = "linux")))]
 mod tests {
     use super::*;
     use std::process::Output;
@@ -148,7 +228,7 @@ mod tests {
     async fn run(ws: &Path, script: &str) -> Output {
         let mut c = Command::new("/bin/sh");
         c.arg("-c").arg(script).current_dir(ws);
-        wrap(c, ws).unwrap().output().await.unwrap()
+        wrap(c, ws, &[]).unwrap().output().await.unwrap()
     }
 
     fn ok(o: &Output) -> bool {
@@ -193,17 +273,106 @@ mod tests {
         assert!(!ok(&run(&ws, "echo x >> .git/config").await));
         assert!(ok(&run(&ws, "echo x > .git/HEAD").await));
         // network is off
-        let net = run(
+        #[cfg(target_os = "macos")]
+        assert!(!ok(&run(
             &ws,
-            "/usr/bin/curl -sS -m 5 -o /dev/null https://example.com",
+            "/usr/bin/curl -sS -m 5 -o /dev/null https://example.com"
         )
-        .await;
-        assert!(!ok(&net));
-        // credential dirs are unreadable (only checked when they exist on this machine)
-        let ssh = dirs::home_dir().unwrap().join(".ssh");
-        if ssh.exists() {
-            assert!(!ok(&run(&ws, &format!("ls {}", ssh.display())).await));
+        .await));
+        // Private net namespace: a different namespace id than ours (a new netns may still
+        // list DOWN tunnel devices like tunl0/sit0, so the interface count proves nothing).
+        #[cfg(target_os = "linux")]
+        {
+            let host = std::fs::read_link("/proc/self/ns/net").unwrap();
+            let o = run(&ws, "readlink /proc/self/ns/net").await;
+            let inside = String::from_utf8_lossy(&o.stdout).trim().to_string();
+            assert!(ok(&o) && !inside.is_empty());
+            assert_ne!(inside, host.to_string_lossy());
         }
+    }
+
+    #[tokio::test]
+    async fn credential_dirs_are_unreadable() {
+        let dir = tempfile::tempdir().unwrap();
+        let (home, ws, cfg) = (
+            dir.path().join("home"),
+            dir.path().join("ws"),
+            dir.path().join("cfg"),
+        );
+        std::fs::create_dir(&ws).unwrap();
+        for d in [
+            home.join(".ssh"),
+            home.join(".aws"),
+            home.join(".gnupg"),
+            cfg.clone(),
+        ] {
+            std::fs::create_dir_all(&d).unwrap();
+            std::fs::write(d.join("secret"), "TOPSECRET").unwrap();
+        }
+        let mut ok_cmd = Command::new("/bin/sh");
+        ok_cmd.arg("-c").arg("true").current_dir(&ws);
+        let o = wrap_with(ok_cmd, &ws, &[], &home, &cfg)
+            .unwrap()
+            .output()
+            .await
+            .unwrap();
+        assert!(o.status.success(), "control command must run: {o:?}");
+        for d in [
+            home.join(".ssh"),
+            home.join(".aws"),
+            home.join(".gnupg"),
+            cfg.clone(),
+        ] {
+            let mut c = Command::new("/bin/sh");
+            c.arg("-c")
+                .arg(format!("cat {}/secret", d.display()))
+                .current_dir(&ws);
+            let o = wrap_with(c, &ws, &[], &home, &cfg)
+                .unwrap()
+                .output()
+                .await
+                .unwrap();
+            assert!(!o.status.success(), "{} readable", d.display());
+            assert!(!String::from_utf8_lossy(&o.stdout).contains("TOPSECRET"));
+        }
+    }
+
+    // The host's temp dir (where unix sockets like ssh-agent/X11 often live) is not visible;
+    // a `readable` path under it is, read-only.
+    #[cfg(target_os = "linux")]
+    #[tokio::test]
+    async fn linux_temp_is_private_and_readable_paths_are_read_only() {
+        let base = tempfile::Builder::new()
+            .prefix("pleum-sbx-ws")
+            .tempdir_in(dirs::home_dir().unwrap())
+            .unwrap();
+        let ws = base.path().join("ws");
+        std::fs::create_dir(&ws).unwrap();
+        let host_only = tempfile::NamedTempFile::new().unwrap();
+        let out_dir = tempfile::tempdir().unwrap();
+        std::fs::write(out_dir.path().join("full-output"), "FULL").unwrap();
+
+        let run = |script: String| {
+            let mut c = Command::new("/bin/sh");
+            c.arg("-c").arg(script).current_dir(&ws);
+            let mut c = wrap(c, &ws, &[out_dir.path()]).unwrap();
+            async move { c.output().await.unwrap() }
+        };
+        assert!(ok(&run("true".into()).await), "control command must run");
+        // host temp file is invisible
+        assert!(!ok(
+            &run(format!("test -e {}", host_only.path().display())).await
+        ));
+        // readable path works, is read-only
+        let cat = run(format!("cat {}/full-output", out_dir.path().display())).await;
+        assert_eq!(String::from_utf8_lossy(&cat.stdout), "FULL");
+        assert!(!ok(&run(format!(
+            "echo x > {}/new",
+            out_dir.path().display()
+        ))
+        .await));
+        // sandbox scratch space in /tmp still works
+        assert!(ok(&run("echo x > \"$(mktemp)\"".into()).await));
     }
 
     #[tokio::test]
@@ -215,7 +384,7 @@ mod tests {
             .env("PLEUM_T", "1")
             .env_remove("PLEUM_GONE")
             .current_dir(dir.path());
-        let o = wrap(c, dir.path()).unwrap().output().await.unwrap();
+        let o = wrap(c, dir.path(), &[]).unwrap().output().await.unwrap();
         assert_eq!(o.status.code(), Some(7));
         let real = std::fs::canonicalize(dir.path()).unwrap();
         assert_eq!(

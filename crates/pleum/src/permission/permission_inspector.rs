@@ -1,7 +1,7 @@
 use crate::agents::platform_extensions::MANAGE_EXTENSIONS_TOOL_NAME_COMPLETE;
 use crate::agents::types::SharedProvider;
 use crate::config::permission::PermissionLevel;
-use crate::config::{PleumMode, PermissionManager};
+use crate::config::{PermissionManager, PleumMode};
 use crate::conversation::message::{Message, ToolRequest};
 use crate::permission::permission_judge::{detect_read_only_requests, PermissionCheckResult};
 use crate::tool_inspection::{InspectionAction, InspectionResult, ToolInspector};

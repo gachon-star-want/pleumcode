@@ -6,8 +6,8 @@ use pleum_providers::base::Provider;
 use pleum_providers::model::ModelConfig;
 
 use crate::agents::state_machine::{
-    messages_since_kickoff, not_applicable, yielded_with, ConversationEffect, Emitter, PleumEffect,
-    Operation, OperationResult, SlashCommand,
+    messages_since_kickoff, not_applicable, yielded_with, ConversationEffect, Emitter, Operation,
+    OperationResult, PleumEffect, SlashCommand,
 };
 use crate::conversation::message::Message;
 use crate::conversation::Conversation;

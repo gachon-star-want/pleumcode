@@ -7,8 +7,8 @@ use async_trait::async_trait;
 
 use crate::agents::state_machine::ops_toolcalling::request_was_advertised;
 use crate::agents::state_machine::{
-    applied, messages_since_kickoff, not_applicable, ConversationEffect, Emitter, PleumEffect,
-    Operation, OperationResult,
+    applied, messages_since_kickoff, not_applicable, ConversationEffect, Emitter, Operation,
+    OperationResult, PleumEffect,
 };
 use crate::config::permission::PermissionLevel;
 use crate::config::PleumMode;

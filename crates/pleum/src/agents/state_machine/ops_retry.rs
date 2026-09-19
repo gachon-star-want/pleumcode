@@ -9,7 +9,7 @@ use crate::agents::retry::{
 };
 use crate::agents::state_machine::{
     applied, ends_turn, messages_since_kickoff, not_applicable, yielded_with, ConversationEffect,
-    Emitter, PleumEffect, Operation, OperationResult, SlashCommand,
+    Emitter, Operation, OperationResult, PleumEffect, SlashCommand,
 };
 use crate::agents::types::RetryConfig;
 use crate::conversation::message::{Message, MessageErrorKind, SystemNotificationType};

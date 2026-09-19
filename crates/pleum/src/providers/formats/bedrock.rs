@@ -22,10 +22,10 @@ use crate::providers::formats::anthropic::{
     ANTHROPIC_PROVIDER_NAME, MIN_ANSWER_TOKENS,
 };
 use crate::utils::{sanitize_unicode_tags, strip_unicode_tags};
+use once_cell::sync::Lazy;
 use pleum_providers::conversation::token_usage::Usage;
 use pleum_providers::documents::{unsupported_document_text, UNSUPPORTED_PROVIDER_REASON};
 use pleum_providers::model::ModelConfig;
-use once_cell::sync::Lazy;
 use regex::Regex;
 
 static BEDROCK_VERSION_SUFFIX_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"-v\d+(:\d+)?$").unwrap());

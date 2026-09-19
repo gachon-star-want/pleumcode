@@ -10,7 +10,7 @@ pub(super) use crate::acp::response_builder::{
 use crate::acp::tool_call_notifier::ToolCallNotifier;
 use crate::acp::{PermissionDecision, ACP_CURRENT_MODEL};
 use crate::agents::extension::{Envs, PLATFORM_EXTENSIONS};
-use crate::agents::mcp_client::{PleumMcpHostInfo, McpClientTrait};
+use crate::agents::mcp_client::{McpClientTrait, PleumMcpHostInfo};
 use crate::agents::platform_extensions::developer::DeveloperClient;
 use crate::agents::state_machine::{
     has_unapplied_tool_confirmation_response, pending_tool_confirmations,
@@ -1855,8 +1855,9 @@ impl PleumAcpAgent {
             .agent_info(Implementation::new("pleum", env!("CARGO_PKG_VERSION")))
             .agent_capabilities(capabilities)
             .auth_methods(vec![AuthMethod::Agent(
-                AuthMethodAgent::new("pleum-provider", "Configure Provider")
-                    .description("Run `pleumcode configure` to set up your AI provider and API key"),
+                AuthMethodAgent::new("pleum-provider", "Configure Provider").description(
+                    "Run `pleumcode configure` to set up your AI provider and API key",
+                ),
             )]))
     }
 

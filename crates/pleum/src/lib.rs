@@ -21,7 +21,6 @@ pub mod download_manager;
 pub mod elicitation;
 pub mod execution;
 pub mod gateway;
-pub mod pleum_apps;
 pub mod hints;
 pub mod hooks;
 pub mod instance_id;
@@ -32,6 +31,7 @@ pub mod oauth;
 #[cfg(feature = "otel")]
 pub mod otel;
 pub mod permission;
+pub mod pleum_apps;
 pub mod plugins;
 #[cfg(feature = "telemetry")]
 pub mod posthog;

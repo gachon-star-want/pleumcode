@@ -38,7 +38,7 @@ use crate::action_required_manager::ActionRequiredManager;
 use crate::agents::extension::{Envs, ProcessExit};
 use crate::agents::extension_malware_check;
 use crate::agents::mcp_client::{
-    PleumMcpClientCapabilities, PleumMcpHostInfo, McpClient, McpClientTrait,
+    McpClient, McpClientTrait, PleumMcpClientCapabilities, PleumMcpHostInfo,
 };
 use crate::agents::reply_parts::is_tool_visible_to_app;
 use crate::builtin_extension::get_builtin_extension;

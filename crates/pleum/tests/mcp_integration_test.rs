@@ -18,13 +18,13 @@ use pleum_providers::model::ModelConfig;
 use test_case::test_case;
 
 use async_trait::async_trait;
+use once_cell::sync::Lazy;
 use pleum::conversation::message::Message;
 use pleum::providers::base::{
     stream_from_single_message, MessageStream, Provider, ProviderDef, ProviderMetadata,
 };
 use pleum_providers::conversation::token_usage::{ProviderUsage, Usage};
 use pleum_providers::errors::ProviderError;
-use once_cell::sync::Lazy;
 use std::process::Command;
 
 #[derive(Deserialize)]

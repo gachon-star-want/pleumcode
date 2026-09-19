@@ -9,7 +9,7 @@ use agent_client_protocol::{Client, DynConnectTo};
 use async_trait::async_trait;
 use futures::StreamExt;
 use pleum::acp::{AcpProvider, AcpProviderConfig};
-use pleum::config::{PleumMode, PermissionManager};
+use pleum::config::{PermissionManager, PleumMode};
 use pleum::conversation::message::{ActionRequiredData, Message, MessageContent};
 use pleum::permission::permission_confirmation::PrincipalType;
 use pleum::permission::{Permission, PermissionConfirmation};
