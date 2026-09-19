@@ -86,3 +86,71 @@ sandbox-exec)나 컨테이너/microVM 중 하나를 goose-cli 실행 진입점�
 - **경쟁 포지셔닝**: BizRouter는 이미 Claude Code/Codex/Cline/OpenCode 4종 통합을 갖춤 — 미완성 상태로
   서둘러 전면 배포하면 오히려 기존 10-에이전트 런처보다 못해 보일 수 있음 → opt-in 베타로 단계적 출시.
 - **정보 신선도**: stars/이슈 수/라이선스 조항은 계속 바뀌므로 실제 fork 착수 직전 재검증 필요.
+
+## 진행 로그 — v0.1 착수 (2026-09-19)
+
+### 0~1단계: 완료 (브랜치 `feat/v0.1-bringup`, 미푸시)
+
+- **정본 조직 확정**: `block/goose`는 `aaif-goose/goose`로 리다이렉트된다(Apache-2.0, archived 아님). 이후 모든
+  참조는 `aaif-goose/goose`.
+- **고정 태그**: `v1.51.0`(2026-09-17 stable). `v2-rc*` 태그는 RC라 제외.
+- **방식**: 기존 `pleumcode` 저장소(문서 보유)에 `upstream` remote를 추가하고 `--allow-unrelated-histories`로
+  v1.51.0을 병합 — 업스트림 히스토리가 보존되어 7단계(월 1회 리베이스)의 merge-base가 생긴다. 충돌 3건:
+  LICENSE는 업스트림 것(`Copyright 2024 Block, Inc.` 표기 포함) 채택, README는 우리 것, `.gitignore`는 합침.
+- pleumcode 전용 파일은 `pleum/` 아래에 모아 업스트림 트리와 분리.
+
+### 2단계: 배선 검증 완료, 200 응답은 미확인
+
+**본 문서 위쪽 2단계 설명의 오류 정정** (v1.51.0 실제 스키마 기준):
+
+| 항목 | 위 본문 | 실제 |
+|---|---|---|
+| 위치 | `~/.config/goose/providers/pleum.json` | `~/.config/goose/custom_providers/pleum.json` |
+| 호스트 | `router.pleum.ai` | API는 `https://apirouter.pleum.ai/v1` (`router.pleum.ai`는 사이트 도메인) |
+| 인증 | Authorization 헤더에 `${PLEUM_API_KEY}` | `api_key_env: "PLEUM_API_KEY"` |
+| 필드 | `host` | `base_url`, `engine: "openai"` |
+
+- 더미 키로 실호출: `pleum` provider가 core 무수정으로 로드되고, 요청이 게이트웨이(`/v1/responses`)까지
+  도달해 게이트웨이 자체의 401을 받았다. **진짜 키로 200 응답과 `policy/<slug>`·`orch/<slug>` 패스스루는 아직
+  검증 전.** Goose는 이 모델에 Chat Completions가 아니라 Responses API를 쓰므로 게이트웨이의
+  `/v1/responses` 스트리밍 호환도 그때 함께 확인해야 한다.
+- 정적 `models`에는 검증된 `gpt-5.4-mini`만 넣었고 나머지는 `/v1/models` 동적 조회에 맡긴다(`smart`
+  슬러그의 실재는 미확인이라 넣지 않음).
+
+### `GOOSE_SUBAGENT_MODEL` 버그(`aaif-goose/goose#11862`) 재확인
+
+- v1.51.0 코드(`summon.rs:1726`)에는 **여전히 버그가 남아 있다**(env가 `recipe.settings`보다 우선).
+- 이슈는 PR #12070(머지 `9222d96`, 2026-09-16, `summon.rs` +87/-38)으로 닫혔으나 v1.51.0 태그에는 미포함.
+  v0.3 착수 전 다음 업스트림 릴리스에 들어왔는지 확인하고, 없으면 해당 커밋을 cherry-pick한다(지금은
+  리베이스 충돌만 늘리므로 미적용).
+
+### 03 문서 구현 위치 정정
+
+03의 "goose-mcp developer extension" 표현은 v1.51.0에서 틀렸다. 셸/편집 도구는
+`crates/goose/src/agents/platform_extensions/developer/`에, 서브에이전트 위임은 `summon` platform extension
+(`platform_extensions/summon.rs`)에 있다. v0.2 verify wrapper와 v0.3 디스패치는 이 위치를 기준으로 설계한다.
+
+### OS 샌드박스 v0.1 첫 컷 (macOS만)
+
+설계는 Codex 방식의 분리: **에이전트 프로세스는 그대로 두고(모델 API 통신 필요), 도구가 spawn하는 명령만
+샌드박스에 넣는다.** 런타임 opt-out 없음(env·config 키 없음).
+
+- `crates/goose/src/sandbox.rs` — `wrap()`(Seatbelt `sandbox-exec`, 경로는 `-D` 파라미터로 전달해 프로파일에
+  문자열 삽입 없음)과 `check_write()`(프로세스 내부 쓰기용 동일 정책).
+- 정책: 쓰기는 canonical 워크스페이스 + 임시 디렉토리만 / 네트워크 전면 차단 / `.git/hooks`·`.git/config`
+  쓰기 금지(나중에 호스트에서 실행되는 탈출 경로) / `~/.ssh`·`~/.aws`·`~/.gnupg`·goose 설정 디렉토리
+  읽기 금지(출력이 곧 모델 컨텍스트로 가므로).
+- 연결: `developer/shell.rs`의 `run_command`(셸 도구)와 `developer/edit.rs`의 `write`/`edit`. 후자는 goose
+  프로세스 안에서 도는 도구라 Seatbelt가 못 막으므로 `check_write`로 별도 가드(디렉토리 생성 **전에** 검사).
+  심볼릭 링크·dangling 링크·`..` 탈출 모두 차단, 테스트로 검증.
+- **미지원 OS는 fail-closed**: 명령을 실행하지 않고 에러를 낸다.
+
+**아직 안 막힌 것 (v1.0-beta 전 필수)**
+
+- Linux(bubblewrap+Landlock)·Windows 백엔드 — 지금 두 OS에서는 셸 도구가 동작하지 않는다.
+- `hooks/mod.rs`의 `sh -c`, stdio MCP 확장 spawn(`extension_manager.rs`), `goose-mcp`의 자체 spawn/파일
+  쓰기는 샌드박스 밖. 특히 hooks는 CVE-2025-59536과 같은 종류라 trust prompt 순서 점검과 함께 다뤄야 한다.
+- 자식 프로세스가 환경변수(`PLEUM_API_KEY` 등)를 그대로 상속 — `env`만 쳐도 키가 모델 컨텍스트로 간다.
+- 네트워크 전면 차단이라 자식의 `npm install`/`git fetch`/`cargo fetch`가 실패한다(PleumRouter 화이트리스트는
+  에이전트 프로세스 쪽이라 해당 없음). 허용 정책(프록시+allowlist)은 별도 결정이 필요하다.
+- 업스트림 기본 feature에 `telemetry`·`otel`·`nostr`·`update`가 켜져 있다 — 배포 전 끄거나 점검.
