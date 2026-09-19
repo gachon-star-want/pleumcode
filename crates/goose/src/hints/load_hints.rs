@@ -9,18 +9,31 @@ use crate::hints::import_files::read_referenced_files;
 
 pub const GOOSE_HINTS_FILENAME: &str = ".goosehints";
 pub const AGENTS_MD_FILENAME: &str = "AGENTS.md";
+pub const CLAUDE_MD_FILENAME: &str = "CLAUDE.md";
+
+// pleumcode: AGENTS.md is the primary convention and is read first; CLAUDE.md is
+// honored for the many repos that only have that; `.goosehints` stays for Goose compat.
+fn default_context_filenames() -> Vec<String> {
+    vec![
+        AGENTS_MD_FILENAME.to_string(),
+        CLAUDE_MD_FILENAME.to_string(),
+        GOOSE_HINTS_FILENAME.to_string(),
+    ]
+}
 
 pub fn get_context_filenames() -> Vec<String> {
     use crate::config::Config;
 
     Config::global()
         .get_param::<Vec<String>>("CONTEXT_FILE_NAMES")
-        .unwrap_or_else(|_| {
-            vec![
-                GOOSE_HINTS_FILENAME.to_string(),
-                AGENTS_MD_FILENAME.to_string(),
-            ]
-        })
+        .unwrap_or_else(|_| default_context_filenames())
+}
+
+/// CLAUDE.md is only a fallback for directories without an AGENTS.md. Repos usually
+/// make it a pointer (`@AGENTS.md`) or a symlink to AGENTS.md, so loading both would
+/// put the same text in the prompt twice (tokens are money here).
+fn shadowed_by_agents_md(dir: &Path, filename: &str) -> bool {
+    filename == CLAUDE_MD_FILENAME && dir.join(AGENTS_MD_FILENAME).is_file()
 }
 
 #[derive(Default)]
@@ -139,6 +152,9 @@ fn load_hints_from_directory(
     let mut contents = Vec::new();
     for dir in &directories {
         for hints_filename in hints_filenames {
+            if shadowed_by_agents_md(dir, hints_filename) {
+                continue;
+            }
             let hints_path = dir.join(hints_filename);
             if hints_path.is_file() {
                 let mut visited = HashSet::new();
@@ -274,6 +290,9 @@ pub fn load_hint_files(
 
     for directory in &local_directories {
         for hints_filename in hints_filenames {
+            if shadowed_by_agents_md(directory, hints_filename) {
+                continue;
+            }
             let hints_path = directory.join(hints_filename);
             if hints_path.is_file() {
                 let mut visited = HashSet::new();
@@ -944,6 +963,50 @@ End of hints"#;
         let hints = tracker.load_new_hints(&project_root);
         assert_eq!(hints.len(), 1);
         assert!(hints[0].1.contains("future hints"));
+    }
+
+    #[test]
+    fn test_default_names_put_agents_md_first() {
+        assert_eq!(
+            default_context_filenames(),
+            [AGENTS_MD_FILENAME, CLAUDE_MD_FILENAME, GOOSE_HINTS_FILENAME]
+        );
+    }
+
+    #[test]
+    fn test_agents_md_first_and_claude_md_only_as_fallback() {
+        let names = default_context_filenames();
+        let gitignore = create_dummy_gitignore();
+
+        // The common pointer pattern: CLAUDE.md is just `@AGENTS.md`. Must not double-load.
+        let both = TempDir::new().unwrap();
+        fs::write(both.path().join("AGENTS.md"), "AGENTS_BODY").unwrap();
+        fs::write(both.path().join("CLAUDE.md"), "@AGENTS.md").unwrap();
+        fs::write(both.path().join(GOOSE_HINTS_FILENAME), "GOOSEHINTS_BODY").unwrap();
+        let hints = load_hint_files(both.path(), &names, &gitignore);
+        assert_eq!(hints.matches("AGENTS_BODY").count(), 1, "{hints}");
+        assert!(hints.find("AGENTS_BODY").unwrap() < hints.find("GOOSEHINTS_BODY").unwrap());
+
+        // Only CLAUDE.md (very common): it is used.
+        let only_claude = TempDir::new().unwrap();
+        fs::write(only_claude.path().join("CLAUDE.md"), "CLAUDE_ONLY_BODY").unwrap();
+        let hints = load_hint_files(only_claude.path(), &names, &gitignore);
+        assert!(hints.contains("CLAUDE_ONLY_BODY"), "{hints}");
+
+        // Fallback is per directory: root has AGENTS.md, subdir has only CLAUDE.md.
+        let root = TempDir::new().unwrap();
+        fs::create_dir(root.path().join(".git")).unwrap();
+        fs::write(root.path().join("AGENTS.md"), "ROOT_AGENTS").unwrap();
+        fs::write(root.path().join("CLAUDE.md"), "ROOT_CLAUDE_EXTRA").unwrap();
+        let sub = root.path().join("sub");
+        fs::create_dir(&sub).unwrap();
+        fs::write(sub.join("CLAUDE.md"), "SUB_CLAUDE").unwrap();
+        let hints = load_hint_files(&sub, &names, &gitignore);
+        assert!(
+            hints.contains("ROOT_AGENTS") && hints.contains("SUB_CLAUDE"),
+            "{hints}"
+        );
+        assert!(!hints.contains("ROOT_CLAUDE_EXTRA"), "{hints}");
     }
 }
 

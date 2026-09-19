@@ -154,3 +154,20 @@ sandbox-exec)나 컨테이너/microVM 중 하나를 goose-cli 실행 진입점�
 - 네트워크 전면 차단이라 자식의 `npm install`/`git fetch`/`cargo fetch`가 실패한다(PleumRouter 화이트리스트는
   에이전트 프로세스 쪽이라 해당 없음). 허용 정책(프록시+allowlist)은 별도 결정이 필요하다.
 - 업스트림 기본 feature에 `telemetry`·`otel`·`nostr`·`update`가 켜져 있다 — 배포 전 끄거나 점검.
+
+### 컨텍스트 파일: AGENTS.md 최우선 (채택순서 1번, 2026-09-19)
+
+사용자가 이미 `AGENTS.md`/`CLAUDE.md`를 갖고 있으므로 새 파일을 강요하지 않고 그대로 읽는다.
+**이 결정으로 02의 `PLEUM.md`와 03 원칙 4의 `pleumcode.md`(둘 사이 이름도 불일치였음)는 만들지 않는다** —
+pleumcode 전용 규칙이 실제로 필요해질 때까지 YAGNI.
+
+- v1.51.0 기본값은 `[".goosehints", "AGENTS.md"]`였고 `CLAUDE.md`는 읽지 않았다.
+- pleumcode 기본값: `["AGENTS.md", "CLAUDE.md", ".goosehints"]`(`hints/load_hints.rs`).
+  `CONTEXT_FILE_NAMES`로 덮어쓰면 그 값을 그대로 따른다.
+- **`CLAUDE.md`는 같은 디렉토리에 `AGENTS.md`가 없을 때만 읽는다.** 실제 저장소의 `CLAUDE.md`는 대개
+  `@AGENTS.md` 한 줄 포인터나 심볼릭 링크라서, 둘 다 읽으면 같은 내용이 프롬프트에 두 번 들어간다(토큰=KRW).
+  fallback은 디렉토리 단위라 루트는 AGENTS.md, 하위는 CLAUDE.md만 있는 모노레포도 정상 동작한다.
+- 의도적으로 하지 않은 것: 사용자 홈의 `~/.claude/CLAUDE.md`를 글로벌 힌트로 읽는 것(다른 도구의 개인 설정을
+  몰래 가져오는 셈). 필요하면 사용자가 `~/.agents/AGENTS.md`에 두면 된다.
+- 레포 안의 이 파일들은 신뢰 경계 밖 데이터다(03 안전성 권고). 로딩 대상이 넓어진 게 아니라 이미 로드하던
+  `AGENTS.md`와 같은 종류라 표면은 그대로지만, 프롬프트 인젝션 태깅은 v0.2에서 별도로 점검한다.

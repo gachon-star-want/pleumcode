@@ -47,4 +47,4 @@ PleumRouter를 쓰는 사람들이 "우리 것"으로 코딩 에이전트를 한
 - [x] 라이선스/조직 재확인 — 정본은 `aaif-goose/goose`, `v1.51.0`에 고정, fork 병합 완료(브랜치 `feat/v0.1-bringup`, 미푸시)
 - [x] provider json 배선 — core 무수정으로 로드·게이트웨이 도달 확인 (진짜 키로 200 확인은 남음)
 - [~] OS 커널 샌드박스 — macOS 첫 컷 완료(셸+write/edit). Linux/Windows·hooks·MCP spawn은 미완, 그 OS에선 fail-closed
-- [ ] 채택순서 1~6 (PLEUM.md, 권한 정책 파일, shadow-git, 린트 게이트, staged-diff, 세션 재개)
+- [~] 채택순서 1~6 — 1번(메모리 파일)은 **AGENTS.md 최우선 + CLAUDE.md fallback**으로 완료(`PLEUM.md`는 만들지 않음). 남은 것: 권한 정책 파일, shadow-git, 린트 게이트, staged-diff, 세션 재개
