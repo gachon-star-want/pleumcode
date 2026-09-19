@@ -2,7 +2,7 @@
 //!
 //! With default features this crate re-exports the shared GDK wire types from
 //! `pleum-sdk-types` so you can build an Agent Client Protocol (ACP) client
-//! that talks to `pleum acp` over stdio.
+//! that talks to `pleumcode acp` over stdio.
 //!
 //! With `--features uniffi` the crate additionally compiles as a
 //! `cdylib`/`staticlib` and exposes an in-process API to Python and Kotlin via

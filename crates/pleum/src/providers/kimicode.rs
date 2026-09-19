@@ -386,7 +386,7 @@ impl pleum_providers::base::ProviderDescriptor for KimiCodeProvider {
             )],
         )
         .with_setup_steps(vec![
-            "Run `pleum configure` and select 'Kimi Code'",
+            "Run `pleumcode configure` and select 'Kimi Code'",
             "A browser window will open — log in to kimi.com and enter the displayed code",
             "Once authorized, Pleum will save your token automatically",
         ])

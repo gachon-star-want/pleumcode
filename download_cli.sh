@@ -21,7 +21,7 @@ set -eu
 #   PLEUM_LINUX_VARIANT - Optional: Linux package variant to install (`standard`, `vulkan`, or `musl`)
 #   PLEUM_WINDOWS_VARIANT - Optional: Windows package variant to install (`standard` or `cuda`)
 #   CANARY         - Optional: if set to "true", downloads from canary release instead of stable
-#   CONFIGURE      - Optional: if set to "false", disables running pleum configure interactively
+#   CONFIGURE      - Optional: if set to "false", disables running pleumcode configure interactively
 #   ** other provider specific environment variables (eg. DATABRICKS_HOST)
 ##############################################################################
 
@@ -205,7 +205,7 @@ elif [ "$OS" = "windows" ]; then
     FILE="pleum-$ARCH-pc-windows-msvc-cuda.zip"
   fi
   EXTRACT_CMD="unzip"
-  OUT_FILE="pleum.exe"
+  OUT_FILE="pleumcode.exe"
 else
   case "$PLEUM_LINUX_VARIANT" in
     standard|vulkan|musl) ;;
@@ -308,7 +308,7 @@ fi
 
 # Make binary executable
 if [ "$OS" = "windows" ]; then
-  chmod +x "$EXTRACT_DIR/pleum.exe"
+  chmod +x "$EXTRACT_DIR/pleumcode.exe"
 else
   chmod +x "$EXTRACT_DIR/pleum"
 fi
@@ -321,7 +321,7 @@ fi
 
 echo "Moving pleum to $PLEUM_BIN_DIR/$OUT_FILE"
 if [ "$OS" = "windows" ]; then
-  mv "$EXTRACT_DIR/pleum.exe" "$PLEUM_BIN_DIR/$OUT_FILE"
+  mv "$EXTRACT_DIR/pleumcode.exe" "$PLEUM_BIN_DIR/$OUT_FILE"
 else
   # On Linux, if the target binary is currently running, writing to it fails
   # with ETXTBSY ("Text file busy"). Rename the old binary out of the way
@@ -362,11 +362,11 @@ if [ "$CONFIGURE" = true ]; then
     "$PLEUM_BIN_DIR/$OUT_FILE" configure < /dev/tty
   else
     echo "Non-interactive shell detected (e.g. 'curl ... | bash')."
-    echo "Skipping 'pleum configure' — please run it manually after installation:"
+    echo "Skipping 'pleumcode configure' — please run it manually after installation:"
     echo "    $PLEUM_BIN_DIR/$OUT_FILE configure"
   fi
 else
-  echo "Skipping 'pleum configure', you may need to run this manually later"
+  echo "Skipping 'pleumcode configure', you may need to run this manually later"
 fi
 
 
@@ -387,7 +387,7 @@ if [[ ":$PATH:" != *":$PLEUM_BIN_DIR:"* ]]; then
     echo '. $PROFILE'
     echo ""
     echo "Alternatively, you can run:"
-    echo "    pleum configure"
+    echo "    pleumcode configure"
     echo "or rerun this install script after updating your PATH."
   else
     SHELL_NAME=$(basename "$SHELL")

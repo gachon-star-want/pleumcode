@@ -16,8 +16,8 @@ use pleum::config::paths::Paths;
 use pleum::config::permission::PermissionLevel;
 use pleum::config::signup_tetrate::TetrateAuth;
 use pleum::config::{
-    configure_tetrate, Config, ConfigError, ExperimentManager, ExtensionEntry, PleumMode,
-    PermissionManager,
+    configure_tetrate, Config, ConfigError, ExperimentManager, ExtensionEntry, PermissionManager,
+    PleumMode,
 };
 #[cfg(feature = "telemetry")]
 use pleum::posthog::{get_telemetry_choice, TELEMETRY_ENABLED_KEY};
@@ -145,8 +145,8 @@ impl Drop for CursorRestoreGuard {
 pub async fn handle_configure() -> anyhow::Result<()> {
     if !std::io::stdin().is_terminal() {
         anyhow::bail!(
-            "pleum configure requires an interactive terminal.\n\
-             If you installed via 'curl ... | bash', run 'pleum configure' separately after installation."
+            "pleumcode configure requires an interactive terminal.\n\
+             If you installed via 'curl ... | bash', run 'pleumcode configure' separately after installation."
         );
     }
 
@@ -203,7 +203,8 @@ pub fn configure_telemetry_consent_dialog() -> anyhow::Result<bool> {
     );
     println!(
         "{}",
-        style("or any personal data. You can change this anytime with 'pleum configure'.").dim()
+        style("or any personal data. You can change this anytime with 'pleumcode configure'.")
+            .dim()
     );
     println!();
 
@@ -288,7 +289,7 @@ async fn handle_manual_provider_setup(config: &Config) {
             println!(
                 "\n  {}: Run '{}' again to adjust your config or add extensions",
                 style("Tip").green().italic(),
-                style("pleum configure").cyan()
+                style("pleumcode configure").cyan()
             );
             set_extension(ExtensionEntry {
                 enabled: true,
@@ -300,7 +301,7 @@ async fn handle_manual_provider_setup(config: &Config) {
             println!(
                 "\n  {}: We did not save your config, inspect your credentials\n   and run '{}' again to ensure pleum can connect",
                 style("Warning").yellow().italic(),
-                style("pleum configure").cyan()
+                style("pleumcode configure").cyan()
             );
         }
         Err(e) => {
@@ -317,7 +318,7 @@ fn print_manual_config_error(e: &anyhow::Error) {
                 "\n  {} Required configuration key '{}' not found \n  Please provide this value and run '{}' again",
                 style("Error").red().italic(),
                 key,
-                style("pleum configure").cyan()
+                style("pleumcode configure").cyan()
             );
         }
         Some(ConfigError::KeyringError(msg)) => {
@@ -328,7 +329,7 @@ fn print_manual_config_error(e: &anyhow::Error) {
                 "\n  {} Invalid configuration value: {} \n  Please check your input and run '{}' again",
                 style("Error").red().italic(),
                 msg,
-                style("pleum configure").cyan()
+                style("pleumcode configure").cyan()
             );
         }
         Some(ConfigError::FileError(err)) => {
@@ -336,7 +337,7 @@ fn print_manual_config_error(e: &anyhow::Error) {
                 "\n  {} Failed to access config file: {} \n  Please check file permissions and run '{}' again",
                 style("Error").red().italic(),
                 err,
-                style("pleum configure").cyan()
+                style("pleumcode configure").cyan()
             );
         }
         Some(ConfigError::DirectoryError(msg)) => {
@@ -344,7 +345,7 @@ fn print_manual_config_error(e: &anyhow::Error) {
                 "\n  {} Failed to access config directory: {} \n  Please check directory permissions and run '{}' again",
                 style("Error").red().italic(),
                 msg,
-                style("pleum configure").cyan()
+                style("pleumcode configure").cyan()
             );
         }
         _ => {
@@ -352,7 +353,7 @@ fn print_manual_config_error(e: &anyhow::Error) {
                 "\n  {} {} \n  We did not save your config, inspect your credentials\n   and run '{}' again to ensure pleum can connect",
                 style("Error").red().italic(),
                 e,
-                style("pleum configure").cyan()
+                style("pleumcode configure").cyan()
             );
         }
     }
@@ -364,7 +365,7 @@ fn print_keyring_error(msg: &str) {
         "\n  {} Failed to access secure storage (keyring): {} \n  Please check your system keychain and run '{}' again. \n  If your system is unable to use the keyring, please try setting secret key(s) via environment variables.",
         style("Error").red().italic(),
         msg,
-        style("pleum configure").cyan()
+        style("pleumcode configure").cyan()
     );
 }
 
@@ -374,7 +375,7 @@ fn print_keyring_error(msg: &str) {
         "\n  {} Failed to access Windows Credential Manager: {} \n  Please check Windows Credential Manager and run '{}' again. \n  If your system is unable to use the Credential Manager, please try setting secret key(s) via environment variables.",
         style("Error").red().italic(),
         msg,
-        style("pleum configure").cyan()
+        style("pleumcode configure").cyan()
     );
 }
 
@@ -384,7 +385,7 @@ fn print_keyring_error(msg: &str) {
         "\n  {} Failed to access secure storage: {} \n  Please check your system's secure storage and run '{}' again. \n  If your system is unable to use secure storage, please try setting secret key(s) via environment variables.",
         style("Error").red().italic(),
         msg,
-        style("pleum configure").cyan()
+        style("pleumcode configure").cyan()
     );
 }
 
@@ -425,7 +426,7 @@ async fn handle_existing_config() -> anyhow::Result<()> {
         .item(
             "settings",
             "pleum settings",
-            "Set the pleum mode, Tool Output, Tool Permissions, Experiment, pleum recipe github repo and more",
+            "Set the pleum mode, Tool Output, Tool Permissions, Experiment, pleumcode recipe github repo and more",
         )
         .interact()?;
 
@@ -1467,7 +1468,7 @@ pub async fn configure_settings_dialog() -> anyhow::Result<()> {
         )
         .item(
             "recipe",
-            "pleum recipe github repo",
+            "pleumcode recipe github repo",
             "pleum will pull recipes from this repo if not found locally.",
         )
         .interact()?;
@@ -1902,7 +1903,7 @@ fn configure_recipe_dialog() -> anyhow::Result<()> {
         .ok()
         .or_else(|| config.get_param(key_name).unwrap_or(None));
     let mut recipe_repo_input = cliclack::input(
-        "Enter your pleum recipe GitHub repo (owner/repo): eg: my_org/pleum-recipes",
+        "Enter your pleumcode recipe GitHub repo (owner/repo): eg: my_org/pleum-recipes",
     )
     .required(false);
     if let Some(recipe_repo) = default_recipe_repo {

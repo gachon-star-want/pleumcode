@@ -134,19 +134,19 @@ cargo build
 When that completes, debug builds of the binaries are available, including the pleum CLI:
 
 ```
-./target/debug/pleum --help
+./target/debug/pleumcode --help
 ```
 
 For first-time setup, run the configure command:
 
 ```
-./target/debug/pleum configure
+./target/debug/pleumcode configure
 ```
 
 Once a connection to an LLM provider is working, start a session:
 
 ```
-./target/debug/pleum session
+./target/debug/pleumcode session
 ```
 
 These same commands can be recompiled and immediately run using `cargo run -p pleum-cli` for iteration.
@@ -189,7 +189,7 @@ To debug the external ACP backend, run it from an IDE. The configuration will de
 
 ```
 export PLEUM_SERVER__SECRET_KEY=test
-cargo run --package pleum-cli --bin pleum -- serve --platform desktop --enable-scheduler --host 127.0.0.1 --port 3000
+cargo run --package pleum-cli --bin pleumcode -- serve --platform desktop --enable-scheduler --host 127.0.0.1 --port 3000
 ```
 
 The `debug-ui` recipe connects to `http://127.0.0.1:3000` by default. If the
@@ -318,7 +318,7 @@ When testing changes or running multiple pleum configurations, use `PLEUM_PATH_R
 ```bash
 # Test with a clean environment
 export PLEUM_PATH_ROOT="/tmp/pleum-test"
-./target/debug/pleum session
+./target/debug/pleumcode session
 
 # Or for a single command
 PLEUM_PATH_ROOT="/tmp/pleum-dev" cargo run -p pleum-cli -- session

@@ -66,7 +66,7 @@ fn asset_name() -> &'static str {
 fn binary_name() -> &'static str {
     #[cfg(target_os = "windows")]
     {
-        "pleum.exe"
+        "pleumcode.exe"
     }
     #[cfg(not(target_os = "windows"))]
     {
@@ -322,7 +322,9 @@ pub async fn update(canary: bool, reconfigure: bool) -> Result<()> {
     {
         let tag = if canary { "canary" } else { "stable" };
         let asset = asset_name();
-        let url = format!("https://github.com/gachon-star-want/pleumcode/releases/download/{tag}/{asset}");
+        let url = format!(
+            "https://github.com/gachon-star-want/pleumcode/releases/download/{tag}/{asset}"
+        );
 
         println!("Downloading {asset} from {tag} release...");
 
@@ -378,13 +380,13 @@ pub async fn update(canary: bool, reconfigure: bool) -> Result<()> {
 
         // --- Reconfigure if requested -------------------------------------------
         if reconfigure {
-            println!("Running pleum configure...");
+            println!("Running pleumcode configure...");
             let status = Command::new(current_exe)
                 .arg("configure")
                 .status()
-                .context("Failed to run pleum configure")?;
+                .context("Failed to run pleumcode configure")?;
             if !status.success() {
-                eprintln!("Warning: pleum configure exited with {status}");
+                eprintln!("Warning: pleumcode configure exited with {status}");
             }
         }
 
@@ -665,7 +667,7 @@ mod tests {
     fn test_binary_name() {
         let name = binary_name();
         #[cfg(target_os = "windows")]
-        assert_eq!(name, "pleum.exe");
+        assert_eq!(name, "pleumcode.exe");
         #[cfg(not(target_os = "windows"))]
         assert_eq!(name, "pleum");
     }
@@ -729,7 +731,7 @@ mod tests {
     #[test]
     fn test_replace_binary_windows_rename_away() {
         let tmp = tempdir().unwrap();
-        let current = tmp.path().join("pleum.exe");
+        let current = tmp.path().join("pleumcode.exe");
         let new_bin = tmp.path().join("new_pleum.exe");
 
         fs::write(&current, b"old version").unwrap();
@@ -752,7 +754,7 @@ mod tests {
     #[test]
     fn test_replace_binary_windows_cleanup_old() {
         let tmp = tempdir().unwrap();
-        let current = tmp.path().join("pleum.exe");
+        let current = tmp.path().join("pleumcode.exe");
         let old = current.with_extension("exe.old");
         let new_bin = tmp.path().join("new_pleum.exe");
 
@@ -789,7 +791,7 @@ mod tests {
 
             writer.add_directory("pleum-package/", options).unwrap();
             writer
-                .start_file("pleum-package/pleum.exe", options)
+                .start_file("pleum-package/pleumcode.exe", options)
                 .unwrap();
             writer.write_all(b"fake pleum binary").unwrap();
             writer
@@ -801,7 +803,7 @@ mod tests {
 
         extract_zip(&buf, tmp.path()).unwrap();
 
-        let binary = find_binary(tmp.path(), "pleum.exe");
+        let binary = find_binary(tmp.path(), "pleumcode.exe");
         assert!(binary.is_some());
 
         let content = fs::read_to_string(binary.unwrap()).unwrap();

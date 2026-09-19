@@ -7,17 +7,32 @@ Deterministic and idempotent. Run it on a fresh upstream snapshot after each ups
 release (see docs/04-fork-plan.md) instead of hand-editing what it produces, so upstream
 merges only ever conflict on real changes.
 
+Also deletes what v1 (terminal CLI only) does not ship: the Electron app, the docs site and the
+workflows that only serve them (see DELETE). Applies stage-2 rules that turn the *command* `pleum`
+into the binary name `pleumcode` (the npm launcher already owns `pleum`).
+
 Deliberately NOT rewritten: `docs/` and `pleum/` (ours), LICENSE/NOTICE (Apache-2.0
 attribution must stay), README.md (ours), and the crates.io crate `v8-goose` (a real
 external dependency; renaming it breaks the build).
 """
 import os
 import re
+import shutil
 import sys
 
 ROOT = os.path.abspath(sys.argv[1] if len(sys.argv) > 1 else ".")
 SKIP_TOP = {".git", "docs", "pleum", "LICENSE", "NOTICE", "README.md"}
 SKIP_ANY = {".git", "target", "node_modules", ".claude", ".DS_Store"}
+DELETE = [
+    "ui",
+    "documentation",
+    ".github/workflows/bundle-macos.yml",
+    ".github/workflows/bundle-windows.yml",
+    ".github/workflows/deploy-docs-and-extensions.yml",
+    ".github/workflows/docs-update-cli-ref.yml",
+    ".github/workflows/docs-update-gdk-api.yml",
+    ".github/workflows/pr-website-preview.yml",
+]
 
 # Order matters: explicit mappings first, so a blind goose->pleum never invents an
 # org/repo/domain we don't own (a squattable `aaif-pleum/pleum` would be a supply-chain hole).
@@ -32,8 +47,26 @@ RULES = [
 ]
 
 
+# Stage 2: the executable's name. Runs after the rename above, so on a fresh upstream snapshot
+# `goose run` -> `pleum run` -> `pleumcode run`, and on an already-rebranded tree it converges to
+# the same text. Only command-shaped uses are touched, never crate/module/dir names (`pleum-cli`).
+BIN = "pleumcode"
+CMDS = "configure|info|doctor|mcp|acp|serve|session|run|recipe|skills|plugin|schedule|gateway|term|completion|review|help"
+BIN_RULES = [
+    (re.compile(rf"(?<![\w./@-])pleum(?= (?:{CMDS})\b)"), BIN),
+    (re.compile(r"(?<![\w-])pleum(?=\.exe)"), BIN),
+    (re.compile(r"--bin pleum(?![\w-])"), f"--bin {BIN}"),
+    (re.compile(r"((?:release|debug|bin)/)pleum(?![\w-])"), rf"\1{BIN}"),
+    (re.compile(r'(\[\[bin\]\]\nname = )"pleum"'), rf'\1"{BIN}"'),
+    (re.compile(r'(#\[command\(name = )"pleum"'), rf'\1"{BIN}"'),
+    (re.compile(r'(current_name != )"pleum"'), rf'\1"{BIN}"'),
+    (re.compile(r'push\("pleum"\.to_string\(\)\)'), f'push("{BIN}".to_string())'),
+    (re.compile("\U0001FABF ?"), ""),  # goose emoji
+]
+
+
 def rebrand(s):
-    for pat, rep in RULES:
+    for pat, rep in RULES + BIN_RULES:
         s = pat.sub(rep, s)
     return s
 
@@ -50,6 +83,12 @@ def files():
 
 def main():
     changed = renamed = 0
+    for rel in DELETE:
+        path = os.path.join(ROOT, rel)
+        if os.path.isdir(path):
+            shutil.rmtree(path)
+        elif os.path.exists(path):
+            os.remove(path)
     moves = []
     for path in list(files()):
         if os.path.islink(path):

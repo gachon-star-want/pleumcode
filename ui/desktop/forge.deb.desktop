@@ -1,8 +1,0 @@
-[Desktop Entry]
-Name=Pleum
-Exec=/usr/lib/pleum/Pleum %U
-Icon=/usr/share/pixmaps/pleum.png
-Terminal=false
-Type=Application
-Categories=Development;
-MimeType=x-scheme-handler/pleum;

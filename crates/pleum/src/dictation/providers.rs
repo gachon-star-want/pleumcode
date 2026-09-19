@@ -572,7 +572,7 @@ fn resolve_model_native_config(
     // OpenAI resolution mirrors openai_def.rs::resolve_base_url():
     //   1. OPENAI_HOST env var (session override, deprecated but honoured)
     //   2. OPENAI_BASE_URL (env or config) - ecosystem-standard
-    //   3. OPENAI_HOST from config - persisted by pleum configure
+    //   3. OPENAI_HOST from config - persisted by pleumcode configure
     //   4. Default https://api.openai.com
     match provider_name {
         "openai" => {

@@ -43,7 +43,7 @@ jobs:
         with:
           name: mcp-conformance-binaries
           path: |
-            target/debug/pleum
+            target/debug/pleumcode
             target/debug/mcp_conformance_driver
           retention-days: 1
           if-no-files-found: error
@@ -81,7 +81,7 @@ jobs:
           path: target/debug
 
       - name: Restore Executable Permissions
-        run: chmod +x target/debug/pleum target/debug/mcp_conformance_driver
+        run: chmod +x target/debug/pleumcode target/debug/mcp_conformance_driver
 
       - name: Run Conformance Suite
         env:

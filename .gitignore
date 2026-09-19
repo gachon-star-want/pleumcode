@@ -62,7 +62,7 @@ do_not_version/
 /ui/desktop/src/bin/temporal.db
 /temporal.db
 /ui/desktop/src/bin/pleum-scheduler-executor
-/ui/desktop/src/bin/pleum
+/ui/desktop/src/bin/pleumcode
 /.env
 
 /working_dir

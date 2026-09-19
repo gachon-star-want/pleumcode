@@ -141,11 +141,11 @@ jobs:
           fi
 
           if [ "${{ matrix.variant }}" = "musl" ]; then
-            cargo build --release --target ${TARGET} -p pleum-cli --bin pleum \
+            cargo build --release --target ${TARGET} -p pleum-cli --bin pleumcode \
               --no-default-features \
               --features portable-default
           else
-            cargo build --release --target ${TARGET} -p pleum-cli --bin pleum "${FEATURE_ARGS[@]}"
+            cargo build --release --target ${TARGET} -p pleum-cli --bin pleumcode "${FEATURE_ARGS[@]}"
           fi
 
       - name: Build CLI (manylinux container)
@@ -167,7 +167,7 @@ jobs:
           rustup toolchain install "$RUST_CHANNEL" --profile minimal \
             --component rustc,cargo --target "$TARGET"
           rustup show
-          cargo build --release --target "$TARGET" -p pleum-cli --bin pleum
+          cargo build --release --target "$TARGET" -p pleum-cli --bin pleumcode
 
       - name: Package CLI
         run: |
@@ -185,7 +185,7 @@ jobs:
           mkdir -p "target/${TARGET}/release/pleum-package"
 
           # Copy the pleum binary
-          cp "target/${TARGET}/release/pleum" "target/${TARGET}/release/pleum-package/"
+          cp "target/${TARGET}/release/pleumcode" "target/${TARGET}/release/pleum-package/"
 
           cd "target/${TARGET}/release"
           tar -cjf "pleum-${TARGET}${VARIANT_SUFFIX}.tar.bz2" -C pleum-package .
@@ -208,7 +208,7 @@ jobs:
           VARIANT_SUFFIX: ${{ matrix.variant == 'vulkan' && '-vulkan' || '' }}
         run: |
           mkdir -p artifacts
-          cp "target/${TARGET}/release/pleum" "artifacts/internal-pleum-${TARGET}${VARIANT_SUFFIX}"
+          cp "target/${TARGET}/release/pleumcode" "artifacts/internal-pleum-${TARGET}${VARIANT_SUFFIX}"
 
       - name: Upload internal Pleum binary
         if: ${{ inputs.package_desktop && matrix.target-suffix == 'unknown-linux-gnu' }}
@@ -343,10 +343,10 @@ jobs:
           INTERNAL_BINARY: internal-pleum-${{ matrix.target }}${{ matrix.variant_suffix }}
         run: |
           mkdir -p ui/desktop/src/bin
-          rm -f ui/desktop/src/bin/pleum
-          mv "backend/${INTERNAL_BINARY}" ui/desktop/src/bin/pleum
-          chmod +x ui/desktop/src/bin/pleum
-          file ui/desktop/src/bin/pleum
+          rm -f ui/desktop/src/bin/pleumcode
+          mv "backend/${INTERNAL_BINARY}" ui/desktop/src/bin/pleumcode
+          chmod +x ui/desktop/src/bin/pleumcode
+          file ui/desktop/src/bin/pleumcode
 
       - name: Cache pnpm dependencies
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0

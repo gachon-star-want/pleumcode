@@ -360,7 +360,7 @@ async fn poll_device_code_token(device: &DeviceCodeResponse) -> Result<TokenResp
             }
             Some("expired_token") => {
                 return Err(anyhow!(
-                    "xAI device code expired - please re-run pleum configure"
+                    "xAI device code expired - please re-run pleumcode configure"
                 ));
             }
             other => {

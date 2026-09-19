@@ -14,7 +14,7 @@ fi
 
 if [ -z "$SKIP_BUILD" ]; then
   echo "Building pleum..."
-  cargo build --bin pleum
+  cargo build --bin pleumcode
   echo ""
 else
   echo "Skipping build (SKIP_BUILD is set)..."
@@ -22,7 +22,7 @@ else
 fi
 
 SCRIPT_DIR=$(pwd)
-PLEUM_BIN="$SCRIPT_DIR/target/debug/pleum"
+PLEUM_BIN="$SCRIPT_DIR/target/debug/pleumcode"
 
 # Apply provider/model overrides if set
 if [ -n "$COMPACTION_PROVIDER" ]; then

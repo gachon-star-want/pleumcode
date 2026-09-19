@@ -1,4 +1,4 @@
-//! Deterministic, Rust-driven orchestration for `pleum review`.
+//! Deterministic, Rust-driven orchestration for `pleumcode review`.
 //!
 //! The default in-process review path lets the LLM decide whether to
 //! dispatch each check as a real subagent (`delegate(... async: true)`)
@@ -10,7 +10,7 @@
 //! This module sidesteps that variance by orchestrating checks
 //! deterministically from Rust:
 //!
-//! - One subprocess per check (`pleum run -q -t <prompt>`)
+//! - One subprocess per check (`pleumcode run -q -t <prompt>`)
 //! - Concurrency capped at [`MAX_WORKERS`] via a Tokio semaphore
 //! - Per-subprocess turn limit via `--max-turns` (see
 //!   [`resolve_main_turn_limit`] and [`Check::resolved_turn_limit`])
@@ -77,7 +77,7 @@ struct RawFinding {
     summary: Option<String>,
 }
 
-/// Run all discovered checks concurrently as `pleum run` subprocesses.
+/// Run all discovered checks concurrently as `pleumcode run` subprocesses.
 ///
 /// Returns one `Vec<Finding>` per check, in the same order as `checks`.
 /// A failed check (subprocess error, turn-limit exhaustion, malformed JSON) yields an
@@ -125,7 +125,7 @@ pub async fn run_checks_in_parallel(
         let (idx, check, result, quiet) = match joined {
             Ok(v) => v,
             Err(e) => {
-                eprintln!("pleum review: check task panicked: {e}");
+                eprintln!("pleumcode review: check task panicked: {e}");
                 continue;
             }
         };
@@ -134,7 +134,7 @@ pub async fn run_checks_in_parallel(
             Ok(findings) => {
                 if !quiet {
                     eprintln!(
-                        "pleum review: check '{}' completed: {} finding(s)",
+                        "pleumcode review: check '{}' completed: {} finding(s)",
                         check.name,
                         findings.len()
                     );
@@ -144,7 +144,7 @@ pub async fn run_checks_in_parallel(
             Err(e) => {
                 // Per-check failure must never abort the review — emit a
                 // warning and continue with empty findings for this check.
-                eprintln!("pleum review: check '{}' failed: {e}", check.name);
+                eprintln!("pleumcode review: check '{}' failed: {e}", check.name);
                 results[idx] = Vec::new();
             }
         }
@@ -181,13 +181,13 @@ fn resolve_check_model(check: &Check, opts: &ReviewOptions) -> Option<String> {
 
 /// Resolve the turn limit for a main-pass subprocess.
 ///
-/// Uses `pleum review --turn-limit` when set, otherwise
+/// Uses `pleumcode review --turn-limit` when set, otherwise
 /// [`DEFAULT_CHECK_TURN_LIMIT`].
 fn resolve_main_turn_limit(default_turn_limit: Option<usize>) -> usize {
     default_turn_limit.unwrap_or(DEFAULT_CHECK_TURN_LIMIT)
 }
 
-/// Spawn a single `pleum run` subprocess for one check and parse its
+/// Spawn a single `pleumcode run` subprocess for one check and parse its
 /// output into [`Finding`]s.
 async fn run_single_check_subprocess(
     check: &Check,
@@ -221,7 +221,7 @@ async fn run_single_check_subprocess(
         .collect())
 }
 
-/// Generic `pleum run` subprocess that hands a prompt to the model
+/// Generic `pleumcode run` subprocess that hands a prompt to the model
 /// and parses `{"findings": [...]}` JSON out of the response. Shared
 /// by the per-check and per-file main-pass orchestrators so both get
 /// the same robust JSON extraction and error reporting.
@@ -267,7 +267,7 @@ async fn run_subprocess_for_findings(
             .write_all(prompt.as_bytes())
             .await
             .with_context(|| format!("write prompt to {label} stdin"))?;
-        // Closing stdin signals EOF to `pleum run -i -`.
+        // Closing stdin signals EOF to `pleumcode run -i -`.
         drop(stdin);
     }
 
@@ -355,7 +355,7 @@ pub async fn run_main_pass_in_parallel(
         let (idx, path, result, quiet) = match joined {
             Ok(v) => v,
             Err(e) => {
-                eprintln!("pleum review: main-pass task panicked: {e}");
+                eprintln!("pleumcode review: main-pass task panicked: {e}");
                 continue;
             }
         };
@@ -374,7 +374,7 @@ pub async fn run_main_pass_in_parallel(
                     .collect();
                 if !quiet {
                     eprintln!(
-                        "pleum review: main pass on '{}' completed: {} finding(s)",
+                        "pleumcode review: main pass on '{}' completed: {} finding(s)",
                         path,
                         findings.len()
                     );
@@ -384,7 +384,7 @@ pub async fn run_main_pass_in_parallel(
             Err(e) => {
                 // A single broken file must not abort the entire main
                 // pass; surface a warning and continue.
-                eprintln!("pleum review: main pass on '{}' failed: {e}", path);
+                eprintln!("pleumcode review: main pass on '{}' failed: {e}", path);
                 per_file_results[idx] = Vec::new();
             }
         }
@@ -629,7 +629,7 @@ fn build_main_pass_prompt(
 ///
 /// Shape matches the prompt format Amp-authored checks already expect,
 /// so a check written for `amp review` runs the same way under
-/// `pleum review`.
+/// `pleumcode review`.
 fn build_check_prompt(
     check: &Check,
     diff: &str,

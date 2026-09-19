@@ -60,7 +60,7 @@ pub async fn from_env(
     //   1. OPENAI_HOST env var — session override (deprecated but still
     //      honoured so that `OPENAI_HOST=… pleum` keeps working)
     //   2. OPENAI_BASE_URL (env or config) — ecosystem-standard
-    //   3. OPENAI_HOST from config file — persisted by `pleum configure`
+    //   3. OPENAI_HOST from config file — persisted by `pleumcode configure`
     //   4. Default "https://api.openai.com"
     //
     // OPENAI_BASE_URL is parsed into host + query params + a flag
@@ -179,7 +179,7 @@ pub fn resolve_api_key(
                 ConfigError::NotFound(_) => {
                     if config.requires_auth {
                         anyhow::bail!(
-                            "Required API key {} is not set. Configure it via `pleum configure` or set the {} environment variable.",
+                            "Required API key {} is not set. Configure it via `pleumcode configure` or set the {} environment variable.",
                             config.api_key_env,
                             config.api_key_env
                         );
@@ -261,7 +261,7 @@ fn parse_base_url(raw_url: &str) -> Result<ParsedBaseUrl> {
 /// Priority (highest first):
 ///   1. OPENAI_HOST env var — session override (deprecated but still honoured)
 ///   2. OPENAI_BASE_URL (env or config) — ecosystem-standard
-///   3. OPENAI_HOST from config file — persisted by `pleum configure`
+///   3. OPENAI_HOST from config file — persisted by `pleumcode configure`
 ///   4. Default "https://api.openai.com"
 fn resolve_base_url(config: &crate::config::Config) -> Result<ParsedBaseUrl> {
     if let Ok(h) = std::env::var("OPENAI_HOST") {

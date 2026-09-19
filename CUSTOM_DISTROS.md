@@ -26,7 +26,7 @@ pleum's architecture is designed for extensibility. Organizations can create "re
           │                │                      │
           ▼                ▼                      ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                    pleum serve (ACP)                            │
+│                    pleumcode serve (ACP)                            │
 │         ACP HTTP/WebSocket server for custom clients            │
 └─────────────────────────────────────────────────────────────────┘
           │
@@ -49,7 +49,7 @@ pleum's architecture is designed for extensibility. Organizations can create "re
 | Bundle custom MCP extensions | `config.yaml` extensions section, `ui/desktop/src/built-in-extensions.json`, `ui/desktop/src/components/settings/extensions/bundled-extensions.json` | Medium |
 | Modify system prompts | `crates/pleum/src/prompts/` | Low |
 | Customize desktop branding | `ui/desktop/` (icons, names, colors) | Medium |
-| Build a new UI (web, mobile) | Integrate with `pleum serve` over ACP | High |
+| Build a new UI (web, mobile) | Integrate with `pleumcode serve` over ACP | High |
 | Create guided workflows | Recipes (YAML-based task definitions) | Low |
 | Build complex multi-step workflows | Recipes with sub-recipes and subagents | Medium |
 
@@ -156,7 +156,7 @@ PLEUM_MODEL: claude-sonnet-4-20250514
 ```bash
 # Secrets are stored in system keyring or ~/.config/pleum/secrets.yaml
 # if PLEUM_DISABLE_KEYRING=1
-pleum configure set-secret ANTHROPIC_API_KEY "your-corporate-key"
+pleumcode configure set-secret ANTHROPIC_API_KEY "your-corporate-key"
 ```
 
 3. **Lock down provider changes** (optional) by modifying the settings UI or using a recipe that enforces the provider.
@@ -306,13 +306,13 @@ export PLEUM_BUNDLE_NAME="InsightStream-pleum"
 
 pleum provides two ACP transport options for building custom clients:
 
-### Option 1: ACP HTTP/WebSocket (`pleum serve`)
+### Option 1: ACP HTTP/WebSocket (`pleumcode serve`)
 
-Use `pleum serve` for process-separated integrations such as web apps, desktop shells, and other clients:
+Use `pleumcode serve` for process-separated integrations such as web apps, desktop shells, and other clients:
 
 ```bash
 # Start the server
-PLEUM_SERVER__SECRET_KEY='a-long-random-secret' pleum serve
+PLEUM_SERVER__SECRET_KEY='a-long-random-secret' pleumcode serve
 
 # ACP endpoint available at http://localhost:3284/acp
 ```
@@ -341,7 +341,7 @@ ACP provides:
 
 ```bash
 # Run pleum as an ACP server on stdio
-pleum acp --with-builtin developer,memory
+pleumcode acp --with-builtin developer,memory
 
 # Or programmatically
 cargo run -p pleum-cli -- acp --with-builtin developer

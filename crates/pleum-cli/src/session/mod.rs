@@ -32,6 +32,7 @@ use pleum::utils::safe_truncate;
 
 use anyhow::Result;
 use completion::PleumCompleter;
+use input::InputResult;
 use pleum::agents::extension::{Envs, ExtensionConfig, PLATFORM_EXTENSIONS};
 use pleum::agents::types::RetryConfig;
 use pleum::agents::{
@@ -39,7 +40,6 @@ use pleum::agents::{
 };
 use pleum::config::extensions::name_to_key;
 use pleum::config::{Config, PleumMode};
-use input::InputResult;
 use rmcp::model::ServerNotification;
 use rmcp::model::{ElicitationAction, PromptMessage};
 use rmcp::model::{ErrorCode, ErrorData};
@@ -759,7 +759,7 @@ impl CliSession {
                     None => {
                         output::render_error(
                             "No editor found. Set one with:\n  \
-                                 pleum configure set pleum_prompt_editor \"vim\"\n  \
+                                 pleumcode configure set pleum_prompt_editor \"vim\"\n  \
                                  or set $VISUAL or $EDITOR in your shell.",
                         );
                     }
@@ -998,7 +998,7 @@ impl CliSession {
             Err(e) => {
                 output::render_error(&format!(
                     "Cannot switch to provider '{}': {}\n\
-                         Set credentials via `pleum configure` or the appropriate environment variable.\n\
+                         Set credentials via `pleumcode configure` or the appropriate environment variable.\n\
                          Session continues with current provider '{}'.",
                     target_provider_name, e, current_provider_name
                 ));

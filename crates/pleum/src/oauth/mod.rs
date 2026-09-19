@@ -154,7 +154,7 @@ pub struct StaticOAuthClientConfig {
 }
 
 /// Pre-registered client supplied through the environment, used by tools that
-/// drive the flow without an extension config (`pleum mcp-probe`, conformance
+/// drive the flow without an extension config (`pleumcode mcp-probe`, conformance
 /// driver).
 fn env_static_oauth_client() -> Option<StaticOAuthClientConfig> {
     Some(StaticOAuthClientConfig {

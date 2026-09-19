@@ -1856,7 +1856,7 @@ impl PleumAcpAgent {
             .agent_capabilities(capabilities)
             .auth_methods(vec![AuthMethod::Agent(
                 AuthMethodAgent::new("pleum-provider", "Configure Provider")
-                    .description("Run `pleum configure` to set up your AI provider and API key"),
+                    .description("Run `pleumcode configure` to set up your AI provider and API key"),
             )]))
     }
 

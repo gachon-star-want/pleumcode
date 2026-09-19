@@ -50,7 +50,7 @@ RUN apt-get update && \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy binary from builder
-COPY --from=builder /build/target/release/pleum /usr/local/bin/pleum
+COPY --from=builder /build/target/release/pleumcode /usr/local/bin/pleumcode
 
 # Create non-root user
 RUN useradd -m -u 1000 -s /bin/bash pleum && \
@@ -66,7 +66,7 @@ USER pleum
 WORKDIR /home/pleum
 
 # Default to pleum CLI
-ENTRYPOINT ["/usr/local/bin/pleum"]
+ENTRYPOINT ["/usr/local/bin/pleumcode"]
 CMD ["--help"]
 
 # Labels for metadata

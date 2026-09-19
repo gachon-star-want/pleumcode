@@ -29,7 +29,7 @@ pub struct FullAcpBridge {
     /// Host-controlled working directory for sessions created over roaming.
     /// The connector's machine-local absolute path is meaningless on this
     /// host, so every roaming agent gets this instead — even when the shared
-    /// `AcpServer` (e.g. `pleum serve`) leaves `session_cwd` unset for its
+    /// `AcpServer` (e.g. `pleumcode serve`) leaves `session_cwd` unset for its
     /// local clients.
     session_cwd: std::path::PathBuf,
 }

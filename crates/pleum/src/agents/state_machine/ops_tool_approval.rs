@@ -21,7 +21,7 @@ use crate::tool_inspection::{
 };
 use tokio::sync::Mutex;
 
-pub const TOOL_EXECUTABLE_KEY: &str = "pleum.executable";
+pub const TOOL_EXECUTABLE_KEY: &str = "pleumcode.executable";
 
 pub struct ToolApprovalOperation<'a> {
     pleum_mode: &'a Mutex<PleumMode>,

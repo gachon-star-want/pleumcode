@@ -47,7 +47,7 @@ jobs:
         uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d  # v10.0.1
 
       - name: Build Binary
-        run: cargo build --bin pleum
+        run: cargo build --bin pleumcode
 
       - name: Run OpenRouter Tool Call Sweep
         env:
@@ -55,7 +55,7 @@ jobs:
           HOME: /tmp/pleum-home
           PLEUM_DISABLE_KEYRING: 1
           SKIP_BUILD: 1
-          PLEUM_BIN: ${{ github.workspace }}/target/debug/pleum
+          PLEUM_BIN: ${{ github.workspace }}/target/debug/pleumcode
         run: |
           mkdir -p /tmp/pleum-home
           if [ -n "${{ inputs.models }}" ]; then

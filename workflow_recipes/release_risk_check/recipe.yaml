@@ -27,7 +27,7 @@ instructions: |
   - **Security inspection** (`crates/pleum/src/tool_inspection.rs`) — detects prompt injection and destructive operations. Disabling or weakening = injection attacks succeed.
   - **ACP permission flow** (`crates/pleum/src/acp/server/elicitation.rs`, `crates/pleum/src/acp/provider.rs`) — user approval and permission request handling. If broken, agent executes without user consent.
   - **Session database** (`crates/pleum/src/session/session_manager.rs`) — stores all conversations in SQLite. Schema changes risk data loss.
-  - **ACP authentication** (`crates/pleum/src/acp/transport/auth.rs`, `crates/pleum-cli/src/cli.rs`) — access control for `pleum serve`.
+  - **ACP authentication** (`crates/pleum/src/acp/transport/auth.rs`, `crates/pleum-cli/src/cli.rs`) — access control for `pleumcode serve`.
 
   **HIGH — changes here affect core functionality:**
   - **Agent loop** (`crates/pleum/src/agents/`) — message routing, turn limits, conversation compaction.

@@ -29,7 +29,7 @@ export DATABRICKS_HOST=http://localhost:8888
 export DATABRICKS_REAL_HOST=https://your-workspace.databricks.com
 
 # 3. Run Pleum normally
-pleum session start "tell me a joke"
+pleumcode session start "tell me a joke"
 
 # 4. In the proxy terminal, use interactive commands:
 #    n - No error (pass through) - permanent

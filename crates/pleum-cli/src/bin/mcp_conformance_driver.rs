@@ -100,7 +100,7 @@ fn main() {
     let scenario = std::env::var("MCP_CONFORMANCE_SCENARIO").ok();
     let script = script_for_scenario(scenario.as_deref());
 
-    let pleum = std::env::var("PLEUM_BIN").unwrap_or_else(|_| "target/debug/pleum".to_string());
+    let pleum = std::env::var("PLEUM_BIN").unwrap_or_else(|_| "target/debug/pleumcode".to_string());
     let path_root = tempfile::Builder::new()
         .prefix("pleum-mcp-conformance-")
         .tempdir()

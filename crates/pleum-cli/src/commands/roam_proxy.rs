@@ -6,7 +6,7 @@
 //! can drive it as if it were local.
 //!
 //! The trick is that once the roaming handshake completes, the stream carries
-//! raw ACP JSON-RPC framing — byte-for-byte what `pleum acp` speaks over stdio.
+//! raw ACP JSON-RPC framing — byte-for-byte what `pleumcode acp` speaks over stdio.
 //! So bridging is a pure copy in both directions: nothing runs an agent here and
 //! nothing is deserialized. We just pump bytes local↔remote until both halves
 //! close.

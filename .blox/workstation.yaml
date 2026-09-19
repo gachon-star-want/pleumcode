@@ -2,5 +2,5 @@
 # generated and printed per launch unless PLEUM_SERVER__SECRET_KEY is set.
 run:
   - name: ACP Server
-    command: 'export PLEUM_SERVER__SECRET_KEY="${PLEUM_SERVER__SECRET_KEY:-$(openssl rand -hex 32)}"; echo "ACP secret key: $PLEUM_SERVER__SECRET_KEY"; exec pleum serve --platform desktop --host 0.0.0.0 --port 3284'
+    command: 'export PLEUM_SERVER__SECRET_KEY="${PLEUM_SERVER__SECRET_KEY:-$(openssl rand -hex 32)}"; echo "ACP secret key: $PLEUM_SERVER__SECRET_KEY"; exec pleumcode serve --platform desktop --host 0.0.0.0 --port 3284'
     port: 3284

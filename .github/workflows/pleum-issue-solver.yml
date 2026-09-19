@@ -200,7 +200,7 @@ jobs:
 
           echo "$PLEUM_RECIPE" | envsubst '$ISSUE_NUMBER $ISSUE_TITLE $TRIGGER_COMMENT' > /tmp/recipe.yaml
 
-          pleum run --recipe /tmp/recipe.yaml
+          pleumcode run --recipe /tmp/recipe.yaml
 
           if [ -n "$(git status --porcelain)" ] && [ -f /tmp/issue_summary.txt ]; then
             echo "has_changes=true" >> $GITHUB_OUTPUT

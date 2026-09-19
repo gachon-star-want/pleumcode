@@ -12,7 +12,7 @@ It will generate an analysis report in `/tmp/release_report_final.md` and perfor
 
 ## Run the pleum self-test recipe
 
-pleum run --recipe pleum-self-test.yaml
+pleumcode run --recipe pleum-self-test.yaml
 
 ## Have pleum produce a test plan
 

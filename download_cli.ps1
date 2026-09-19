@@ -18,7 +18,7 @@
 #   $env:PLEUM_MODEL    - Optional: model for pleum
 #   $env:PLEUM_WINDOWS_VARIANT - Optional: Windows package variant to install ("standard" or "cuda")
 #   $env:CANARY         - Optional: if set to "true", downloads from canary release instead of stable
-#   $env:CONFIGURE      - Optional: if set to "false", disables running pleum configure interactively
+#   $env:CONFIGURE      - Optional: if set to "false", disables running pleumcode configure interactively
 ##############################################################################
 
 # Set error action preference to stop on errors
@@ -26,7 +26,7 @@ $ErrorActionPreference = "Stop"
 
 # --- 1) Variables ---
 $REPO = "gachon-star-want/pleumcode"
-$OUT_FILE = "pleum.exe"
+$OUT_FILE = "pleumcode.exe"
 
 # Set default bin directory if not specified
 if (-not $env:PLEUM_BIN_DIR) {
@@ -128,7 +128,7 @@ if (-not (Test-Path $env:PLEUM_BIN_DIR)) {
 }
 
 # --- 9) Install pleum binary ---
-$SOURCE_PLEUM = Join-Path $EXTRACT_DIR "pleum.exe"
+$SOURCE_PLEUM = Join-Path $EXTRACT_DIR "pleumcode.exe"
 $DEST_PLEUM = Join-Path $env:PLEUM_BIN_DIR $OUT_FILE
 
 if (Test-Path $SOURCE_PLEUM) {
@@ -140,12 +140,12 @@ if (Test-Path $SOURCE_PLEUM) {
         }
         Move-Item -Path $SOURCE_PLEUM -Destination $DEST_PLEUM -Force
     } catch {
-        Write-Error "Failed to move pleum.exe to $DEST_PLEUM. Error: $($_.Exception.Message)"
+        Write-Error "Failed to move pleumcode.exe to $DEST_PLEUM. Error: $($_.Exception.Message)"
         Remove-Item -Path $TMP_DIR -Recurse -Force -ErrorAction SilentlyContinue
         exit 1
     }
 } else {
-    Write-Error "pleum.exe not found in extracted files"
+    Write-Error "pleumcode.exe not found in extracted files"
     Remove-Item -Path $TMP_DIR -Recurse -Force -ErrorAction SilentlyContinue
     exit 1
 }
@@ -182,10 +182,10 @@ if ($CONFIGURE -eq "true") {
     try {
         & $DEST_PLEUM configure
     } catch {
-        Write-Warning "Failed to run pleum configure. You may need to run it manually later."
+        Write-Warning "Failed to run pleumcode configure. You may need to run it manually later."
     }
 } else {
-    Write-Host "Skipping 'pleum configure', you may need to run this manually later" -ForegroundColor Yellow
+    Write-Host "Skipping 'pleumcode configure', you may need to run this manually later" -ForegroundColor Yellow
 }
 
 # --- 13) Check PATH and give instructions if needed ---

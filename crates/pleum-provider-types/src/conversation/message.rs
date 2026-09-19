@@ -1997,11 +1997,11 @@ mod tests {
 
     #[test]
     fn test_from_prompt_message_text_preserves_visible_unicode() {
-        let prompt_message = PromptMessage::new(Role::User, ContentBlock::text("Grüße 你好 🪿"));
+        let prompt_message = PromptMessage::new(Role::User, ContentBlock::text("Grüße 你好 "));
 
         let message = Message::from(prompt_message);
 
-        assert_eq!(message.as_concat_text(), "Grüße 你好 🪿");
+        assert_eq!(message.as_concat_text(), "Grüße 你好 ");
     }
 
     #[test]

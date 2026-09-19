@@ -3,7 +3,7 @@
 //! [`crate::sources`] so all source-style files share one YAML pipeline.
 //!
 //! User-facing CRUD lives in `crate::sources` for parity with skills and
-//! projects; `pleum review` consumes [`Check`] and [`discover`] directly.
+//! projects; `pleumcode review` consumes [`Check`] and [`discover`] directly.
 
 use crate::sources::parse_frontmatter;
 use anyhow::{anyhow, bail, Context, Result};
@@ -453,7 +453,7 @@ fn read_checks_dir(
             Err(e) => match mode {
                 LoadMode::Strict => return Err(e),
                 LoadMode::Lenient => {
-                    eprintln!("pleum review: skipping {}: {e}", path.display());
+                    eprintln!("pleumcode review: skipping {}: {e}", path.display());
                 }
             },
         }

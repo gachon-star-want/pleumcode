@@ -180,7 +180,7 @@ pleumcode 전용 규칙이 실제로 필요해질 때까지 YAGNI.
 | 업스트림 | 현재 |
 |---|---|
 | crate `goose*` (`crates/goose-cli` …) | `pleum*` (`crates/pleum-cli` …) |
-| 바이너리 `goose` | `pleum` |
+| 바이너리 `goose` | **`pleumcode`** (기존 npm 런처가 `pleum`을 쓰므로 충돌 회피, 저장소 이름과도 일치) |
 | 환경변수 `GOOSE_*` | `PLEUM_*` (예: `PLEUM_PATH_ROOT`, `PLEUM_MODE`) |
 | `~/.config/goose` 등 | `~/.config/pleum`, `~/.local/share/pleum` |
 | `.goosehints` / `.gooseignore` | `.pleumhints` / `.pleumignore` |
@@ -207,12 +207,22 @@ pleumcode 전용 규칙이 실제로 필요해질 때까지 YAGNI.
    곧 "리네임된 순수 업스트림 변경"이다.
 3. `main`에 `rebranded-upstream`을 merge. 양쪽이 같은 리네임을 했으므로 진짜 충돌만 남는다.
 
-**남은 것 / 결정 필요**
-- **바이너리 이름 충돌**: `pleum`은 기존 npm 런처(`pleum`)와 같은 이름이라 한 PATH에 못 둔다. 00은 `pleum-code`를
-  가칭으로 잡았었다. 바꾸면 `--help`·에러 메시지의 `pleum <명령>` 안내문도 함께 바뀌어야 한다.
-- **눈에 보이는 흔적**: 시작 배너의 ASCII 거위(`__( O)>`), 🪿 이모지, `ui/`·`documentation/`의 이미지·블로그
-  (goose 그림은 텍스트 치환이 못 바꾼다).
-- **`ui/`(Electron)·`documentation/`(Docusaurus) 628개 파일은 v1(터미널 CLI만) 범위 밖**이라 삭제를 권한다 —
-  흔적과 포크 유지비의 최대 원인.
-- goose가 아닌 상류 흔적: `@aaif/*` npm scope, `Block` 표기·PostHog 등 텔레메트리 키(위 샌드박스 잔여 목록의
+**후속 결정 (2026-09-19, 모두 반영 완료)**
+- **바이너리는 `pleumcode`**: `[[bin]]`, clap `name`, `term.rs`가 실행하는 `pleumcode term ...`, 매뉴얼 생성기, 빌드
+  스크립트의 `--bin`·`target/*/pleumcode`·`.exe`까지 `rebrand.py`의 2단계 규칙이 처리한다(명령 형태의 `pleum <서브명령>`
+  만 바꾸고 crate·디렉토리 이름 `pleum-cli`는 건드리지 않음). 설정 디렉토리와 환경변수 접두어는 그대로 `pleum`
+  (`~/.config/pleum`, `PLEUM_*`) — 런처가 쓰는 `PLEUM_API_KEY` 등과 이름이 겹치는 변수는 없음을 확인했다.
+- **`ui/`(Electron)·`documentation/`(Docusaurus)와 그것만 위한 워크플로우 6개 삭제**: v1이 터미널 CLI 전용이라서.
+  삭제 목록이 `rebrand.py`(`DELETE`)에 들어 있어 업스트림 병합 후에도 삭제된 채로 유지된다.
+- **시작 배너**: ASCII 거위를 없애고 `pleum` 워드마크로 교체. 색은 PleumRouter 런처와 같은 브랜드 plum
+  `#936c89` 하나만 포인트로 쓰고 truecolor → xterm-256(139) → 16색 마젠타로 폴백, `NO_COLOR`·파이프에서는
+  색 없음(실제 렌더링으로 4가지 모드 확인). 거위 이모지 🪿도 제거(터미널 제목은 `pleum <디렉토리>`).
+
+**아직 남은 것**
+- 업스트림이 쓴 기여자 문서(`CONTRIBUTING.md`, `BUILDING_*.md`, `CUSTOM_DISTROS.md`, `RISCV_SETUP.md`)와 `Justfile`의
+  데스크톱 레시피, 남긴 워크플로우(`ci.yml`, `build-cli-linux.yml`, `release.yml` 등)에 삭제된 `ui/`·데스크톱 언급이
+  남아 있다. 프롬프트에 로드되는 `AGENTS.md`·`.pleumhints`는 이미 정리함. CI/패키징은 우리 배포 파이프라인이 생길
+  때(v1.0-beta) 함께 정리하고, 그 전까지는 동작을 보증하지 않는다.
+- `--version`이 여전히 업스트림 버전 `1.51.0`을 표시한다 — 새 배포이므로 `0.1.0`부터 다시 시작해야 한다.
+- goose가 아닌 상류 흔적: `@aaif/*` npm scope, `Block` 표기, PostHog 등 텔레메트리 키(샌드박스 잔여 목록의
   `telemetry` 항목과 같은 건).

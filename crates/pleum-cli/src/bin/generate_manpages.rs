@@ -116,8 +116,8 @@ fn generate_see_also(
     let mut references: Vec<String> = Vec::new();
 
     // Always reference the main pleum command if we're not it
-    if current_name != "pleum" {
-        references.push("pleum".to_string());
+    if current_name != "pleumcode" {
+        references.push("pleumcode".to_string());
     }
 
     // Reference parent command if exists and not already added

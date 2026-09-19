@@ -1,11 +1,11 @@
 //! ACP Client Example
 //!
-//! Spawns `pleum acp` as a child process and sends it a completion request
+//! Spawns `pleumcode acp` as a child process and sends it a completion request
 //! using the Agent Client Protocol over stdio.
 //!
 //! # Prerequisites
 //!
-//! You must have pleum built and a provider configured (`pleum configure`).
+//! You must have pleum built and a provider configured (`pleumcode configure`).
 //!
 //! # Usage
 //!
@@ -16,7 +16,7 @@
 //! Or with a custom pleum binary path:
 //!
 //! ```bash
-//! cargo run -p pleum-sdk --example acp_client -- --pleum-bin ./target/debug/pleum "Explain Rust's ownership model in one sentence"
+//! cargo run -p pleum-sdk --example acp_client -- --pleum-bin ./target/debug/pleumcode "Explain Rust's ownership model in one sentence"
 //! ```
 
 use agent_client_protocol::schema::v1::{

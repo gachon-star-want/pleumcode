@@ -67,7 +67,7 @@ impl From<ServePlatform> for PleumPlatform {
 }
 
 #[derive(Parser)]
-#[command(name = "pleum", author, version, display_name = "", about, long_about = None)]
+#[command(name = "pleumcode", author, version, display_name = "", about, long_about = None)]
 pub struct Cli {
     #[command(subcommand)]
     command: Option<Command>,
@@ -588,7 +588,7 @@ enum SessionCommand {
     )]
     Import {
         #[arg(
-            help = "Path to a pleum session export, a Claude Code, Codex, or Pi .jsonl transcript, or a pleum://sessions/nostr share link"
+            help = "Path to a pleumcode session export, a Claude Code, Codex, or Pi .jsonl transcript, or a pleum://sessions/nostr share link"
         )]
         input: String,
 
@@ -1056,14 +1056,14 @@ enum Command {
 
     /// Terminal-integrated session (one session per terminal)
     #[command(
-        about = "Terminal-integrated pleum session",
-        long_about = "Runs a pleum session tied to your terminal window.\n\
+        about = "Terminal-integrated pleumcode session",
+        long_about = "Runs a pleumcode session tied to your terminal window.\n\
                       Each terminal maintains its own persistent session that resumes automatically.\n\n\
                       Setup:\n  \
-                        eval \"$(pleum term init zsh)\"  # zsh/bash\n  \
-                        let init = ($nu.cache-dir | path join \"pleum-term-init.nu\"); ^pleum term init nu | save --force $init; source $init\n\n\
+                        eval \"$(pleumcode term init zsh)\"  # zsh/bash\n  \
+                        let init = ($nu.cache-dir | path join \"pleum-term-init.nu\"); ^pleumcode term init nu | save --force $init; source $init\n\n\
                       Usage:\n  \
-                        pleum term run \"list files in this directory\"\n  \
+                        pleumcode term run \"list files in this directory\"\n  \
                         @pleum \"create a python script\"  # using alias\n  \
                         @g \"quick question\"  # short alias"
     )]
@@ -1142,7 +1142,7 @@ enum Command {
         /// Disable the Rust-driven parallel orchestrator and fall back to
         /// the single-prompt path that asks the main agent to delegate
         /// each check via `delegate(... async: true ...)`. The default
-        /// orchestrator dispatches one `pleum run` subprocess per check
+        /// orchestrator dispatches one `pleumcode run` subprocess per check
         /// (capped at 4 concurrent), bounding wall-clock to the slowest
         /// single check rather than waiting on the model to issue
         /// dispatches.
@@ -1278,17 +1278,17 @@ enum TermCommand {
     #[command(
         about = "Print shell initialization script",
         long_about = "Prints shell configuration to set up terminal-integrated sessions.\n\
-                      Each terminal gets a persistent pleum session that automatically resumes.\n\n\
+                      Each terminal gets a persistent pleumcode session that automatically resumes.\n\n\
                       Setup:\n  \
-                        echo 'eval \"$(pleum term init zsh)\"' >> ~/.zshrc\n  \
+                        echo 'eval \"$(pleumcode term init zsh)\"' >> ~/.zshrc\n  \
                         source ~/.zshrc\n\n\
                         Nushell:\n  \
                         let init = ($nu.cache-dir | path join \"pleum-term-init.nu\")\n  \
-                        ^pleum term init nu | save --force $init\n  \
+                        ^pleumcode term init nu | save --force $init\n  \
                         source $init\n\n\
                       With --default (anything typed that isn't a command goes to pleum):\n  \
-                        echo 'eval \"$(pleum term init zsh --default)\"' >> ~/.zshrc\n  \
-                        ^pleum term init nu --default | save --force $init"
+                        echo 'eval \"$(pleumcode term init zsh --default)\"' >> ~/.zshrc\n  \
+                        ^pleumcode term init nu --default | save --force $init"
     )]
     Init {
         /// Shell type (bash, zsh, fish, nu, powershell)
@@ -1319,7 +1319,7 @@ enum TermCommand {
         about = "Run a prompt in the terminal session",
         long_about = "Run a prompt in the terminal-integrated session.\n\n\
                       Examples:\n  \
-                        pleum term run list files in this directory\n  \
+                        pleumcode term run list files in this directory\n  \
                         @pleum list files  # using alias\n  \
                         @g why did that fail  # short alias"
     )]
@@ -1716,7 +1716,7 @@ async fn start_roam_share(
     .await?;
 
     let agent_id = node.endpoint_id().to_string();
-    // Roaming sessions run where `pleum serve` was started: the connector's
+    // Roaming sessions run where `pleumcode serve` was started: the connector's
     // machine-local path is meaningless on this host, and the serve-wide
     // server keeps `session_cwd: None` for local ACP clients.
     let session_cwd =
@@ -1813,7 +1813,7 @@ async fn handle_serve_command(args: ServeCommandArgs) -> Result<()> {
     let require_token = env_secret.is_some();
     if !require_token && !dangerously_unauthenticated {
         anyhow::bail!(
-            "{PLEUM_SERVER_SECRET_KEY_ENV} must be set to start `pleum serve`; pass --dangerously-unauthenticated to run without ACP authentication"
+            "{PLEUM_SERVER_SECRET_KEY_ENV} must be set to start `pleumcode serve`; pass --dangerously-unauthenticated to run without ACP authentication"
         );
     }
     if dangerously_unauthenticated && !require_token {
@@ -2172,7 +2172,7 @@ fn parse_run_input(
         (Some(file), _, _) => {
             let contents = std::fs::read_to_string(file).unwrap_or_else(|err| {
                 eprintln!(
-                    "Instruction file not found — did you mean to use pleum run --text?\n{}",
+                    "Instruction file not found — did you mean to use pleumcode run --text?\n{}",
                     err
                 );
                 std::process::exit(1);
@@ -3068,7 +3068,7 @@ mod tests {
         init.write_long_help(&mut buffer).expect("write help");
 
         let help = String::from_utf8(buffer).expect("utf8");
-        assert!(help.contains("pleum term init nu"));
+        assert!(help.contains("pleumcode term init nu"));
         assert!(help.contains("Supported for zsh, bash, and nu"));
     }
 

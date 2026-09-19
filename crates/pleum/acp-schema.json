@@ -3485,7 +3485,7 @@
       "required": [
         "data"
       ],
-      "description": "Export session response — raw JSON of the pleum session with `conversation`,\nor a markdown transcript when `format` is `markdown`.",
+      "description": "Export session response — raw JSON of the pleumcode session with `conversation`,\nor a markdown transcript when `format` is `markdown`.",
       "x-side": "agent",
       "x-method": "_pleum/unstable/session/export"
     },

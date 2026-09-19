@@ -39,7 +39,7 @@ impl AcpServer {
     }
 
     /// Start the scheduler now instead of on first client connect, so a
-    /// headless `pleum serve` runs scheduled jobs; on failure `create_agent`
+    /// headless `pleumcode serve` runs scheduled jobs; on failure `create_agent`
     /// retries. No-op when the scheduler is disabled.
     pub async fn start_scheduler(&self) -> Result<()> {
         self.scheduler().await.map(|_| ())

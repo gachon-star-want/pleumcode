@@ -128,7 +128,7 @@ volumes:
 
 Run with:
 ```bash
-docker-compose run --rm pleum session
+docker-compose run --rm pleumcode session
 ```
 
 ## Configuration
@@ -190,7 +190,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Run pleum analysis
         run: |
-          pleum run -t "Review this codebase for security issues"
+          pleumcode run -t "Review this codebase for security issues"
 ```
 
 ### GitLab CI
@@ -202,7 +202,7 @@ analyze:
     PLEUM_PROVIDER: openai
     PLEUM_MODEL: gpt-4o
   script:
-    - pleum run -t "Generate documentation for this project"
+    - pleumcode run -t "Generate documentation for this project"
 ```
 
 ## Image Details
@@ -212,7 +212,7 @@ analyze:
 - **Base image**: Debian Bookworm Slim (minimal runtime dependencies)
 - **Final size**: ~340MB
 - **Optimizations**: Link-Time Optimization (LTO), binary stripping, size optimization
-- **Binary included**: `/usr/local/bin/pleum` (32MB)
+- **Binary included**: `/usr/local/bin/pleumcode` (32MB)
 
 ### Security
 

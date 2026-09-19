@@ -72,7 +72,7 @@ pub(crate) fn build_session_json(session: ImportedSession) -> Value {
 /// Detected import source format.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ImportFormat {
-    /// Native pleum session export — a JSON object representing a `Session`.
+    /// Native pleumcode session export — a JSON object representing a `Session`.
     Pleum,
     /// Claude Code `.jsonl` transcript (one JSON object per line, no header).
     ClaudeCode,

@@ -174,8 +174,8 @@ class PleumBinaryAgent(Pleum):
             environment,
             command=(
                 "mkdir -p ~/.local/bin && "
-                "ln -sf /installed-agent/pleum ~/.local/bin/pleum && "
-                "~/.local/bin/pleum --version"
+                "ln -sf /installed-agent/pleum ~/.local/bin/pleumcode && "
+                "~/.local/bin/pleumcode --version"
             ),
             env={
                 "PLEUM_DISABLE_KEYRING": "true",
@@ -225,7 +225,7 @@ class PleumBinaryAgent(Pleum):
             environment,
             command=(
                 'export PATH="$HOME/.local/bin:$PATH" && '
-                f"pleum run --recipe {shlex.quote(CONTAINER_RECIPE_PATH)} "
+                f"pleumcode run --recipe {shlex.quote(CONTAINER_RECIPE_PATH)} "
                 "--output-format stream-json "
                 + ((cli_flags + " ") if cli_flags else "")
                 + "2>&1 | stdbuf -oL tee /logs/agent/pleum.txt"

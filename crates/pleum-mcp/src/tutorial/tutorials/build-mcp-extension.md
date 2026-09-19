@@ -220,37 +220,37 @@ Help users test their MCP extension using these steps:
 
 ### 1. Initial Testing
 
-Instruct users to start a pleum session with their extension.
+Instruct users to start a pleumcode session with their extension.
 
-**Important**: You cannot start the pleum session for them, as it is interactive. You will have to let them
+**Important**: You cannot start the pleumcode session for them, as it is interactive. You will have to let them
 know to start it in a terminal. Make sure you include instructions on how to set up the environment
 
 ```bash
 # Python example
-pleum session --with-extension "python server.py"
+pleumcode session --with-extension "python server.py"
 
 # TypeScript example
-pleum session --with-extension "node server.js"
+pleumcode session --with-extension "node server.js"
 
 # Kotlin example
-pleum session --with-extension "java -jar build/libs/extension.jar"
+pleumcode session --with-extension "java -jar build/libs/extension.jar"
 ```
 
 Tell users to watch for startup errors. If the session fails to start, they should share the error message with you for debugging.
 
 Note:
-You can run a feedback loop using a headless pleum session, however if the process hangs you get into a stuck action.
+You can run a feedback loop using a headless pleumcode session, however if the process hangs you get into a stuck action.
 Ask the user if they want you to do that, and let them know they will manually need to kill any stuck processes.
 
 ```bash
 # Python example
-pleum run --with-extension "python server.py" --text "EXAMPLE PROMPT HERE"
+pleumcode run --with-extension "python server.py" --text "EXAMPLE PROMPT HERE"
 
 # TypeScript example
-pleum run --with-extension "node server.js" --text "EXAMPLE PROMPT HERE"
+pleumcode run --with-extension "node server.js" --text "EXAMPLE PROMPT HERE"
 
 # Kotlin example
-pleum run --with-extension "java -jar build/libs/extension.jar" --text "EXAMPLE PROMPT HERE"
+pleumcode run --with-extension "java -jar build/libs/extension.jar" --text "EXAMPLE PROMPT HERE"
 ```
 
 ### 2. Testing Tools and Resources
@@ -359,7 +359,7 @@ server.addTool(
 
 When users encounter issues:
 
-1. First, check if there are any immediate error messages in the pleum session
+1. First, check if there are any immediate error messages in the pleumcode session
 
 2. If the error isn't clear, guide them to:
 

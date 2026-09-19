@@ -13,7 +13,7 @@ use super::orchestrator::{
 };
 use super::prompt::{build_review_prompt, DEFAULT_REVIEW_PROMPT};
 
-/// Options for `pleum review`.
+/// Options for `pleumcode review`.
 #[derive(Debug, Clone, Default)]
 pub struct ReviewOptions {
     /// Diff range to review (e.g. `main...HEAD`). When `None`, falls back to
@@ -70,7 +70,7 @@ pub struct ReviewOptions {
     pub severity: String,
 }
 
-/// Entry point for the `pleum review` subcommand.
+/// Entry point for the `pleumcode review` subcommand.
 pub async fn handle_review(opts: ReviewOptions) -> Result<()> {
     let repo_root = find_repo_root().context("not inside a git repository")?;
     let untracked_root = opts
@@ -112,7 +112,7 @@ pub async fn handle_review(opts: ReviewOptions) -> Result<()> {
     drop(untracked_root);
 
     if diff.trim().is_empty() {
-        eprintln!("pleum review: no changes to review");
+        eprintln!("pleumcode review: no changes to review");
         return Ok(());
     }
 
@@ -205,7 +205,7 @@ pub async fn handle_review(opts: ReviewOptions) -> Result<()> {
             if !opts.quiet {
                 let suppressed = total_seen.saturating_sub(total_emitted);
                 eprintln!(
-                    "pleum review: emitted {total_emitted} finding(s) from {} check(s) ({suppressed} hidden below severity={:?})",
+                    "pleumcode review: emitted {total_emitted} finding(s) from {} check(s) ({suppressed} hidden below severity={:?})",
                     discovered.checks.len(),
                     min_sev
                 );
@@ -255,13 +255,13 @@ pub async fn handle_review(opts: ReviewOptions) -> Result<()> {
         let main_pass_label = if opts.checks_only { "skipped" } else { "ran" };
         if suppressed == 0 {
             eprintln!(
-                "pleum review: orchestrator emitted {total_emitted} finding(s) from {} check(s) (main: {main_pass_label}, {} finding(s))",
+                "pleumcode review: orchestrator emitted {total_emitted} finding(s) from {} check(s) (main: {main_pass_label}, {} finding(s))",
                 discovered.checks.len(),
                 main_findings.len()
             );
         } else {
             eprintln!(
-                "pleum review: orchestrator emitted {total_emitted} finding(s) from {} check(s) (main: {main_pass_label}, {} finding(s); {suppressed} hidden below severity={:?})",
+                "pleumcode review: orchestrator emitted {total_emitted} finding(s) from {} check(s) (main: {main_pass_label}, {} finding(s); {suppressed} hidden below severity={:?})",
                 discovered.checks.len(),
                 main_findings.len(),
                 min_sev
@@ -323,10 +323,10 @@ fn prepend_instructions(base_prompt: &str, instructions: Option<&str>) -> String
 
 fn print_discovered_summary(d: &DiscoveredReview) {
     if d.checks.is_empty() {
-        eprintln!("pleum review: no checks or REVIEW.md rules discovered");
+        eprintln!("pleumcode review: no checks or REVIEW.md rules discovered");
         return;
     }
-    eprintln!("pleum review: discovered {} check(s):", d.checks.len());
+    eprintln!("pleumcode review: discovered {} check(s):", d.checks.len());
     for c in &d.checks {
         let scope = if c.scope_dir.is_empty() {
             "<root>"

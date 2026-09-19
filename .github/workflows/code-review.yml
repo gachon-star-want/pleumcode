@@ -97,7 +97,7 @@ jobs:
           name: code-review-inputs
           path: /tmp/code-review
 
-      - name: Install custom provider and run pleum review
+      - name: Install custom provider and run pleumcode review
         env:
           PLEUM_PROVIDER: anthropic-oidc-proxy
           PLEUM_MODEL: ${{ vars.PLEUM_CODE_REVIEW_MODEL || 'claude-opus-4-6' }}
@@ -112,7 +112,7 @@ jobs:
           mkdir -p "$HOME/.config/pleum/custom_providers"
           cp oidc-proxy/anthropic-oidc-proxy.json "$HOME/.config/pleum/custom_providers/"
 
-          pleum run \
+          pleumcode run \
             --recipe .github/recipes/code-review.yaml \
             --params pr_directory=/tmp/code-review \
             --params instructions="$REVIEW_INSTRUCTIONS"

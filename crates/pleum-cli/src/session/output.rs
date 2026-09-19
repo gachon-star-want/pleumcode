@@ -2,6 +2,7 @@ use crate::session::builder::ExtensionFailure;
 use anstream::{adapter::strip_str, eprintln, println};
 use bat::WrappingMode;
 use console::{measure_text_width, style, Color, StyledObject, Term};
+use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
 use pleum::config::Config;
 use pleum::conversation::message::{
     ActionRequiredData, Message, MessageContent, SystemNotificationContent, SystemNotificationType,
@@ -12,7 +13,6 @@ use pleum::providers::canonical_cost::estimate_model_cost;
 use pleum::subprocess::SubprocessExt;
 use pleum::utils::safe_truncate;
 use pleum_providers::conversation::token_usage::Usage;
-use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
 use rmcp::model::{CallToolRequestParams, JsonObject, PromptArgument, Role};
 use serde_json::Value;
 use std::cell::RefCell;
@@ -1502,39 +1502,41 @@ pub fn display_session_info(
         .map(|p| p.display().to_string())
         .unwrap_or_else(|| "unknown".to_string());
 
-    // ASCII art pleum with session info on the right
+    // Wordmark in the PleumRouter brand plum, session info to its right.
     println!();
     println!(
         "  {}  {} {} {} {} {}",
-        style("  __( O)>").white(),
+        plum("pleum"),
         style("●").green(),
         style(status).dim(),
         style("·").dim(),
         style(provider).dim(),
         style(&model_display).cyan(),
     );
+    let detail = match session_id {
+        Some(id) => format!("{id} · {cwd_display}"),
+        None => cwd_display,
+    };
+    println!("  {}  {}", " ".repeat(5), style(detail).dim());
+}
 
-    if let Some(id) = session_id {
-        println!(
-            "  {}  {} {} {}",
-            style(r" \____)").white(),
-            style(" ").dim(),
-            style(id).dim(),
-            style(format!("· {}", cwd_display)).dim(),
-        );
-    } else {
-        println!(
-            "  {}  {} {}",
-            style(r" \____)").white(),
-            style(" ").dim(),
-            style(format!("  {}", cwd_display)).dim(),
-        );
+/// SGR color for the PleumRouter brand plum (#936c89), the single accent the `pleum`
+/// launcher uses: truecolor, else xterm-256, else plain magenta.
+fn plum_sgr(colorterm: Option<&str>, term: Option<&str>) -> &'static str {
+    match (colorterm, term) {
+        (Some("truecolor" | "24bit"), _) => "38;2;147;108;137",
+        (_, Some(t)) if t.contains("256color") => "38;5;139",
+        _ => "35",
     }
-    println!(
-        "  {}  {}",
-        style("   L L").white(),
-        style("   pleum is ready").white()
+}
+
+/// Bold brand-colored text. anstream strips the escapes for pipes and NO_COLOR.
+fn plum(text: &str) -> String {
+    let sgr = plum_sgr(
+        std::env::var("COLORTERM").ok().as_deref(),
+        std::env::var("TERM").ok().as_deref(),
     );
+    format!("\x1b[1;{sgr}m{text}\x1b[0m")
 }
 
 fn set_terminal_title() {
@@ -1548,7 +1550,7 @@ fn set_terminal_title() {
     // Sanitize: strip control characters (ESC, BEL, etc.) to prevent terminal escape injection
     let sanitized: String = dir_name.chars().filter(|c| !c.is_control()).collect();
     // OSC 0 sets the terminal window/tab title
-    print!("\x1b]0;🪿 {}\x07", sanitized);
+    print!("\x1b]0;pleum {}\x07", sanitized);
     let _ = std::io::stdout().flush();
 }
 
@@ -1737,6 +1739,18 @@ mod tests {
     use std::env;
 
     #[test]
+    fn plum_falls_back_from_truecolor_to_256_to_16_color() {
+        assert_eq!(
+            plum_sgr(Some("truecolor"), Some("xterm")),
+            "38;2;147;108;137"
+        );
+        assert_eq!(plum_sgr(Some("24bit"), None), "38;2;147;108;137");
+        assert_eq!(plum_sgr(None, Some("xterm-256color")), "38;5;139");
+        assert_eq!(plum_sgr(None, Some("xterm")), "35");
+        assert_eq!(plum_sgr(None, None), "35");
+    }
+
+    #[test]
     fn recent_lines_accumulate_across_updates() {
         let mut recent_lines = VecDeque::new();
         let mut rendered = String::new();
@@ -1766,10 +1780,7 @@ mod tests {
 
     #[test]
     fn terminal_line_sanitizer_preserves_plain_unicode_text() {
-        assert_eq!(
-            sanitize_terminal_line("pleum 🪿\t日本語"),
-            "pleum 🪿\t日本語"
-        );
+        assert_eq!(sanitize_terminal_line("pleum \t日本語"), "pleum \t日本語");
     }
 
     #[test]
@@ -1861,14 +1872,14 @@ mod tests {
 
     #[test]
     fn tool_confirmation_preserves_plain_unicode_text() {
-        let arguments = json!({"query": "שלום مرحبا 日本語 🪿"})
+        let arguments = json!({"query": "שלום مرحبا 日本語 "})
             .as_object()
             .unwrap()
             .clone();
 
         let rendered = format_tool_confirmation("検索", &arguments);
 
-        assert!(rendered.contains("שלום مرحبا 日本語 🪿"));
+        assert!(rendered.contains("שלום مرحبا 日本語 "));
         assert!(rendered.contains("検索"));
     }
 

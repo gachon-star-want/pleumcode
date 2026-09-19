@@ -8,7 +8,7 @@ parameters:
   - key: target
     input_type: string
     requirement: required
-    description: "the run we want to improve (typically a pleum run)"
+    description: "the run we want to improve (typically a pleumcode run)"
   - key: reference
     input_type: string
     requirement: required

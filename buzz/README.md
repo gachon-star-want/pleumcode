@@ -332,7 +332,7 @@ change project fields, labels, or issue state.
 Run it once with:
 
 ```sh
-pleum run \
+pleumcode run \
   --recipe "$PWD/buzz/github_issue_manager.yaml" \
   --params "automation_dir=$PWD/buzz" \
   --no-session
@@ -341,7 +341,7 @@ pleum run \
 Preview assignments without changing GitHub or Buzz:
 
 ```sh
-pleum run \
+pleumcode run \
   --recipe "$PWD/buzz/github_issue_manager.yaml" \
   --params "automation_dir=$PWD/buzz" \
   --params "dry_run=true" \

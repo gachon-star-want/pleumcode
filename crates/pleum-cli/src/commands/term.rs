@@ -56,7 +56,7 @@ fi{command_not_found_handler}"#,
         r#"
 
 command_not_found_handle() {
-    echo "🪿 Command '$1' not found. Asking pleum..."
+    echo "Command '$1' not found. Asking pleum..."
     '{pleum_bin}' term run "$@"
     return 0
 }"#,
@@ -80,7 +80,7 @@ add-zsh-hook preexec pleum_preexec{command_not_found_handler}"#,
         r#"
 
 command_not_found_handler() {
-    echo "🪿 Command '$1' not found. Asking pleum..."
+    echo "Command '$1' not found. Asking pleum..."
     '{pleum_bin}' term run "$@"
     return 0
 }"#,
@@ -93,7 +93,7 @@ function @pleum; {pleum_bin} term run $argv; end
 function @g; {pleum_bin} term run $argv; end
 
 function pleum_preexec --on-event fish_preexec
-    string match -q -r '^pleum term' -- $argv[1]; and return
+    string match -q -r '^pleumcode term' -- $argv[1]; and return
     string match -q -r '^(@pleum|@g)($|\s)' -- $argv[1]; and return
     {pleum_bin} term log "$argv[1]" 2>/dev/null &
 end"#,
@@ -114,7 +114,7 @@ if (($env | get -o PLEUM_NU_PREEXEC_INSTALLED | default false) != true) {
             if ($line | is-empty) {
                 return
             }
-            if ($line =~ '^pleum term(\s|$)') {
+            if ($line =~ '^pleumcode term(\s|$)') {
                 return
             }
             if ($line =~ '^(@pleum|@g)(\s|$)') {
@@ -129,7 +129,7 @@ if (($env | get -o PLEUM_NU_PREEXEC_INSTALLED | default false) != true) {
         r#"
 $env.config.hooks.command_not_found = {|command_name|
     let prompt = (try { commandline | str trim } catch { $command_name })
-    print $"🪿 Command '($command_name)' not found. Asking pleum..."
+    print $"Command '($command_name)' not found. Asking pleum..."
     run-external "{pleum_bin}" "term" "run" $prompt | complete | ignore
     null
 }"#,
@@ -144,7 +144,7 @@ function @g {{ & '{pleum_bin}' term run @args }}
 Set-PSReadLineKeyHandler -Chord Enter -ScriptBlock {{
     $line = $null
     [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$null)
-    if ($line -notmatch '^pleum term' -and $line -notmatch '^(@pleum|@g)($|\s)') {{
+    if ($line -notmatch '^pleumcode term' -and $line -notmatch '^(@pleum|@g)($|\s)') {{
         Start-Job -ScriptBlock {{ & '{pleum_bin}' term log $using:line }} | Out-Null
     }}
     [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
@@ -230,7 +230,7 @@ pub async fn handle_term_init(
 pub async fn handle_term_log(command: String) -> Result<()> {
     let session_id = std::env::var("AGENT_SESSION_ID").map_err(|_| {
         anyhow!(
-            "AGENT_SESSION_ID not set. Initialize terminal integration with `pleum term init <shell>` and reload your shell first."
+            "AGENT_SESSION_ID not set. Initialize terminal integration with `pleumcode term init <shell>` and reload your shell first."
         )
     })?;
 
@@ -267,7 +267,7 @@ pub async fn handle_term_run(prompt: Vec<String>) -> Result<()> {
     let session_id = std::env::var("AGENT_SESSION_ID").map_err(|_| {
         anyhow!(
             "AGENT_SESSION_ID not set.\n\n\
-             Initialize terminal integration with `pleum term init <shell>` in your shell profile, \
+             Initialize terminal integration with `pleumcode term init <shell>` in your shell profile, \
              then restart or reload that shell."
         )
     })?;
@@ -327,7 +327,7 @@ pub async fn handle_term_run(prompt: Vec<String>) -> Result<()> {
     Ok(())
 }
 
-/// Handle `pleum term info` - print compact session info for prompt integration
+/// Handle `pleumcode term info` - print compact session info for prompt integration
 pub async fn handle_term_info() -> Result<()> {
     let session_id = match std::env::var("AGENT_SESSION_ID") {
         Ok(id) => id,

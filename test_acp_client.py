@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Simple ACP client to test the pleum ACP agent.
-Connects to pleum acp running on stdio.
+Connects to pleumcode acp running on stdio.
 
 Tests:
 1. Initialize - Establish connection and verify capabilities

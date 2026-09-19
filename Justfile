@@ -23,7 +23,7 @@ test-buzz:
 # Default release command
 release-binary:
     @echo "Building release version..."
-    cargo build --release -p pleum-cli --bin pleum
+    cargo build --release -p pleum-cli --bin pleumcode
     @just copy-binary
 
 # Build Windows executable on a Windows host
@@ -34,7 +34,7 @@ release-windows:
 
 [windows]
 release-windows:
-    @powershell.exe -NoProfile -ExecutionPolicy Bypass -Command 'rustup target add x86_64-pc-windows-msvc; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; cargo build --release --target x86_64-pc-windows-msvc -p pleum-cli --bin pleum; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; Write-Host "Windows executable created at ./target/x86_64-pc-windows-msvc/release/pleum.exe"'
+    @powershell.exe -NoProfile -ExecutionPolicy Bypass -Command 'rustup target add x86_64-pc-windows-msvc; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; cargo build --release --target x86_64-pc-windows-msvc -p pleum-cli --bin pleumcode; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; Write-Host "Windows executable created at ./target/x86_64-pc-windows-msvc/release/pleumcode.exe"'
 
 # Build for Intel Mac
 release-intel:
@@ -46,7 +46,7 @@ copy-binary BUILD_MODE="release":
     @rm -f ./ui/desktop/src/bin/pleumd
     @if [ -f ./target/{{BUILD_MODE}}/pleum ]; then \
         echo "Copying pleum CLI binary from target/{{BUILD_MODE}}..."; \
-        rm -f ./ui/desktop/src/bin/pleum; \
+        rm -f ./ui/desktop/src/bin/pleumcode; \
         cp -p ./target/{{BUILD_MODE}}/pleum ./ui/desktop/src/bin/; \
     else \
         echo "pleum CLI binary not found in target/{{BUILD_MODE}}"; \
@@ -56,10 +56,10 @@ copy-binary BUILD_MODE="release":
 # Copy binary command for Intel build
 copy-binary-intel:
     @rm -f ./ui/desktop/src/bin/pleumd
-    @if [ -f ./target/x86_64-apple-darwin/release/pleum ]; then \
+    @if [ -f ./target/x86_64-apple-darwin/release/pleumcode ]; then \
         echo "Copying Intel pleum CLI binary to ui/desktop/src/bin..."; \
-        rm -f ./ui/desktop/src/bin/pleum; \
-        cp -p ./target/x86_64-apple-darwin/release/pleum ./ui/desktop/src/bin/; \
+        rm -f ./ui/desktop/src/bin/pleumcode; \
+        cp -p ./target/x86_64-apple-darwin/release/pleumcode ./ui/desktop/src/bin/; \
     else \
         echo "Intel pleum CLI binary not found."; \
         exit 1; \
@@ -73,11 +73,11 @@ copy-binary-windows:
 
 [windows]
 copy-binary-windows:
-    @powershell.exe -NoProfile -ExecutionPolicy Bypass -Command 'if (Test-Path ./target/x86_64-pc-windows-msvc/release/pleum.exe) { \
+    @powershell.exe -NoProfile -ExecutionPolicy Bypass -Command 'if (Test-Path ./target/x86_64-pc-windows-msvc/release/pleumcode.exe) { \
         Write-Host "Copying Windows binary to ui/desktop/src/bin..."; \
         New-Item -ItemType Directory -Force "./ui/desktop/src/bin" | Out-Null; \
         Remove-Item -Path "./ui/desktop/src/bin/pleumd.exe" -Force -ErrorAction SilentlyContinue; \
-        Copy-Item -Path "./target/x86_64-pc-windows-msvc/release/pleum.exe" -Destination "./ui/desktop/src/bin/" -Force; \
+        Copy-Item -Path "./target/x86_64-pc-windows-msvc/release/pleumcode.exe" -Destination "./ui/desktop/src/bin/" -Force; \
     } else { \
         Write-Host "Windows binary not found." -ForegroundColor Red; \
         exit 1; \
@@ -149,7 +149,7 @@ run-docs:
 # Run server
 run-server:
     @echo "Running external ACP backend..."
-    PLEUM_SERVER__SECRET_KEY="${PLEUM_SERVER__SECRET_KEY:-test}" cargo run -p pleum-cli --bin pleum -- serve --platform desktop --enable-scheduler --host 127.0.0.1 --port 3000
+    PLEUM_SERVER__SECRET_KEY="${PLEUM_SERVER__SECRET_KEY:-test}" cargo run -p pleum-cli --bin pleumcode -- serve --platform desktop --enable-scheduler --host 127.0.0.1 --port 3000
 
 # Check if checked-in ACP artifacts are up-to-date and the docs can be rendered
 check-acp-artifacts: generate-acp-types generate-acp-docs
@@ -433,7 +433,7 @@ win-total-rls *allparam:
 
 # Build the binaries the MCP conformance driver needs.
 mcp-conformance-build:
-  cargo build -p pleum-cli --bin pleum --bin mcp_conformance_driver
+  cargo build -p pleum-cli --bin pleumcode --bin mcp_conformance_driver
 
 # suite: all, core, extensions, backcompat, auth, metadata, draft, sep-835
 # build: "false" reuses the existing target/debug binaries instead of rebuilding

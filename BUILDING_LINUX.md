@@ -40,7 +40,7 @@ To build from source in Termux:
 
 ```bash
 pkg install rust cmake protobuf clang build-essential
-cargo build --release -p pleum-cli --bin pleum --no-default-features --features portable-default
+cargo build --release -p pleum-cli --bin pleumcode --no-default-features --features portable-default
 ```
 
 > **Note:** The musl/portable build disables `local-inference` (V8) and
@@ -68,7 +68,7 @@ cd pleum
 Build Pleum CLI:
 
 ```bash
-cargo build --release -p pleum-cli --bin pleum
+cargo build --release -p pleum-cli --bin pleumcode
 ```
 
 This command should give you a list of possible packages in the
@@ -85,7 +85,7 @@ pnpm install
 
 # Copy the pleum binary to the expected location
 mkdir -p src/bin
-cp ../../target/release/pleum src/bin/
+cp ../../target/release/pleumcode src/bin/
 ```
 
 ### 4. Build the Application
@@ -148,8 +148,8 @@ cd /path/to/pleum/ui/desktop/out/pleum-linux-x64
 
 #### Pleum Binary Not Found
 If you see "Pleum binary not found", ensure you've:
-1. Built the Rust binary: `cargo build --release -p pleum-cli --bin pleum`
-2. Copied it to the right location: `cp ../../target/release/pleum src/bin/`
+1. Built the Rust binary: `cargo build --release -p pleum-cli --bin pleumcode`
+2. Copied it to the right location: `cp ../../target/release/pleumcode src/bin/`
 3. Rebuilt the application: `pnpm run make`
 
 ### Distribution-Specific Notes
@@ -180,7 +180,7 @@ Building as Snap packages is not currently supported but may be added in the fut
 
 For active development:
 
-1. **Backend changes**: Rebuild with `cargo build --release -p pleum-cli --bin pleum` and copy the binary
+1. **Backend changes**: Rebuild with `cargo build --release -p pleum-cli --bin pleumcode` and copy the binary
 2. **Frontend changes**: Use `pnpm run start` for hot reload during development
 3. **Full rebuild**: Run the complete build process above
 

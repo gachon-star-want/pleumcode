@@ -9,4 +9,4 @@ fi
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-pleum run --recipe "$SCRIPT_DIR/recipe.yaml" --params "version=$1"
+pleumcode run --recipe "$SCRIPT_DIR/recipe.yaml" --params "version=$1"

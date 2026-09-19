@@ -11,7 +11,7 @@
 # Knobs:
 #   PLEUM_PROVIDER (default: anthropic)
 #   PLEUM_MODEL    (default: claude-haiku-4-5)
-#   SKIP_BUILD     skip cargo build (assumes target/debug/pleum already exists)
+#   SKIP_BUILD     skip cargo build (assumes target/debug/pleumcode already exists)
 #   KEEP_TESTDIR   don't rm the temp workdir on exit (for debugging)
 #
 # Agent names are deliberately weird ("janpier", "peterjoris") so that they
@@ -29,7 +29,7 @@ fi
 
 if [ -z "$SKIP_BUILD" ]; then
   echo "Building pleum..."
-  cargo build --bin pleum
+  cargo build --bin pleumcode
   echo ""
 else
   echo "Skipping build (SKIP_BUILD is set)..."
@@ -37,7 +37,7 @@ else
 fi
 
 SCRIPT_DIR=$(pwd)
-PLEUM_BIN="$SCRIPT_DIR/target/debug/pleum"
+PLEUM_BIN="$SCRIPT_DIR/target/debug/pleumcode"
 export PATH="$SCRIPT_DIR/target/debug:$PATH"
 
 export PLEUM_PROVIDER="${PLEUM_PROVIDER:-anthropic}"

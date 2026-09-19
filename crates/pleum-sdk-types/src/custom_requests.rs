@@ -759,7 +759,7 @@ pub enum SessionExportFormat {
     Markdown,
 }
 
-/// Export session response — raw JSON of the pleum session with `conversation`,
+/// Export session response — raw JSON of the pleumcode session with `conversation`,
 /// or a markdown transcript when `format` is `markdown`.
 #[derive(Debug, Default, Clone, Serialize, Deserialize, JsonSchema, JsonRpcResponse)]
 pub struct ExportSessionResponse {

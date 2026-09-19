@@ -34,7 +34,7 @@ chmod +x ~/.agents/plugins/hello-hooks/scripts/announce.sh
 # 💬 [hello-hooks] UserPromptSubmit
 # ⚡ [hello-hooks] PreToolUse tool=developer__shell
 # ✅ [hello-hooks] PostToolUse tool=developer__shell
-pleum session
+pleumcode session
 
 # Inspect the full payloads pleum passed to the hook:
 tail ~/.agents/plugins/hello-hooks/last-event.log

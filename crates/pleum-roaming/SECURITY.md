@@ -28,7 +28,7 @@ and nothing in a `ConnectionCard` grants access by possession.
 Although the transport is p2p, **control is never symmetric**. A node only
 exposes an ACP surface by calling `RoamingNode::share()`, which is what
 registers the `pleum-acp/1` protocol handler — and the only callers are
-`pleum roam share` and `pleum serve --roam`. Pure clients (the browser
+`pleum roam share` and `pleumcode serve --roam`. Pure clients (the browser
 webapp, `roam client`/`bridge`/`delegate`) bind an endpoint but never share:
 they register no accept handler, so a host dialing back at them finds no
 protocol to connect to. There is nothing to authorize or block — the surface

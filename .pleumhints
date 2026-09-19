@@ -1,18 +1,10 @@
 This is a rust project with crates in the crates dir:
 pleum: the main code for pleum, contains all the core logic
-pleum-bench: bench marking
-pleum-cli: the command line interface, use pleum crate
+pleum-cli: the command line interface (binary: pleumcode), uses the pleum crate
 pleum-mcp: the mcp servers that ship with pleum. the developer sub system is of special interest
-pleum-server: the server that supports the desktop (electron) app. also known as pleumd
 
+non trivial features should be implemented in the pleum crate and then be called from the pleum-cli crate.
 
-ui/desktop has an electron app in typescript. 
-
-non trivial features should be implemented in the pleum crate and then be called from the pleum-cli crate for the cli. for the desktop, you want to add routes to 
-pleum-server/src/routes. you can then run `just generate-openapi` to generate the openapi spec which will modify the ui/desktop/src/api files. once you have
-that you can call the functionality from the server from the typescript.
-
-tips: 
+tips:
 - can look at unstaged changes for what is being worked on if starting
 - always check rust compiles, cargo fmt etc and `cargo clippy --all-targets -- -D warnings` (as well as run tests in files you are working on)
-- in ui/desktop, look at how you can run lint checks and if other tests can run

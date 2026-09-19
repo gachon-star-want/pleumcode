@@ -172,7 +172,7 @@ fn acp_cors_layer(policy: AcpOriginPolicy) -> CorsLayer {
 }
 
 /// CORS for the auxiliary routes (`/health`, `/status`, MCP app proxy) served by
-/// `pleum serve`. This allows the `x-secret-key` auth header the proxy routes
+/// `pleumcode serve`. This allows the `x-secret-key` auth header the proxy routes
 /// rely on.
 fn aux_cors_layer() -> CorsLayer {
     CorsLayer::new()
@@ -220,7 +220,7 @@ async fn health() -> &'static str {
     "ok"
 }
 
-/// The full standalone ACP server router used by `pleum serve`: ACP transport,
+/// The full standalone ACP server router used by `pleumcode serve`: ACP transport,
 /// optional token auth, health/status endpoints, and the MCP app proxy.
 pub fn create_router(
     server: Arc<AcpServer>,

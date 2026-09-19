@@ -64,13 +64,13 @@ jobs:
 
       - name: Build Binary for Smoke Tests
         run: |
-          cargo build --bin pleum
+          cargo build --bin pleumcode
 
       - name: Upload pleum binary
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
           name: pleum-binary
-          path: target/debug/pleum
+          path: target/debug/pleumcode
           retention-days: 1
 
   smoke-tests:
@@ -90,7 +90,7 @@ jobs:
           path: target/debug
 
       - name: Make Binary Executable
-        run: chmod +x target/debug/pleum
+        run: chmod +x target/debug/pleumcode
 
       - name: Set up Node.js
         uses: actions/setup-node@v7
@@ -178,7 +178,7 @@ jobs:
           path: target/debug
 
       - name: Make Binary Executable
-        run: chmod +x target/debug/pleum
+        run: chmod +x target/debug/pleumcode
 
       - name: Install Node.js Dependencies
         run: source ../../bin/activate-hermit && pnpm install --frozen-lockfile
@@ -221,7 +221,7 @@ jobs:
           path: target/debug
 
       - name: Make Binary Executable
-        run: chmod +x target/debug/pleum
+        run: chmod +x target/debug/pleumcode
 
       - name: Set up Python
         uses: actions/setup-python@v7

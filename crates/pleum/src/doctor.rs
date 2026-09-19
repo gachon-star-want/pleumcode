@@ -136,7 +136,7 @@ async fn ensure_working_provider(
     let preamble = log.join("\n");
     Ok(Some(Message::assistant().with_text(format!(
         "**Pleum Doctor**\n\n{}\n\n\
-         No working provider found. Run `pleum configure` to set one up.",
+         No working provider found. Run `pleumcode configure` to set one up.",
         preamble,
     ))))
 }
@@ -250,10 +250,10 @@ async fn try_other_providers(
 fn describe_error(e: &ProviderError) -> String {
     match e {
         ProviderError::NotConfigured => {
-            "Provider is not configured. Run `pleum configure` to set it up.".to_string()
+            "Provider is not configured. Run `pleumcode configure` to set it up.".to_string()
         }
         ProviderError::Authentication(_) => {
-            "Authentication failed — check your API key. Run `pleum configure` to update it."
+            "Authentication failed — check your API key. Run `pleumcode configure` to update it."
                 .to_string()
         }
         ProviderError::CreditsExhausted { top_up_url, .. } => {

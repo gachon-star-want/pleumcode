@@ -103,18 +103,18 @@ echo "" >> "$SUMMARY_FILE"
 # Determine which binary to use
 PLEUM_CMD="pleum"
 if [ "$DEBUG_MODE" = true ]; then
-  if [ -f "./target/debug/pleum" ]; then
-    PLEUM_CMD="./target/debug/pleum"
+  if [ -f "./target/debug/pleumcode" ]; then
+    PLEUM_CMD="./target/debug/pleumcode"
     echo "Using debug binary: $PLEUM_CMD"
   else
-    echo "Warning: Debug binary not found at ./target/debug/pleum. Falling back to system-installed pleum."
+    echo "Warning: Debug binary not found at ./target/debug/pleumcode. Falling back to system-installed pleum."
   fi
 else
-  if [ -f "./target/release/pleum" ]; then
-    PLEUM_CMD="./target/release/pleum"
+  if [ -f "./target/release/pleumcode" ]; then
+    PLEUM_CMD="./target/release/pleumcode"
     echo "Using release binary: $PLEUM_CMD"
   else
-    echo "Warning: Release binary not found at ./target/release/pleum. Falling back to system-installed pleum."
+    echo "Warning: Release binary not found at ./target/release/pleumcode. Falling back to system-installed pleum."
   fi
 fi
 

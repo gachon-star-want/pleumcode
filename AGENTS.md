@@ -1,6 +1,6 @@
 # AGENTS Instructions
 
-pleum is an AI agent framework in Rust with CLI and Electron desktop interfaces.
+pleum is an AI agent framework in Rust with a CLI interface (binary: `pleumcode`).
 
 ## Contribution Workflow
 
@@ -20,7 +20,6 @@ Maintainer-directed work, urgent security fixes, release automation, and local o
 
 pleum is retiring its project-specific MCP server directory in favor of the [official MCP Registry](https://github.com/modelcontextprotocol/registry) and its `server.json` format.
 
-- Do not add new third-party servers to `documentation/static/servers.json`; these contributions are no longer accepted.
 - Direct server authors to publish to the official MCP Registry instead.
 - Treat the existing pleum directory as legacy data while registry-backed discovery and installation are implemented.
 - Changes that maintain, migrate, or remove existing directory entries are allowed when they support the migration and are within an approved issue's scope.
@@ -71,18 +70,9 @@ cargo fmt
 cargo clippy --all-targets -- -D warnings
 ```
 
-### UI
-```bash
-just run-ui                  # start desktop
-cd ui/desktop && pnpm run typecheck
-cd ui/desktop && pnpm test   # test UI
-```
-
 ## Structure
 ```
 crates/       # Rust workspace members — see root Cargo.toml (`members = ["crates/*"]`)
-ui/desktop/   # Electron app
-ui/text/      # deprecated ACP TUI (see ui/text/README.md)
 ```
 
 ## Development Loop
@@ -102,11 +92,10 @@ ui/text/      # deprecated ACP TUI (see ui/text/README.md)
 ## Rules
 
 - Test: Prefer tests/ folder, e.g. crates/pleum/tests/
-- Test: When adding features, update pleum-self-test.yaml, rebuild, then run `pleum run --recipe pleum-self-test.yaml` to validate
+- Test: When adding features, update pleum-self-test.yaml, rebuild, then run `pleumcode run --recipe pleum-self-test.yaml` to validate
 - Error: Use anyhow::Result
 - Provider: Implement Provider trait see providers/base.rs
 - MCP: Extensions in crates/pleum-mcp/
-- UI Desktop: Use ACP SDK types or local `src/types/*` types. Do not import generated OpenAPI types/client code from `ui/desktop/src/api`
 
 ## Code Quality
 
@@ -121,7 +110,6 @@ ui/text/      # deprecated ACP TUI (see ui/text/README.md)
 
 ## Never
 
-- Never: Recreate `ui/desktop/src/api` or add `@hey-api/openapi-ts` to `ui/desktop`
 - Cargo.toml: For human-authored dependency changes, use `cargo add` instead of manually editing dependency entries unless there is a specific reason not to.
 - Cargo.toml: Automated dependency bump PRs are exempt; when manual edits are necessary, keep `Cargo.lock` consistent.
 - Never: Skip cargo fmt
@@ -131,5 +119,4 @@ ui/text/      # deprecated ACP TUI (see ui/text/README.md)
 
 ## Entry Points
 - CLI: crates/pleum-cli/src/main.rs
-- UI: ui/desktop/src/main.ts
 - Agent: crates/pleum/src/agents/agent.rs

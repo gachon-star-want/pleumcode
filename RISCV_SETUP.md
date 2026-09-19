@@ -249,10 +249,10 @@ Expected changes:
 ### 10. Build
 
 ```bash
-cargo build --release --target riscv64gc-unknown-linux-gnu -p pleum-cli --bin pleum
+cargo build --release --target riscv64gc-unknown-linux-gnu -p pleum-cli --bin pleumcode
 ```
 
-Output: `target/riscv64gc-unknown-linux-gnu/release/pleum`
+Output: `target/riscv64gc-unknown-linux-gnu/release/pleumcode`
 
 ## Complete Patch Script
 
@@ -276,10 +276,10 @@ For production PR, consider:
 
 ```bash
 # Check architecture
-file target/riscv64gc-unknown-linux-gnu/release/pleum
+file target/riscv64gc-unknown-linux-gnu/release/pleumcode
 # Output: ELF 64-bit LSB pie executable, UCB RISC-V
 
 # Test execution (on RISC-V hardware)
-./target/riscv64gc-unknown-linux-gnu/release/pleum --version
-./target/riscv64gc-unknown-linux-gnu/release/pleum doctor
+./target/riscv64gc-unknown-linux-gnu/release/pleumcode --version
+./target/riscv64gc-unknown-linux-gnu/release/pleumcode doctor
 ```

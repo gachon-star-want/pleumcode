@@ -92,11 +92,11 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 if [[ -z "${SKIP_BUILD:-}" && -z "${PLEUM_BIN:-}" ]]; then
   echo "Building pleum..."
-  (cd "$REPO_ROOT" && cargo build --bin pleum)
+  (cd "$REPO_ROOT" && cargo build --bin pleumcode)
   echo ""
 fi
 
-PLEUM_BIN="${PLEUM_BIN:-$REPO_ROOT/target/debug/pleum}"
+PLEUM_BIN="${PLEUM_BIN:-$REPO_ROOT/target/debug/pleumcode}"
 if [[ ! -x "$PLEUM_BIN" ]]; then
   echo "Error: pleum binary not found or not executable: $PLEUM_BIN"
   exit 1
@@ -258,7 +258,7 @@ for model in "${MODELS[@]}"; do
       echo "  $error_summary"
       RESULTS+=("✗ $model - $error_summary")
     else
-      RESULTS+=("✗ $model - pleum run failed")
+      RESULTS+=("✗ $model - pleumcode run failed")
     fi
     OVERALL_SUCCESS=false
   fi

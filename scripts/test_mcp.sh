@@ -3,7 +3,7 @@ set -e
 
 if [ -z "$SKIP_BUILD" ]; then
   echo "Building pleum..."
-  cargo build --bin pleum
+  cargo build --bin pleumcode
   echo ""
 else
   echo "Skipping build (SKIP_BUILD is set)..."
@@ -11,7 +11,7 @@ else
 fi
 
 SCRIPT_DIR=$(pwd)
-PLEUM_BIN="$SCRIPT_DIR/target/debug/pleum"
+PLEUM_BIN="$SCRIPT_DIR/target/debug/pleumcode"
 
 TEST_PROVIDER=${PLEUM_PROVIDER:-anthropic}
 TEST_MODEL=${PLEUM_MODEL:-claude-haiku-4-5-20251001}

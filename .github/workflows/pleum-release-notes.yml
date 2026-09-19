@@ -139,7 +139,7 @@ jobs:
           # Create recipe from env var with variable substitution
           echo "$PLEUM_RECIPE" | envsubst '$RELEASE_TAG' > /tmp/recipe.yaml
 
-          pleum run --recipe /tmp/recipe.yaml
+          pleumcode run --recipe /tmp/recipe.yaml
 
       - name: Read release notes
         id: read-notes

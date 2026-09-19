@@ -218,8 +218,8 @@ The remote argument is `user@host:/path/to/pleum` — `pull` appends
 # Run two configurations on the remote (in screen / mosh / tmux)
 ssh tbench@douwe.com
 cd /home/tbench/work/pleum
-./evals/harbor/cmd.py run ./target/release/pleum --job-name baseline
-./evals/harbor/cmd.py run ./target/release/pleum \
+./evals/harbor/cmd.py run ./target/release/pleumcode --job-name baseline
+./evals/harbor/cmd.py run ./target/release/pleumcode \
   --extensions developer,todo,codemode --job-name codemode
 
 # Pull results locally
