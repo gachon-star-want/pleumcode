@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-REPO="${GOOSE_GITHUB_REPO:-aaif-goose/goose}"
+REPO="${PLEUM_GITHUB_REPO:-gachon-star-want/pleum}"
 DEST="$HOME/Downloads"
 TMPDIR=$(mktemp -d)
 PLIST=$(mktemp /tmp/entitlements.XXXXXX)
@@ -39,7 +39,7 @@ fi
 echo "Downloading $DOWNLOAD_URL"
 
 # Download artifact — try nightly.link first, fall back to gh CLI
-if ! curl -fSL --connect-timeout 10 -o "$TMPDIR/goose.zip" "$DOWNLOAD_URL" 2>/dev/null; then
+if ! curl -fSL --connect-timeout 10 -o "$TMPDIR/pleum.zip" "$DOWNLOAD_URL" 2>/dev/null; then
     echo "nightly.link unavailable, falling back to GitHub API..."
     RUN_ID=$(echo "$DOWNLOAD_URL" | grep -oE 'actions/runs/[0-9]+' | cut -d/ -f3)
     ARTIFACT_NAME=$(echo "$DOWNLOAD_URL" | sed 's/\.zip$//' | xargs basename)
@@ -49,11 +49,11 @@ if ! curl -fSL --connect-timeout 10 -o "$TMPDIR/goose.zip" "$DOWNLOAD_URL" 2>/de
         echo "Could not find artifact '$ARTIFACT_NAME' for run $RUN_ID"
         exit 1
     fi
-    gh api "repos/$REPO/actions/artifacts/$ARTIFACT_ID/zip" > "$TMPDIR/goose.zip"
+    gh api "repos/$REPO/actions/artifacts/$ARTIFACT_ID/zip" > "$TMPDIR/pleum.zip"
 fi
 echo "Done."
 
-unzip -o -q "$TMPDIR/goose.zip" -d "$TMPDIR/extracted"
+unzip -o -q "$TMPDIR/pleum.zip" -d "$TMPDIR/extracted"
 
 INNER_ZIP=$(find "$TMPDIR/extracted" -name "*.zip" | head -1)
 if [[ -n "$INNER_ZIP" ]]; then
@@ -68,7 +68,7 @@ if [[ -z "$APP" ]]; then
     exit 1
 fi
 
-APP_NAME="Goose ${VERSION}.app"
+APP_NAME="Pleum ${VERSION}.app"
 rm -rf "$DEST/$APP_NAME"
 cp -R "$APP" "$DEST/$APP_NAME"
 APP_PATH="$DEST/$APP_NAME"

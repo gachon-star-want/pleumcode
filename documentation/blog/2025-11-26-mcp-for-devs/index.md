@@ -17,7 +17,7 @@ Fair. Most developers were introduced to MCPs through some chat-with-your-code e
 
 **MCPs weren't built just for developers.**
 
-They're not just for IDE copilots or code buddies. At Block, we use MCPs across *everything*, from finance to design to legal to engineering. [I gave a whole talk](https://youtu.be/IDWqWdLESgY?si=Mjoi-MGEPW9sxvmT) on how different teams are using goose, an AI agent. The point is MCP is a protocol. What you build on top of it can serve all kinds of workflows.
+They're not just for IDE copilots or code buddies. At Block, we use MCPs across *everything*, from finance to design to legal to engineering. [I gave a whole talk](https://youtu.be/IDWqWdLESgY?si=Mjoi-MGEPW9sxvmT) on how different teams are using pleum, an AI agent. The point is MCP is a protocol. What you build on top of it can serve all kinds of workflows.
 
 But I get it... let's talk about the dev-specific ones that *are* worth your time.
 
@@ -42,25 +42,25 @@ Here's a real example from our team:
 >
 > **Dev 2:** Let me check... yep, I think you're right.
 >
-> **Dev 3:** `@goose` is there a bug here?
+> **Dev 3:** `@pleum` is there a bug here?
 >
-> **goose:** Yep. It's in these lines...[code snippet]
+> **pleum:** Yep. It's in these lines...[code snippet]
 >
-> **Dev 3:** Okay `@goose`, open an issue with the details. What solutions would you suggest?
+> **Dev 3:** Okay `@pleum`, open an issue with the details. What solutions would you suggest?
 >
-> **goose:** Here are 3 suggestions: [code snippets with rationale]
+> **pleum:** Here are 3 suggestions: [code snippets with rationale]
 >
 > **Dev 1:** I like Option 1
 >
 > **Dev 2:** me too
 >
-> **Dev 3:** `@goose`, implement Option 1
+> **Dev 3:** `@pleum`, implement Option 1
 >
-> **goose:** Done. Here's the PR.
+> **pleum:** Done. Here's the PR.
 
 All of that happened *in Slack*. No one opened a browser or a terminal. No one context switched. Issue tracking, triaging, discussing fixes, implementing code in one thread in a 5-minute span.
 
-We've also got teams tagging Linear or Jira tickets and having goose fully implement them. One team had goose do **15 engineering days** worth of work in a single sprint. The team literally ran out of tasks and had to pull from future sprints. Twice!
+We've also got teams tagging Linear or Jira tickets and having pleum fully implement them. One team had pleum do **15 engineering days** worth of work in a single sprint. The team literally ran out of tasks and had to pull from future sprints. Twice!
 
 So yes, GitHub CLI is great. But MCP opens the door to workflows where GitHub isn't the only place where dev work happens. That's a shift worth paying attention to.
 
@@ -88,7 +88,7 @@ Imagine you join a new project or want to contribute to an open source one, but 
 
 Instead of poking around for hours trying to draw an architectural diagram in your head, you just ask your agent:
 
-> "goose, pack this project up."
+> "pleum, pack this project up."
 
 It runs [repomix](/docs/mcp/repomix-mcp), which compresses the entire codebase into an AI-optimized file. From there, your convo might go like this:
 
@@ -121,7 +121,7 @@ Could you script all this with CLIs and APIs? Sure, if you want to spend your we
 
 So no, MCPs are not overhyped. They're how you plug AI into everything you use: Slack, GitHub, Jira, Chrome, docs, codebases - and make that stuff work *together* in new ways.
 
-Recently, Anthropic called out the [real issue](https://www.anthropic.com/engineering/advanced-tool-use): most dev setups load tools naively, bloat the context, and confuse the model. It's not the protocol that's broken. It's that most people (and agents) haven't figured out how to use it well yet. Fortunately, goose has - it [manages MCPs by default](/docs/mcp/extension-manager-mcp), enabling and disabling as you need them. 
+Recently, Anthropic called out the [real issue](https://www.anthropic.com/engineering/advanced-tool-use): most dev setups load tools naively, bloat the context, and confuse the model. It's not the protocol that's broken. It's that most people (and agents) haven't figured out how to use it well yet. Fortunately, pleum has - it [manages MCPs by default](/docs/mcp/extension-manager-mcp), enabling and disabling as you need them. 
 
 But I digress.
 
@@ -132,12 +132,12 @@ P.S. Happy first birthday, MCP! 🎉
 <head>
   <meta property="og:title" content="MCPs for Developers Who Think They Don't Need MCPs" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://goose-docs.ai/blog/2025/11/26/mcp-for-devs" />
+  <meta property="og:url" content="https://docs.pleum.ai/blog/2025/11/26/mcp-for-devs" />
   <meta property="og:description" content="If you think MCPs are overhyped, here's what you're missing" />
-  <meta property="og:image" content="https://goose-docs.ai/assets/images/mcp-for-devs-0cbea02edffded1a26cec5f19a2a61b1.png" />
+  <meta property="og:image" content="https://docs.pleum.ai/assets/images/mcp-for-devs-0cbea02edffded1a26cec5f19a2a61b1.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:domain" content="goose-docs.ai" />
+  <meta property="twitter:domain" content="docs.pleum.ai" />
   <meta name="twitter:title" content="MCPs for Developers Who Think They Don't Need MCPs" />
   <meta name="twitter:description" content="If you think MCPs are overhyped, here's what you're missing" />
-  <meta name="twitter:image" content="https://goose-docs.ai/assets/images/mcp-for-devs-0cbea02edffded1a26cec5f19a2a61b1.png" />
+  <meta name="twitter:image" content="https://docs.pleum.ai/assets/images/mcp-for-devs-0cbea02edffded1a26cec5f19a2a61b1.png" />
 </head>

@@ -1,0 +1,52 @@
+{
+  "name": "@aaif/pleum-acp",
+  "version": "1.51.0",
+  "description": "Install and resolve the Pleum executable through npm",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gachon-star-want/pleumcode.git"
+  },
+  "keywords": [
+    "pleum",
+    "ai",
+    "agent",
+    "acp",
+    "binary"
+  ],
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "bin": {
+    "pleum": "./bin/pleum.mjs"
+  },
+  "files": [
+    "bin",
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "npm run build && node --test test/*.test.mjs",
+    "lint": "tsc --noEmit",
+    "format": "prettier --write src/ test/ bin/",
+    "prepack": "npm run build"
+  },
+  "optionalDependencies": {
+    "@aaif/pleum-binary-darwin-arm64": "workspace:*",
+    "@aaif/pleum-binary-darwin-x64": "workspace:*",
+    "@aaif/pleum-binary-linux-arm64": "workspace:*",
+    "@aaif/pleum-binary-linux-x64": "workspace:*",
+    "@aaif/pleum-binary-win32-x64": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^26.2.0",
+    "prettier": "^3.9.6",
+    "typescript": "~5.9.3"
+  }
+}

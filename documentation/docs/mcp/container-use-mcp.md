@@ -1,24 +1,24 @@
 ---
 title: Container Use Extension
-description: Use Container-Use MCP as a goose Extension
+description: Use Container-Use MCP as a pleum Extension
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import GooseDesktopInstaller from '@site/src/components/GooseDesktopInstaller';
+import PleumDesktopInstaller from '@site/src/components/PleumDesktopInstaller';
 import CLIExtensionInstructions from '@site/src/components/CLIExtensionInstructions';
 import YouTubeShortEmbed from '@site/src/components/YouTubeShortEmbed';
 
 <YouTubeShortEmbed videoUrl="https://www.youtube.com/embed/X3tf61_Tak0" />
 
-This tutorial covers how to add the [Container Use MCP Server](https://container-use.com) as a goose extension enabling goose to work in an isolated environment.
+This tutorial covers how to add the [Container Use MCP Server](https://container-use.com) as a pleum extension enabling pleum to work in an isolated environment.
 
 :::tip Quick Install
 <Tabs groupId="interface">
-  <TabItem value="ui" label="goose Desktop" default>
-  [Launch the installer](goose://extension?cmd=container-use&arg=stdio&id=container-use&name=container%20use&description=use%20containers%20with%20dagger%20and%20git%20for%20isolated%20environments)
+  <TabItem value="ui" label="pleum Desktop" default>
+  [Launch the installer](pleum://extension?cmd=container-use&arg=stdio&id=container-use&name=container%20use&description=use%20containers%20with%20dagger%20and%20git%20for%20isolated%20environments)
   </TabItem>
-  <TabItem value="cli" label="goose CLI">
+  <TabItem value="cli" label="pleum CLI">
   **Command**
   ```sh
   container-use stdio
@@ -37,8 +37,8 @@ You'll need [Docker](https://www.docker.com/) installed on your system. If you w
   <TabItem value="remote-mcp" label="Remote MCP" default>
 
     <Tabs groupId="interface">
-      <TabItem value="ui" label="goose Desktop" default>
-        <GooseDesktopInstaller
+      <TabItem value="ui" label="pleum Desktop" default>
+        <PleumDesktopInstaller
             extensionId="container-use"
             extensionName="Container Use"
             description="Run container automation with container-use"
@@ -46,7 +46,7 @@ You'll need [Docker](https://www.docker.com/) installed on your system. If you w
             args={["-y", "mcp-remote", "https://container-use.com/mcp"]}
         />
     </TabItem>
-      <TabItem value="cli" label="goose CLI">
+      <TabItem value="cli" label="pleum CLI">
           <CLIExtensionInstructions
             name="Container Use"
             description="Run container automation with container-use"
@@ -60,8 +60,8 @@ You'll need [Docker](https://www.docker.com/) installed on your system. If you w
   <TabItem value="local-mcp" label="Local MCP">
 
     <Tabs groupId="interface">
-      <TabItem value="ui" label="goose Desktop" default>
-        <GooseDesktopInstaller
+      <TabItem value="ui" label="pleum Desktop" default>
+        <PleumDesktopInstaller
             extensionId="container-use"
             extensionName="Container Use"
             description="Run container automation with container-use"
@@ -69,7 +69,7 @@ You'll need [Docker](https://www.docker.com/) installed on your system. If you w
             args={["stdio"]}
         />
     </TabItem>
-      <TabItem value="cli" label="goose CLI">
+      <TabItem value="cli" label="pleum CLI">
           <CLIExtensionInstructions
             name="Container Use"
             description="Run container automation with container-use"
@@ -96,7 +96,7 @@ See [Isolated Development Environments](/docs/tutorials/isolated-development-env
 Run a container agent to add a feature to save my to-do list data in sqlite, build and run tests, but use a separate Git branch so my main code stays safe.
 ```
 
-#### goose Output
+#### pleum Output
 
 ```
 I'll help you create a container environment to add SQLite functionality to your to-do list application on a separate Git branch. Let me start by creating the environment and examining your current code structure.

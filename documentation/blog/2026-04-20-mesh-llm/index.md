@@ -1,11 +1,11 @@
 ---
-title: "Mesh LLM in goose: routing across models"
-description: "Mesh LLM is now available as a provider setting in goose."
+title: "Mesh LLM in pleum: routing across models"
+description: "Mesh LLM is now available as a provider setting in pleum."
 authors:
     - mic
 ---
 
-Quick note: [Mesh LLM](https://github.com/Mesh-LLM/mesh-llm/) is now in goose as an option for accessing and sharing (open) LLMs with friends and family.
+Quick note: [Mesh LLM](https://github.com/Mesh-LLM/mesh-llm/) is now in pleum as an option for accessing and sharing (open) LLMs with friends and family.
 
 It uses the same llama.cpp infra as local mode to run models, with a twist.
 
@@ -22,8 +22,8 @@ This is a pretty early-stage project, so we'd love any feedback on it.
 Check out [the project docs](https://docs.anarchai.org/) and the [live public mesh](https://meshllm.cloud/dashboard).
 
 <head>
-  <meta property="og:title" content="Mesh LLM in goose: routing across models" />
+  <meta property="og:title" content="Mesh LLM in pleum: routing across models" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://goose-docs.ai/blog/2026/04/20/mesh-llm" />
-  <meta property="og:description" content="Mesh LLM is now available as a provider setting in goose." />
+  <meta property="og:url" content="https://docs.pleum.ai/blog/2026/04/20/mesh-llm" />
+  <meta property="og:description" content="Mesh LLM is now available as a provider setting in pleum." />
 </head>

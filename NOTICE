@@ -1,0 +1,9 @@
+pleumcode
+
+This product is derived from Goose (https://github.com/aaif-goose/goose),
+Copyright 2024 Block, Inc., licensed under the Apache License, Version 2.0
+(see LICENSE).
+
+Modified: identifiers, file names and branding were renamed to pleum
+(pleum/rebrand.py), and functionality was added (OS-level sandbox, context-file
+loading, PleumRouter provider). Upstream copyright and license notices are retained.

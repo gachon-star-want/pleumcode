@@ -1,4 +1,4 @@
-import type { SourceEntry, SourceType } from '@aaif/goose-acp-client';
+import type { SourceEntry, SourceType } from '@aaif/pleum-acp-client';
 import { getAcpClient } from './acpConnection';
 
 const SKILL_SOURCE_TYPES: SourceType[] = ['skill', 'builtinSkill'];
@@ -26,7 +26,7 @@ async function loadSkillSources(projectDir: string): Promise<SourceEntry[]> {
   const client = await getAcpClient();
   const responses = await Promise.all(
     SKILL_SOURCE_TYPES.map((type) =>
-      client.goose.sourcesList_unstable({
+      client.pleum.sourcesList_unstable({
         type,
         projectDir,
       })

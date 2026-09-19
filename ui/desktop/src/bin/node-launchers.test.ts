@@ -9,7 +9,7 @@ const launcherSourceDir = path.dirname(fileURLToPath(import.meta.url));
 const tempDirs: string[] = [];
 
 function makeLauncherHarness(launcherName: 'node' | 'npx') {
-  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'goose node launchers '));
+  const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'pleum node launchers '));
   tempDirs.push(rootDir);
 
   const launcherDir = path.join(rootDir, 'launcher');

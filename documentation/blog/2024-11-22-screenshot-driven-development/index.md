@@ -11,21 +11,21 @@ authors:
 
 I'm a developer at heart, so when I'm working on a personal project, the hardest part isn't writing code—it's making design decisions. I recently built a calendar user interface. I wanted to enhance its visual appeal, so I researched UI design trends like "glassmorphism" and "claymorphism."
 
-However, I didn't want to spend hours implementing the CSS for each design trend, so I developed a faster approach: screenshot-driven development. I used an open source developer agent called [goose](https://github.com/aaif-goose/goose) to transform my user interfaces quickly.
+However, I didn't want to spend hours implementing the CSS for each design trend, so I developed a faster approach: screenshot-driven development. I used an open source developer agent called [pleum](https://github.com/gachon-star-want/pleumcode) to transform my user interfaces quickly.
 
 <!-- truncate -->
 
-:::warning goose Beta Version
-This post was written about a beta version of goose and the commands and flow may have changed.
+:::warning pleum Beta Version
+This post was written about a beta version of pleum and the commands and flow may have changed.
 :::
 
 ### My original calendar:
 ![calendar](screenshot-calendar-og.png)
 
-### goose prototyped the designs below: 
-![goose prototypes](goose-prototypes-calendar.png)
+### pleum prototyped the designs below: 
+![pleum prototypes](pleum-prototypes-calendar.png)
 
-In this blog post, I'll show you how to quickly prototype design styles by letting goose handle the CSS for you.
+In this blog post, I'll show you how to quickly prototype design styles by letting pleum handle the CSS for you.
 >💡 Note: Your results might look different from my examples - that's part of the fun of generative AI! Each run can produce unique variations of these design trends.
 
 ## Get Started with Screenshot-Driven Development
@@ -180,23 +180,23 @@ Let's create a basic UI to experiment with. Create an index.html file with the c
 
 Once saved, open the file in your browser. You should see a calendar!
 
-### Step 2: Install goose
+### Step 2: Install pleum
 
 ```bash
 brew install pipx
 pipx ensurepath
-pipx install goose-ai
+pipx install pleum-ai
 ```
 
 ### Step 3: Start a session
 
 ```bash
-goose session start
+pleum session start
 ```
 
 #### Bring your own LLM
 
->goose will prompt you to set up your API key when you first run this command. You can use various LLM providers like OpenAI or Anthropic
+>pleum will prompt you to set up your API key when you first run this command. You can use various LLM providers like OpenAI or Anthropic
 
 ```bash
 export OPENAI_API_KEY=your_api_key
@@ -205,9 +205,9 @@ export ANTHROPIC_API_KEY=your_api_key
 ```
 
 ### Step 4: Enable the Screen toolkit
-goose uses [toolkits](https://goose-docs.ai/plugins/plugins.html) to extend its capabilities. The [screen](https://goose-docs.ai/plugins/available-toolkits.html#6-screen-toolkit) toolkit lets goose take and analyze screenshots.
+pleum uses [toolkits](https://docs.pleum.ai/plugins/plugins.html) to extend its capabilities. The [screen](https://docs.pleum.ai/plugins/available-toolkits.html#6-screen-toolkit) toolkit lets pleum take and analyze screenshots.
 
-To enable the Screen toolkit, add it to your goose profile at ~/.config/goose/profiles.yaml.
+To enable the Screen toolkit, add it to your pleum profile at ~/.config/pleum/profiles.yaml.
 
 > Your configuration might look slightly different depending on your LLM provider preferences.
 
@@ -225,8 +225,8 @@ default:
     requires: {}
 ```
 
-### Step 5: Prompt goose to screenshot your UI
-goose analyzes your UI through screenshots to understand its structure and elements. In your gooses session, prompt goose to take a screenshot by specifying which display your UI is on:
+### Step 5: Prompt pleum to screenshot your UI
+pleum analyzes your UI through screenshots to understand its structure and elements. In your pleums session, prompt pleum to take a screenshot by specifying which display your UI is on:
 
 ```bash
 Take a screenshot of display(1)  
@@ -234,11 +234,11 @@ Take a screenshot of display(1)
 
 > The display number is required - use display(1) for your main monitor or display(2) for a secondary monitor.
 
-Upon success, goose will run a `screencapture` command and save it as a temporary file.
+Upon success, pleum will run a `screencapture` command and save it as a temporary file.
 
-### Step 6: Prompt goose to transform your UI
+### Step 6: Prompt pleum to transform your UI
 
-Now, you can ask goose to apply different design styles. Here are some of the prompts I gave goose and the results it produced:
+Now, you can ask pleum to apply different design styles. Here are some of the prompts I gave pleum and the results it produced:
 
 #### Glassmorphism
 
@@ -277,21 +277,21 @@ Apply a brutalist effect please
 
 ## Learn More
 
-Developing user interfaces is a blend of creativity and problem-solving. And I love that using goose gives me more time to focus on creativity rather than wrestling with CSS for hours. 
+Developing user interfaces is a blend of creativity and problem-solving. And I love that using pleum gives me more time to focus on creativity rather than wrestling with CSS for hours. 
 
-Beyond prototyping, goose's ability to analyze screenshots can help developers identify and resolve UI bugs.
+Beyond prototyping, pleum's ability to analyze screenshots can help developers identify and resolve UI bugs.
 
-If you're interested in learning more, check out the [goose repo](https://github.com/aaif-goose/goose) and join our [Discord community](https://discord.gg/n8R5VaWDAn).
+If you're interested in learning more, check out the [pleum repo](https://github.com/gachon-star-want/pleumcode) and join our [Discord community](https://discord.gg/n8R5VaWDAn).
 
 <head>
     <meta property="og:title" content="Screenshot-Driven Development" />
     <meta property="og:type" content="article" />
-    <meta property="og:url" content="https://goose-docs.ai/blog/2024/11/22/screenshot-driven-development" />
+    <meta property="og:url" content="https://docs.pleum.ai/blog/2024/11/22/screenshot-driven-development" />
     <meta property="og:description" content="AI Agent uses screenshots to assist in styling." />
-    <meta property="og:image" content="https://goose-docs.ai/assets/images/screenshot-driven-development-4ed1beaa10c6062c0bf87e2d27590ad6.png" />
+    <meta property="og:image" content="https://docs.pleum.ai/assets/images/screenshot-driven-development-4ed1beaa10c6062c0bf87e2d27590ad6.png" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta property="twitter:domain" content="goose-docs.ai" />
+    <meta property="twitter:domain" content="docs.pleum.ai" />
     <meta name="twitter:title" content="Screenshot-Driven Development" />
     <meta name="twitter:description" content="AI Agent uses screenshots to assist in styling." />
-    <meta name="twitter:image" content="https://goose-docs.ai/assets/images/screenshot-driven-development-4ed1beaa10c6062c0bf87e2d27590ad6.png" />
+    <meta name="twitter:image" content="https://docs.pleum.ai/assets/images/screenshot-driven-development-4ed1beaa10c6062c0bf87e2d27590ad6.png" />
 </head>

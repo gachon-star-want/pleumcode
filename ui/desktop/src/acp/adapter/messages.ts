@@ -7,7 +7,7 @@ import {
   type AcpChatStateChange,
   type AdapterState,
   DEFAULT_VISIBLE_MESSAGE_METADATA,
-  getGooseMessageMeta,
+  getPleumMessageMeta,
   messagesChange,
 } from './shared';
 
@@ -26,50 +26,50 @@ export function applyContentChunk(
     return [];
   }
 
-  const gooseMeta = getGooseMessageMeta(update);
-  const messageId = update.messageId ?? gooseMeta.messageId;
-  const existing = findMessageForChunk(state, role, messageId, gooseMeta.created);
+  const pleumMeta = getPleumMessageMeta(update);
+  const messageId = update.messageId ?? pleumMeta.messageId;
+  const existing = findMessageForChunk(state, role, messageId, pleumMeta.created);
 
   if (existing) {
     const isOutputLimitFallbackChunk =
-      gooseMeta.outputTokenLimitReached === true && gooseMeta.fallbackContent === true;
+      pleumMeta.outputTokenLimitReached === true && pleumMeta.fallbackContent === true;
     const existingMessageHasContent = existing.content.length > 0;
     const shouldSkipFallbackChunk = isOutputLimitFallbackChunk && existingMessageHasContent;
 
-    existing.metadata.outputTokenLimitReached = gooseMeta.outputTokenLimitReached;
+    existing.metadata.outputTokenLimitReached = pleumMeta.outputTokenLimitReached;
     existing.metadata.fallbackContent = shouldSkipFallbackChunk
       ? undefined
-      : gooseMeta.fallbackContent;
+      : pleumMeta.fallbackContent;
 
     if (shouldSkipFallbackChunk) {
-      return messagesChangeWithLocalSteerConfirmation(state, existing, gooseMeta.steer);
+      return messagesChangeWithLocalSteerConfirmation(state, existing, pleumMeta.steer);
     }
 
     const lastContent = existing.content[existing.content.length - 1];
-    if (reconcileLocalSteerTextChunk(state, existing, content, gooseMeta.steer)) {
-      return messagesChangeWithLocalSteerConfirmation(state, existing, gooseMeta.steer);
+    if (reconcileLocalSteerTextChunk(state, existing, content, pleumMeta.steer)) {
+      return messagesChangeWithLocalSteerConfirmation(state, existing, pleumMeta.steer);
     }
 
     if (lastContent?.type === 'text' && content.type === 'text') {
       lastContent.text += content.text;
     } else if (content.type === 'image' && hasImageContent(existing, content)) {
-      return messagesChangeWithLocalSteerConfirmation(state, existing, gooseMeta.steer);
+      return messagesChangeWithLocalSteerConfirmation(state, existing, pleumMeta.steer);
     } else {
       existing.content.push(content);
     }
 
-    return messagesChangeWithLocalSteerConfirmation(state, existing, gooseMeta.steer);
+    return messagesChangeWithLocalSteerConfirmation(state, existing, pleumMeta.steer);
   } else {
     state.messages.push({
       ...(messageId ? { id: messageId } : {}),
       role,
-      created: gooseMeta.created ?? Math.floor(Date.now() / 1000),
+      created: pleumMeta.created ?? Math.floor(Date.now() / 1000),
       content: [content],
       metadata: {
         ...DEFAULT_VISIBLE_MESSAGE_METADATA,
-        ...(gooseMeta.steer ? { steer: true } : {}),
-        outputTokenLimitReached: gooseMeta.outputTokenLimitReached,
-        fallbackContent: gooseMeta.fallbackContent,
+        ...(pleumMeta.steer ? { steer: true } : {}),
+        outputTokenLimitReached: pleumMeta.outputTokenLimitReached,
+        fallbackContent: pleumMeta.fallbackContent,
       },
     });
   }
@@ -85,22 +85,22 @@ export function applyThoughtChunk(
     return [];
   }
 
-  const gooseMeta = getGooseMessageMeta(update);
-  const messageId = update.messageId ?? gooseMeta.messageId;
-  let message = findMessageForChunk(state, 'assistant', messageId, gooseMeta.created);
+  const pleumMeta = getPleumMessageMeta(update);
+  const messageId = update.messageId ?? pleumMeta.messageId;
+  let message = findMessageForChunk(state, 'assistant', messageId, pleumMeta.created);
 
   if (!message) {
     message = {
       ...(messageId ? { id: messageId } : {}),
       role: 'assistant',
-      created: gooseMeta.created ?? Math.floor(Date.now() / 1000),
+      created: pleumMeta.created ?? Math.floor(Date.now() / 1000),
       content: [],
       metadata: { ...DEFAULT_VISIBLE_MESSAGE_METADATA },
     };
     state.messages.push(message);
   }
 
-  message.metadata.outputTokenLimitReached = gooseMeta.outputTokenLimitReached;
+  message.metadata.outputTokenLimitReached = pleumMeta.outputTokenLimitReached;
 
   const lastContent = message.content[message.content.length - 1];
   if (lastContent?.type === 'thinking') {

@@ -2,12 +2,12 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { MainPanelLayout } from '../Layout/MainPanelLayout';
 import { Button } from '../ui/button';
 import { AlertTriangle, Download, Play, Trash2, Upload } from 'lucide-react';
-import type { GooseApp } from '../../types/apps';
+import type { PleumApp } from '../../types/apps';
 import { deleteMcpApp, exportMcpApp, importMcpApp, listMcpApps } from '../../acp/mcp-apps';
 import { useChatContext } from '../../contexts/ChatContext';
 import { formatAppName } from '../../utils/conversionUtils';
 import { errorMessage } from '../../utils/conversionUtils';
-import { isRetiredGooseChatApp } from '../../utils/retiredApps';
+import { isRetiredPleumChatApp } from '../../utils/retiredApps';
 import { defineMessages, useIntl } from '../../i18n';
 
 const i18n = defineMessages({
@@ -30,7 +30,7 @@ const i18n = defineMessages({
   description: {
     id: 'appsView.description',
     defaultMessage:
-      'Applications from your MCP servers and Apps built by goose itself. You can ask it to create new apps through the chat interface and they will appear here.',
+      'Applications from your MCP servers and Apps built by pleum itself. You can ask it to create new apps through the chat interface and they will appear here.',
   },
   loading: {
     id: 'appsView.loading',
@@ -43,7 +43,7 @@ const i18n = defineMessages({
   noAppsDescription: {
     id: 'appsView.noAppsDescription',
     defaultMessage:
-      'Open a chat and ask goose for the app you want to have. It can build one for you and that will appear here. Or if somebody shared an app, you can import it using the button above.',
+      'Open a chat and ask pleum for the app you want to have. It can build one for you and that will appear here. Or if somebody shared an app, you can import it using the button above.',
   },
   customApp: {
     id: 'appsView.customApp',
@@ -91,7 +91,7 @@ const GridLayout = ({ children }: { children: React.ReactNode }) => {
 
 export default function AppsView() {
   const intl = useIntl();
-  const [apps, setApps] = useState<GooseApp[]>([]);
+  const [apps, setApps] = useState<PleumApp[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [deletesInProgress, setDeletesInProgress] = useState<Set<string>>(new Set());
@@ -103,7 +103,7 @@ export default function AppsView() {
     const loadCachedApps = async () => {
       try {
         const cachedApps = await listMcpApps();
-        // Only show apps from the "apps" extension (vibe coded apps built by Goose)
+        // Only show apps from the "apps" extension (vibe coded apps built by Pleum)
         setApps(cachedApps.filter((a) => a.mcpServers?.includes('apps')));
       } catch (err) {
         console.warn('Failed to load cached apps:', err);
@@ -128,7 +128,7 @@ export default function AppsView() {
       const sessionApps = (await listMcpApps(activeSessionId)).filter((a) =>
         a.mcpServers?.includes(appsExtension)
       );
-      const merged = new Map<string, GooseApp>();
+      const merged = new Map<string, PleumApp>();
       for (const app of cacheApps) {
         merged.set(app.uri, app);
       }
@@ -180,7 +180,7 @@ export default function AppsView() {
     }
   }, [sessionId, refreshAppsExtensionList]);
 
-  const handleLaunchApp = async (app: GooseApp) => {
+  const handleLaunchApp = async (app: PleumApp) => {
     try {
       await window.electron.launchApp(app);
     } catch (err) {
@@ -189,7 +189,7 @@ export default function AppsView() {
     }
   };
 
-  const handleDeleteApp = async (app: GooseApp) => {
+  const handleDeleteApp = async (app: PleumApp) => {
     if (
       !window.confirm(
         intl.formatMessage(i18n.deleteConfirm, { name: formatAppName(app.name) })
@@ -217,7 +217,7 @@ export default function AppsView() {
     }
   };
 
-  const handleDownloadApp = async (app: GooseApp) => {
+  const handleDownloadApp = async (app: PleumApp) => {
     try {
       const html = await exportMcpApp(app.name);
       const blob = new Blob([html], { type: 'text/html' });
@@ -250,7 +250,7 @@ export default function AppsView() {
       await importMcpApp(text);
 
       const cachedApps = await listMcpApps();
-      // Only show apps from the "apps" extension (vibe coded apps built by Goose)
+      // Only show apps from the "apps" extension (vibe coded apps built by Pleum)
       setApps(cachedApps.filter((a) => a.mcpServers?.includes('apps')));
       setError(null);
     } catch (err) {
@@ -329,7 +329,7 @@ export default function AppsView() {
             <GridLayout>
               {apps.map((app) => {
                 const isCustomApp = app.mcpServers?.includes('apps') ?? false;
-                const retiredChatApp = isRetiredGooseChatApp(app);
+                const retiredChatApp = isRetiredPleumChatApp(app);
                 const canDelete = isCustomApp && app.deletable === true;
                 const deleteInProgress = deletesInProgress.has(app.name);
                 return (

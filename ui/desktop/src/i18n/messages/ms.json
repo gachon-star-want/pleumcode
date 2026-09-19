@@ -27,7 +27,7 @@
     "defaultMessage": "Delete \"{name}\"? This cannot be undone."
   },
   "appsView.description": {
-    "defaultMessage": "Aplikasi daripada pelayan MCP anda dan Apl yang dibina oleh goose sendiri. Anda boleh memintanya mencipta apl baharu melalui antara muka sembang dan ia akan muncul di sini."
+    "defaultMessage": "Aplikasi daripada pelayan MCP anda dan Apl yang dibina oleh pleum sendiri. Anda boleh memintanya mencipta apl baharu melalui antara muka sembang dan ia akan muncul di sini."
   },
   "appsView.errorLoading": {
     "defaultMessage": "Ralat memuatkan apl: {error}"
@@ -45,7 +45,7 @@
     "defaultMessage": "Memuatkan apl..."
   },
   "appsView.noAppsDescription": {
-    "defaultMessage": "Buka sembang dan minta goose untuk apl yang anda mahukan. Ia boleh membina satu untuk anda dan ia akan muncul di sini. Atau jika seseorang berkongsi apl, anda boleh mengimportnya menggunakan butang di atas."
+    "defaultMessage": "Buka sembang dan minta pleum untuk apl yang anda mahukan. Ia boleh membina satu untuk anda dan ia akan muncul di sini. Atau jika seseorang berkongsi apl, anda boleh mengimportnya menggunakan butang di atas."
   },
   "appsView.noAppsTitle": {
     "defaultMessage": "Tiada apl tersedia"
@@ -84,7 +84,7 @@
     "defaultMessage": "Kelayakan dipadam"
   },
   "authSettings.description": {
-    "defaultMessage": "Urus kelayakan pembekal yang disimpan secara setempat oleh goose."
+    "defaultMessage": "Urus kelayakan pembekal yang disimpan secara setempat oleh pleum."
   },
   "authSettings.empty": {
     "defaultMessage": "Tiada kelayakan pembekal yang disimpan secara setempat ditemui."
@@ -171,10 +171,10 @@
     "defaultMessage": "Lancarkan"
   },
   "chat.notification.taskComplete.body": {
-    "defaultMessage": "Klik di sini untuk membawa Goose kembali ke fokus."
+    "defaultMessage": "Klik di sini untuk membawa Pleum kembali ke fokus."
   },
   "chat.notification.taskComplete.title": {
-    "defaultMessage": "Goose telah menyelesaikan tugasan."
+    "defaultMessage": "Pleum telah menyelesaikan tugasan."
   },
   "chatInput.contextWindow": {
     "defaultMessage": "Tetingkap konteks"
@@ -225,13 +225,13 @@
     "defaultMessage": "Menunggu imej disimpan..."
   },
   "chatSettings.modeDescription": {
-    "defaultMessage": "Pilih mod lalai yang Goose gunakan untuk sesi baharu. Sesi sedia ada mengekalkan mod semasanya."
+    "defaultMessage": "Pilih mod lalai yang Pleum gunakan untuk sesi baharu. Sesi sedia ada mengekalkan mod semasanya."
   },
   "chatSettings.modeTitle": {
     "defaultMessage": "Mod Lalai"
   },
   "chatSettings.responseStylesDescription": {
-    "defaultMessage": "Pilih cara Goose memformat dan menggaya respons"
+    "defaultMessage": "Pilih cara Pleum memformat dan menggaya respons"
   },
   "chatSettings.responseStylesTitle": {
     "defaultMessage": "Gaya Respons"
@@ -252,10 +252,10 @@
     "defaultMessage": "Editor Konfigurasi"
   },
   "configSettings.description": {
-    "defaultMessage": "Edit tetapan konfigurasi goose anda"
+    "defaultMessage": "Edit tetapan konfigurasi pleum anda"
   },
   "configSettings.descriptionWithProvider": {
-    "defaultMessage": "Edit tetapan konfigurasi goose anda (tetapan semasa untuk {provider})"
+    "defaultMessage": "Edit tetapan konfigurasi pleum anda (tetapan semasa untuk {provider})"
   },
   "configSettings.done": {
     "defaultMessage": "Selesai"
@@ -327,7 +327,7 @@
     "defaultMessage": "Pusingan Maksimum"
   },
   "conversationLimitsDropdown.maxTurnsDescription": {
-    "defaultMessage": "Pusingan ejen maksimum sebelum Goose meminta input pengguna"
+    "defaultMessage": "Pusingan ejen maksimum sebelum Pleum meminta input pengguna"
   },
   "costTracker.costUnavailable": {
     "defaultMessage": "Data kos tidak tersedia untuk {model} ({inputTokens} token input, {outputTokens} token output)"
@@ -783,7 +783,7 @@
     "defaultMessage": "Edit tetapan {name}"
   },
   "defaultCardButtons.getStarted": {
-    "defaultMessage": "Mulakan dengan goose!"
+    "defaultMessage": "Mulakan dengan pleum!"
   },
   "defaultProviderSetupForm.apiHostLabel": {
     "defaultMessage": "Hos API"
@@ -924,7 +924,7 @@
     "defaultMessage": "Enter path"
   },
   "dirSwitcher.enterPathPlaceholder": {
-    "defaultMessage": "Enter an absolute path (e.g. /home/goose/workspace)"
+    "defaultMessage": "Enter an absolute path (e.g. /home/pleum/workspace)"
   },
   "dirSwitcher.enterPathInvalid": {
     "defaultMessage": "Working directory must be an absolute path"
@@ -963,7 +963,7 @@
     "defaultMessage": "Permintaan maklumat telah dibatalkan."
   },
   "elicitationRequest.defaultMessage": {
-    "defaultMessage": "Goose memerlukan beberapa maklumat daripada anda."
+    "defaultMessage": "Pleum memerlukan beberapa maklumat daripada anda."
   },
   "elicitationRequest.expired": {
     "defaultMessage": "Permintaan ini telah luput. Sambungan perlu bertanya semula."
@@ -1008,7 +1008,7 @@
     "defaultMessage": "Satu ralat telah berlaku."
   },
   "errorBoundary.errorWithVersion": {
-    "defaultMessage": "Satu ralat telah berlaku dalam Goose v{version}."
+    "defaultMessage": "Satu ralat telah berlaku dalam Pleum v{version}."
   },
   "errorBoundary.heading": {
     "defaultMessage": "Honk!"
@@ -1191,7 +1191,7 @@
     "defaultMessage": "Sambungan yang didayakan di sini digunakan sebagai lalai untuk sembang baharu. Anda juga boleh menogol sambungan aktif semasa sembang."
   },
   "extensionsView.description": {
-    "defaultMessage": "Sambungan ini menggunakan Model Context Protocol (MCP). Ia boleh mengembangkan keupayaan Goose menggunakan tiga komponen utama: Prompts, Resources, dan Tools. {searchShortcut} untuk mencari."
+    "defaultMessage": "Sambungan ini menggunakan Model Context Protocol (MCP). Ia boleh mengembangkan keupayaan Pleum menggunakan tiga komponen utama: Prompts, Resources, dan Tools. {searchShortcut} untuk mencari."
   },
   "extensionsView.heading": {
     "defaultMessage": "Sambungan"
@@ -1209,19 +1209,19 @@
     "defaultMessage": "AA:BB:CC:... atau sha256/base64"
   },
   "externalBackendSection.description": {
-    "defaultMessage": "Secara lalai goose melancarkan pelayan untuk anda, gunakan ini untuk menyambung ke pelayan goose luaran"
+    "defaultMessage": "Secara lalai pleum melancarkan pelayan untuk anda, gunakan ini untuk menyambung ke pelayan pleum luaran"
   },
   "externalBackendSection.fingerprintRequiresHttps": {
     "defaultMessage": "Certificate fingerprint requires an https URL"
   },
   "externalBackendSection.restartNote": {
-    "defaultMessage": "Perubahan memerlukan memulakan semula Goose untuk berkuat kuasa. Tetingkap sembang baharu akan menyambung ke pelayan luaran."
+    "defaultMessage": "Perubahan memerlukan memulakan semula Pleum untuk berkuat kuasa. Tetingkap sembang baharu akan menyambung ke pelayan luaran."
   },
   "externalBackendSection.secretKey": {
     "defaultMessage": "Kunci Rahsia"
   },
   "externalBackendSection.secretKeyHelp": {
-    "defaultMessage": "Kunci rahsia yang dikonfigurasikan pada pelayan Goose (GOOSE_SERVER__SECRET_KEY)"
+    "defaultMessage": "Kunci rahsia yang dikonfigurasikan pada pelayan Pleum (PLEUM_SERVER__SECRET_KEY)"
   },
   "externalBackendSection.secretKeyPlaceholder": {
     "defaultMessage": "Masukkan kunci rahsia pelayan"
@@ -1230,10 +1230,10 @@
     "defaultMessage": "URL Pelayan"
   },
   "externalBackendSection.serverUrlHelp": {
-    "defaultMessage": "Enter the HTTP(S) base URL. Goose checks /status and connects to /acp under this base."
+    "defaultMessage": "Enter the HTTP(S) base URL. Pleum checks /status and connects to /acp under this base."
   },
   "externalBackendSection.title": {
-    "defaultMessage": "Pelayan Goose"
+    "defaultMessage": "Pelayan Pleum"
   },
   "externalBackendSection.urlBaseError": {
     "defaultMessage": "URL must be the backend base URL before /acp, without query parameters or fragments"
@@ -1248,7 +1248,7 @@
     "defaultMessage": "Gunakan pelayan luaran"
   },
   "externalBackendSection.useExternalServerDescription": {
-    "defaultMessage": "Sambung ke pelayan goose yang berjalan di tempat lain (memerlukan memulakan semula aplikasi)"
+    "defaultMessage": "Sambung ke pelayan pleum yang berjalan di tempat lain (memerlukan memulakan semula aplikasi)"
   },
   "externalBackendSection.workingDir": {
     "defaultMessage": "Direktori kerja jauh (pilihan)"
@@ -1257,70 +1257,70 @@
     "defaultMessage": "Laluan mutlak pada backend luaran. Biarkan kosong untuk menghantar direktori kerja setempat."
   },
   "externalBackendSection.workingDirPlaceholder": {
-    "defaultMessage": "/home/goose/workspace"
+    "defaultMessage": "/home/pleum/workspace"
   },
-  "goosehintsModal.close": {
+  "pleumhintsModal.close": {
     "defaultMessage": "Tutup"
   },
-  "goosehintsModal.developer": {
+  "pleumhintsModal.developer": {
     "defaultMessage": "Pembangun"
   },
-  "goosehintsModal.dialogDescription": {
-    "defaultMessage": "Berikan konteks tambahan tentang projek anda untuk meningkatkan komunikasi dengan Goose"
+  "pleumhintsModal.dialogDescription": {
+    "defaultMessage": "Berikan konteks tambahan tentang projek anda untuk meningkatkan komunikasi dengan Pleum"
   },
-  "goosehintsModal.dialogTitle": {
-    "defaultMessage": "Konfigurasikan Petunjuk Projek (.goosehints)"
+  "pleumhintsModal.dialogTitle": {
+    "defaultMessage": "Konfigurasikan Petunjuk Projek (.pleumhints)"
   },
-  "goosehintsModal.errorReading": {
-    "defaultMessage": "Ralat membaca fail .goosehints: {error}"
+  "pleumhintsModal.errorReading": {
+    "defaultMessage": "Ralat membaca fail .pleumhints: {error}"
   },
-  "goosehintsModal.failedToAccess": {
-    "defaultMessage": "Gagal mengakses fail .goosehints"
+  "pleumhintsModal.failedToAccess": {
+    "defaultMessage": "Gagal mengakses fail .pleumhints"
   },
-  "goosehintsModal.failedToSave": {
-    "defaultMessage": "Gagal menyimpan fail .goosehints"
+  "pleumhintsModal.failedToSave": {
+    "defaultMessage": "Gagal menyimpan fail .pleumhints"
   },
-  "goosehintsModal.fileCreating": {
-    "defaultMessage": "Mencipta fail .goosehints baharu di: {filePath}"
+  "pleumhintsModal.fileCreating": {
+    "defaultMessage": "Mencipta fail .pleumhints baharu di: {filePath}"
   },
-  "goosehintsModal.fileFound": {
-    "defaultMessage": "Fail .goosehints dijumpai di: {filePath}"
+  "pleumhintsModal.fileFound": {
+    "defaultMessage": "Fail .pleumhints dijumpai di: {filePath}"
   },
-  "goosehintsModal.helpText1": {
-    "defaultMessage": ".goosehints ialah fail teks yang digunakan untuk memberikan konteks tambahan tentang projek anda dan meningkatkan komunikasi dengan Goose."
+  "pleumhintsModal.helpText1": {
+    "defaultMessage": ".pleumhints ialah fail teks yang digunakan untuk memberikan konteks tambahan tentang projek anda dan meningkatkan komunikasi dengan Pleum."
   },
-  "goosehintsModal.helpText2": {
-    "defaultMessage": "Sila pastikan sambungan {bold} didayakan dalam halaman sambungan. Sambungan ini diperlukan untuk menggunakan .goosehints. Anda perlu memulakan semula sesi anda untuk kemas kini .goosehints berkuat kuasa."
+  "pleumhintsModal.helpText2": {
+    "defaultMessage": "Sila pastikan sambungan {bold} didayakan dalam halaman sambungan. Sambungan ini diperlukan untuk menggunakan .pleumhints. Anda perlu memulakan semula sesi anda untuk kemas kini .pleumhints berkuat kuasa."
   },
-  "goosehintsModal.helpText3": {
+  "pleumhintsModal.helpText3": {
     "defaultMessage": "Lihat {link} untuk maklumat lanjut."
   },
-  "goosehintsModal.helpTextLink": {
-    "defaultMessage": "menggunakan .goosehints"
+  "pleumhintsModal.helpTextLink": {
+    "defaultMessage": "menggunakan .pleumhints"
   },
-  "goosehintsModal.placeholder": {
+  "pleumhintsModal.placeholder": {
     "defaultMessage": "Masukkan petunjuk projek di sini..."
   },
-  "goosehintsModal.save": {
+  "pleumhintsModal.save": {
     "defaultMessage": "Simpan"
   },
-  "goosehintsModal.savedSuccessfully": {
+  "pleumhintsModal.savedSuccessfully": {
     "defaultMessage": "Berjaya disimpan"
   },
-  "goosehintsModal.saving": {
+  "pleumhintsModal.saving": {
     "defaultMessage": "Menyimpan..."
   },
-  "goosehintsSection.configure": {
+  "pleumhintsSection.configure": {
     "defaultMessage": "Konfigurasikan"
   },
-  "goosehintsSection.description": {
-    "defaultMessage": "Konfigurasikan fail .goosehints projek anda untuk memberikan konteks tambahan kepada Goose"
+  "pleumhintsSection.description": {
+    "defaultMessage": "Konfigurasikan fail .pleumhints projek anda untuk memberikan konteks tambahan kepada Pleum"
   },
-  "goosehintsSection.title": {
-    "defaultMessage": "Petunjuk Projek (.goosehints)"
+  "pleumhintsSection.title": {
+    "defaultMessage": "Petunjuk Projek (.pleumhints)"
   },
-  "groupedExtensionLoadingToast.askGoose": {
-    "defaultMessage": "Tanya goose"
+  "groupedExtensionLoadingToast.askPleum": {
+    "defaultMessage": "Tanya pleum"
   },
   "groupedExtensionLoadingToast.collapseDetails": {
     "defaultMessage": "Runtuhkan butiran"
@@ -1440,7 +1440,7 @@
     "defaultMessage": "Hugging Face"
   },
   "imagePreview.altText": {
-    "defaultMessage": "imej goose"
+    "defaultMessage": "imej pleum"
   },
   "imagePreview.clickToCollapse": {
     "defaultMessage": "Klik untuk meruntuhkan"
@@ -1455,10 +1455,10 @@
     "defaultMessage": "Batal"
   },
   "importRecipeForm.deeplinkHint": {
-    "defaultMessage": "Tampal pautan dalam resipi yang bermula dengan \"goose://recipe?config=\""
+    "defaultMessage": "Tampal pautan dalam resipi yang bermula dengan \"pleum://recipe?config=\""
   },
   "importRecipeForm.deeplinkPlaceholder": {
-    "defaultMessage": "Tampal pautan dalam goose://recipe?config=... anda di sini"
+    "defaultMessage": "Tampal pautan dalam pleum://recipe?config=... anda di sini"
   },
   "importRecipeForm.example": {
     "defaultMessage": "contoh"
@@ -1488,7 +1488,7 @@
     "defaultMessage": "Fail Resipi"
   },
   "importRecipeForm.reviewWarning": {
-    "defaultMessage": "Pastikan anda menyemak kandungan fail resipi sebelum menambahnya ke antara muka goose anda."
+    "defaultMessage": "Pastikan anda menyemak kandungan fail resipi sebelum menambahnya ke antara muka pleum anda."
   },
   "importRecipeForm.schemaDescription": {
     "defaultMessage": "Fail YAML atau JSON anda harus mengikut struktur ini. Medan yang diperlukan ialah: title, description, dan sama ada instructions atau prompt."
@@ -1599,13 +1599,13 @@
     "defaultMessage": "Pintasan Aplikasi"
   },
   "keyboardShortcuts.categoryApplicationDescription": {
-    "defaultMessage": "Pintasan ini berfungsi apabila Goose ialah aplikasi aktif"
+    "defaultMessage": "Pintasan ini berfungsi apabila Pleum ialah aplikasi aktif"
   },
   "keyboardShortcuts.categoryGlobal": {
     "defaultMessage": "Pintasan Global"
   },
   "keyboardShortcuts.categoryGlobalDescription": {
-    "defaultMessage": "Pintasan ini berfungsi di seluruh sistem, walaupun Goose tidak difokuskan"
+    "defaultMessage": "Pintasan ini berfungsi di seluruh sistem, walaupun Pleum tidak difokuskan"
   },
   "keyboardShortcuts.categorySearch": {
     "defaultMessage": "Pintasan Carian"
@@ -1647,10 +1647,10 @@
     "defaultMessage": "Cari Sebelumnya"
   },
   "keyboardShortcuts.focusWindowDescription": {
-    "defaultMessage": "Bawa tetingkap Goose ke hadapan dari mana-mana sahaja"
+    "defaultMessage": "Bawa tetingkap Pleum ke hadapan dari mana-mana sahaja"
   },
   "keyboardShortcuts.focusWindowLabel": {
-    "defaultMessage": "Fokus Tetingkap Goose"
+    "defaultMessage": "Fokus Tetingkap Pleum"
   },
   "keyboardShortcuts.loading": {
     "defaultMessage": "Memuatkan..."
@@ -1662,7 +1662,7 @@
     "defaultMessage": "Sembang Baharu"
   },
   "keyboardShortcuts.newChatWindowDescription": {
-    "defaultMessage": "Buka tetingkap Goose baharu"
+    "defaultMessage": "Buka tetingkap Pleum baharu"
   },
   "keyboardShortcuts.newChatWindowLabel": {
     "defaultMessage": "Tetingkap Sembang Baharu"
@@ -1701,7 +1701,7 @@
     "defaultMessage": "Set Semula kepada Lalai"
   },
   "keyboardShortcuts.restartDescription": {
-    "defaultMessage": "Perubahan pada pintasan aplikasi (seperti Sembang Baharu, Tetapan, dll.) memerlukan Goose dimulakan semula untuk berkuat kuasa. Pintasan global (Fokus Tetingkap, Pelancar Pantas) berfungsi serta-merta."
+    "defaultMessage": "Perubahan pada pintasan aplikasi (seperti Sembang Baharu, Tetapan, dll.) memerlukan Pleum dimulakan semula untuk berkuat kuasa. Pintasan global (Fokus Tetingkap, Pelancar Pantas) berfungsi serta-merta."
   },
   "keyboardShortcuts.restartRequired": {
     "defaultMessage": "Mula Semula Diperlukan"
@@ -1731,28 +1731,28 @@
     "defaultMessage": "Togol Navigasi"
   },
   "launcher.placeholder": {
-    "defaultMessage": "Tanya goose apa sahaja..."
+    "defaultMessage": "Tanya pleum apa sahaja..."
   },
-  "loadingGoose.compacting": {
-    "defaultMessage": "goose sedang memadatkan perbualan..."
+  "loadingPleum.compacting": {
+    "defaultMessage": "pleum sedang memadatkan perbualan..."
   },
-  "loadingGoose.idle": {
-    "defaultMessage": "goose sedang mengusahakannya…"
+  "loadingPleum.idle": {
+    "defaultMessage": "pleum sedang mengusahakannya…"
   },
-  "loadingGoose.loadingConversation": {
+  "loadingPleum.loadingConversation": {
     "defaultMessage": "memuatkan perbualan..."
   },
-  "loadingGoose.restartingAgent": {
+  "loadingPleum.restartingAgent": {
     "defaultMessage": "memulakan semula sesi..."
   },
-  "loadingGoose.streaming": {
-    "defaultMessage": "goose sedang mengusahakannya…"
+  "loadingPleum.streaming": {
+    "defaultMessage": "pleum sedang mengusahakannya…"
   },
-  "loadingGoose.thinking": {
-    "defaultMessage": "goose sedang berfikir…"
+  "loadingPleum.thinking": {
+    "defaultMessage": "pleum sedang berfikir…"
   },
-  "loadingGoose.waiting": {
-    "defaultMessage": "goose sedang menunggu…"
+  "loadingPleum.waiting": {
+    "defaultMessage": "pleum sedang menunggu…"
   },
   "localInferenceSettings.deleteConfirm": {
     "defaultMessage": "Padam model ini? Anda boleh memuat turunnya semula kemudian."
@@ -2388,7 +2388,7 @@
     "defaultMessage": "Pelayan mungkin sedang dimulakan atau tidak tersedia buat sementara waktu."
   },
   "onboardingGuard.checkProviderErrorTitle": {
-    "defaultMessage": "Tidak dapat menyambung ke pelayan Goose"
+    "defaultMessage": "Tidak dapat menyambung ke pelayan Pleum"
   },
   "onboardingGuard.retry": {
     "defaultMessage": "Cuba Semula"
@@ -2397,10 +2397,10 @@
     "defaultMessage": "Ejen AI tempatan anda. Sambungkan penyedia model AI untuk bermula."
   },
   "onboardingGuard.welcomeTitle": {
-    "defaultMessage": "Selamat datang ke goose"
+    "defaultMessage": "Selamat datang ke pleum"
   },
   "onboardingSuccess.allSet": {
-    "defaultMessage": "Anda sudah bersedia untuk mula menggunakan goose."
+    "defaultMessage": "Anda sudah bersedia untuk mula menggunakan pleum."
   },
   "onboardingSuccess.connectedTo": {
     "defaultMessage": "Disambungkan ke {providerName}"
@@ -2415,7 +2415,7 @@
     "defaultMessage": "Model setempat sedia"
   },
   "onboardingSuccess.privacyDescription": {
-    "defaultMessage": "Data penggunaan tanpa nama membantu menambah baik goose. Kami tidak sekali-kali mengumpul perbualan, kod atau data peribadi anda."
+    "defaultMessage": "Data penggunaan tanpa nama membantu menambah baik pleum. Kami tidak sekali-kali mengumpul perbualan, kod atau data peribadi anda."
   },
   "onboardingSuccess.privacyTitle": {
     "defaultMessage": "Privasi"
@@ -2583,10 +2583,10 @@
     "defaultMessage": "Metrik sesi (tempoh, kiraan interaksi, penggunaan token)"
   },
   "privacyInfoModal.collectVersion": {
-    "defaultMessage": "Versi goose dan kaedah pemasangan"
+    "defaultMessage": "Versi pleum dan kaedah pemasangan"
   },
   "privacyInfoModal.description": {
-    "defaultMessage": "Data penggunaan tanpa nama membantu kami memahami cara goose digunakan dan mengenal pasti bidang untuk penambahbaikan."
+    "defaultMessage": "Data penggunaan tanpa nama membantu kami memahami cara pleum digunakan dan mengenal pasti bidang untuk penambahbaikan."
   },
   "privacyInfoModal.neverCollect": {
     "defaultMessage": "Kami tidak sekali-kali mengumpul perbualan, kod, argumen alat, mesej ralat atau sebarang data peribadi anda. Anda boleh menukar tetapan ini pada bila-bila masa dalam Tetapan."
@@ -2655,7 +2655,7 @@
     "defaultMessage": "Gagal menyimpan gesaan"
   },
   "promptsSettings.promptEditingDescription": {
-    "defaultMessage": "Sesuaikan gesaan yang mentakrifkan tingkah laku goose dalam konteks yang berbeza. Gesaan ini menggunakan sintaks templat Jinja2. Berhati-hati semasa mengubah suai pemboleh ubah templat, kerana perubahan yang salah boleh merosakkan fungsi. Sila kongsikan sebarang penambahbaikan dengan komuniti."
+    "defaultMessage": "Sesuaikan gesaan yang mentakrifkan tingkah laku pleum dalam konteks yang berbeza. Gesaan ini menggunakan sintaks templat Jinja2. Berhati-hati semasa mengubah suai pemboleh ubah templat, kerana perubahan yang salah boleh merosakkan fungsi. Sila kongsikan sebarang penambahbaikan dengan komuniti."
   },
   "promptsSettings.promptEditingTitle": {
     "defaultMessage": "Pengeditan Gesaan"
@@ -2751,7 +2751,7 @@
     "defaultMessage": "Sedang log masuk..."
   },
   "providerConfigurationModal.addApiKeyDescription": {
-    "defaultMessage": "Tambah kunci API anda untuk penyedia ini bagi disepadukan ke dalam goose"
+    "defaultMessage": "Tambah kunci API anda untuk penyedia ini bagi disepadukan ke dalam pleum"
   },
   "providerConfigurationModal.browserWindowHint": {
     "defaultMessage": "Tetingkap pelayar akan dibuka untuk anda melengkapkan log masuk."
@@ -2787,7 +2787,7 @@
     "defaultMessage": "Ralat"
   },
   "providerConfigurationModal.externalSetupIntro": {
-    "defaultMessage": "Penyedia ini dikonfigurasikan di luar goose. Ikuti langkah-langkah ini:"
+    "defaultMessage": "Penyedia ini dikonfigurasikan di luar pleum. Ikuti langkah-langkah ini:"
   },
   "providerConfigurationModal.goBack": {
     "defaultMessage": "Kembali"
@@ -2871,7 +2871,7 @@
     "defaultMessage": "Memuatkan penyedia..."
   },
   "providerSettings.onboardingDescription": {
-    "defaultMessage": "Pilih penyedia model AI untuk bermula dengan goose. Anda perlu menggunakan kunci API yang dijana oleh setiap penyedia yang akan disulitkan dan disimpan secara setempat. Anda boleh menukar penyedia anda pada bila-bila masa dalam tetapan."
+    "defaultMessage": "Pilih penyedia model AI untuk bermula dengan pleum. Anda perlu menggunakan kunci API yang dijana oleh setiap penyedia yang akan disulitkan dan disimpan secara setempat. Anda boleh menukar penyedia anda pada bila-bila masa dalam tetapan."
   },
   "providerSettings.otherProviders": {
     "defaultMessage": "Penyedia lain"
@@ -3444,7 +3444,7 @@
     "defaultMessage": "Pautan dalam"
   },
   "scheduleModal.deepLinkPlaceholder": {
-    "defaultMessage": "Tampal pautan goose://recipe di sini..."
+    "defaultMessage": "Tampal pautan pleum://recipe di sini..."
   },
   "scheduleModal.editSchedule": {
     "defaultMessage": "Edit Jadual"
@@ -3459,7 +3459,7 @@
     "defaultMessage": "Gagal membaca fail yang dipilih."
   },
   "scheduleModal.invalidDeepLink": {
-    "defaultMessage": "Pautan dalam tidak sah. Sila gunakan pautan goose://recipe."
+    "defaultMessage": "Pautan dalam tidak sah. Sila gunakan pautan pleum://recipe."
   },
   "scheduleModal.invalidFileType": {
     "defaultMessage": "Jenis fail tidak sah: Sila pilih fail YAML (.yaml atau .yml)"
@@ -3804,7 +3804,7 @@
     "defaultMessage": "Sejarah sembang"
   },
   "sessions.chatHistoryDesc": {
-    "defaultMessage": "Lihat dan cari perbualan lepas anda dengan Goose. {shortcut} untuk mencari."
+    "defaultMessage": "Lihat dan cari perbualan lepas anda dengan Pleum. {shortcut} untuk mencari."
   },
   "sessions.close": {
     "defaultMessage": "Tutup"
@@ -3840,10 +3840,10 @@
     "defaultMessage": "Import Pautan"
   },
   "sessions.importNostr.description": {
-    "defaultMessage": "Tampal pautan kongsi Nostr Goose untuk mengambil, menyahsulit, dan mengimport sesi."
+    "defaultMessage": "Tampal pautan kongsi Nostr Pleum untuk mengambil, menyahsulit, dan mengimport sesi."
   },
   "sessions.importNostr.placeholder": {
-    "defaultMessage": "goose://sessions/nostr?nevent=...&key=..."
+    "defaultMessage": "pleum://sessions/nostr?nevent=...&key=..."
   },
   "sessions.importNostr.title": {
     "defaultMessage": "Import Sesi Nostr"
@@ -3924,7 +3924,7 @@
     "defaultMessage": "Penerangan sesi berjaya dikemas kini"
   },
   "settings.appearance.description": {
-    "defaultMessage": "Konfigurasikan cara goose muncul pada sistem anda"
+    "defaultMessage": "Konfigurasikan cara pleum muncul pada sistem anda"
   },
   "settings.appearance.title": {
     "defaultMessage": "Penampilan"
@@ -3939,13 +3939,13 @@
     "defaultMessage": "Penjejakan Kos"
   },
   "settings.dockIcon.description": {
-    "defaultMessage": "Tunjukkan goose dalam dok"
+    "defaultMessage": "Tunjukkan pleum dalam dok"
   },
   "settings.dockIcon.title": {
     "defaultMessage": "Ikon dok"
   },
   "settings.help.description": {
-    "defaultMessage": "Bantu kami menambah baik goose dengan melaporkan isu atau meminta ciri baharu"
+    "defaultMessage": "Bantu kami menambah baik pleum dengan melaporkan isu atau meminta ciri baharu"
   },
   "settings.help.reportBug": {
     "defaultMessage": "Laporkan Pepijat"
@@ -3957,7 +3957,7 @@
     "defaultMessage": "Bantuan & maklum balas"
   },
   "settings.language.description": {
-    "defaultMessage": "Pilih bahasa paparan untuk goose"
+    "defaultMessage": "Pilih bahasa paparan untuk pleum"
   },
   "settings.language.english": {
     "defaultMessage": "English"
@@ -4014,7 +4014,7 @@
     "defaultMessage": "Bahasa Cina (Tradisional)"
   },
   "settings.menuBarIcon.description": {
-    "defaultMessage": "Tunjukkan goose dalam bar menu"
+    "defaultMessage": "Tunjukkan pleum dalam bar menu"
   },
   "settings.menuBarIcon.title": {
     "defaultMessage": "Ikon bar menu"
@@ -4035,7 +4035,7 @@
     "defaultMessage": "Klik pada Notifications"
   },
   "settings.notifications.modal.macStep3": {
-    "defaultMessage": "Cari dan pilih goose dalam senarai aplikasi"
+    "defaultMessage": "Cari dan pilih pleum dalam senarai aplikasi"
   },
   "settings.notifications.modal.macStep4": {
     "defaultMessage": "Dayakan pemberitahuan dan laraskan tetapan mengikut kehendak"
@@ -4053,7 +4053,7 @@
     "defaultMessage": "Pergi ke System > Notifications"
   },
   "settings.notifications.modal.winStep3": {
-    "defaultMessage": "Cari dan pilih goose dalam senarai aplikasi"
+    "defaultMessage": "Cari dan pilih pleum dalam senarai aplikasi"
   },
   "settings.notifications.modal.winStep4": {
     "defaultMessage": "Hidupkan pemberitahuan dan laraskan tetapan mengikut kehendak"
@@ -4062,7 +4062,7 @@
     "defaultMessage": "Buka Tetapan"
   },
   "settings.notifications.task.description": {
-    "defaultMessage": "Beritahu apabila Goose menyelesaikan tugasan semasa tetingkap berada di latar belakang"
+    "defaultMessage": "Beritahu apabila Pleum menyelesaikan tugasan semasa tetingkap berada di latar belakang"
   },
   "settings.notifications.task.title": {
     "defaultMessage": "Pemberitahuan penyelesaian tugasan"
@@ -4071,19 +4071,19 @@
     "defaultMessage": "Pemberitahuan"
   },
   "settings.preventSleep.description": {
-    "defaultMessage": "Pastikan komputer anda kekal terjaga semasa goose sedang menjalankan tugasan (skrin masih boleh dikunci)"
+    "defaultMessage": "Pastikan komputer anda kekal terjaga semasa pleum sedang menjalankan tugasan (skrin masih boleh dikunci)"
   },
   "settings.preventSleep.title": {
     "defaultMessage": "Cegah Tidur"
   },
   "settings.theme.description": {
-    "defaultMessage": "Sesuaikan rupa dan rasa goose"
+    "defaultMessage": "Sesuaikan rupa dan rasa pleum"
   },
   "settings.theme.title": {
     "defaultMessage": "Tema"
   },
   "settings.updates.description": {
-    "defaultMessage": "Semak dan pasang kemas kini untuk memastikan goose berjalan dengan terbaik"
+    "defaultMessage": "Semak dan pasang kemas kini untuk memastikan pleum berjalan dengan terbaik"
   },
   "settings.updates.title": {
     "defaultMessage": "Kemas Kini"
@@ -4149,7 +4149,7 @@
     "defaultMessage": "Tiada kemahiran sepadan ditemui"
   },
   "skillsView.noSkillsDescription": {
-    "defaultMessage": "Kemahiran dimuatkan daripada fail SKILL.md dalam ~/.config/agents/skills/, .goose/skills/, atau direktori lain yang disokong."
+    "defaultMessage": "Kemahiran dimuatkan daripada fail SKILL.md dalam ~/.config/agents/skills/, .pleum/skills/, atau direktori lain yang disokong."
   },
   "skillsView.noSkillsInstalled": {
     "defaultMessage": "Tiada kemahiran dipasang"
@@ -4158,7 +4158,7 @@
     "defaultMessage": "Cari kemahiran..."
   },
   "skillsView.skillsDescription": {
-    "defaultMessage": "Lihat kemahiran terpasang yang meluaskan keupayaan Goose. {shortcut} untuk mencari."
+    "defaultMessage": "Lihat kemahiran terpasang yang meluaskan keupayaan Pleum. {shortcut} untuk mencari."
   },
   "skillsView.skillsTitle": {
     "defaultMessage": "Kemahiran"
@@ -4401,10 +4401,10 @@
     "defaultMessage": "Gunakan penyedia lain"
   },
   "telemetryConsentPrompt.description": {
-    "defaultMessage": "Adakah anda ingin berkongsi data penggunaan tanpa nama untuk membantu menambah baik goose? Kami tidak pernah mengumpul perbualan, kod, atau data peribadi anda."
+    "defaultMessage": "Adakah anda ingin berkongsi data penggunaan tanpa nama untuk membantu menambah baik pleum? Kami tidak pernah mengumpul perbualan, kod, atau data peribadi anda."
   },
   "telemetryConsentPrompt.heading": {
-    "defaultMessage": "Bantu menambah baik goose"
+    "defaultMessage": "Bantu menambah baik pleum"
   },
   "telemetryConsentPrompt.learnMore": {
     "defaultMessage": "Ketahui lebih lanjut"
@@ -4431,7 +4431,7 @@
     "defaultMessage": "Privasi"
   },
   "telemetrySettings.toggleDescription": {
-    "defaultMessage": "Bantu menambah baik goose dengan berkongsi statistik penggunaan tanpa nama."
+    "defaultMessage": "Bantu menambah baik pleum dengan berkongsi statistik penggunaan tanpa nama."
   },
   "telemetrySettings.toggleLabel": {
     "defaultMessage": "Data penggunaan tanpa nama"
@@ -4511,14 +4511,14 @@
   "toolConfirmation.allowToolCallWithName": {
     "defaultMessage": "Benarkan {toolName}?"
   },
-  "toolConfirmation.gooseWouldLikeToCallWithName": {
-    "defaultMessage": "Goose ingin memanggil {toolName}. Benarkan?"
+  "toolConfirmation.pleumWouldLikeToCallWithName": {
+    "defaultMessage": "Pleum ingin memanggil {toolName}. Benarkan?"
   },
   "updateSection.autoDownload": {
-    "defaultMessage": "Goose akan memuat turun kemas kini di latar belakang dan memasangnya pada kali seterusnya anda keluar atau mula semula."
+    "defaultMessage": "Pleum akan memuat turun kemas kini di latar belakang dan memasangnya pada kali seterusnya anda keluar atau mula semula."
   },
   "updateSection.autoDownloadDisabledByEnv": {
-    "defaultMessage": "Muat turun automatik dilumpuhkan melalui pemboleh ubah persekitaran GOOSE_DISABLE_AUTO_DOWNLOAD."
+    "defaultMessage": "Muat turun automatik dilumpuhkan melalui pemboleh ubah persekitaran PLEUM_DISABLE_AUTO_DOWNLOAD."
   },
   "updateSection.autoDownloadDisabledNote": {
     "defaultMessage": "Muat turun automatik dilumpuhkan. Klik \"Muat Turun Sekarang\" untuk memuat turun secara manual."
@@ -4536,7 +4536,7 @@
     "defaultMessage": "Lumpuhkan muat turun kemas kini automatik"
   },
   "updateSection.disableAutoDownloadDesc": {
-    "defaultMessage": "Apabila didayakan, Goose akan memberitahu anda tentang versi baharu tetapi tidak akan memuat turunnya secara automatik."
+    "defaultMessage": "Apabila didayakan, Pleum akan memberitahu anda tentang versi baharu tetapi tidak akan memuat turunnya secara automatik."
   },
   "updateSection.downloadNow": {
     "defaultMessage": "Muat Turun Sekarang"

@@ -283,7 +283,7 @@ async function writeSwapScript(options: {
   const logPath = `${stagingDir}-install.log`;
   // The previous install is moved aside rather than deleted so a failed copy can be rolled back.
   // It stays beside the target so the move is a same-filesystem rename instead of a full copy.
-  const backupPath = `${targetPath}.goose-previous`;
+  const backupPath = `${targetPath}.pleum-previous`;
 
   if (process.platform === 'win32') {
     const scriptPath = path.join(stagingDir, 'swap-and-relaunch.ps1');
@@ -454,9 +454,9 @@ export async function prepareUpdateInstall(options: {
 }
 
 export class GitHubUpdater {
-  private readonly owner = process.env.GITHUB_OWNER || 'aaif-goose';
-  private readonly repo = process.env.GITHUB_REPO || 'goose';
-  private readonly bundleName = process.env.GOOSE_BUNDLE_NAME || 'Goose';
+  private readonly owner = process.env.GITHUB_OWNER || 'gachon-star-want';
+  private readonly repo = process.env.GITHUB_REPO || 'pleum';
+  private readonly bundleName = process.env.PLEUM_BUNDLE_NAME || 'Pleum';
   private readonly apiUrl = `https://api.github.com/repos/${this.owner}/${this.repo}/releases/latest`;
 
   async checkForUpdates(): Promise<UpdateCheckResult> {
@@ -477,7 +477,7 @@ export class GitHubUpdater {
       const response = await fetch(this.apiUrl, {
         headers: {
           Accept: 'application/vnd.github.v3+json',
-          'User-Agent': `Goose-Desktop/${app.getVersion()}`,
+          'User-Agent': `Pleum-Desktop/${app.getVersion()}`,
         },
         signal: controller.signal,
       });
@@ -546,7 +546,7 @@ export class GitHubUpdater {
       log.info(`GitHubUpdater: Looking for asset named: ${assetName}`);
       log.info(`GitHubUpdater: Available assets: ${release.assets.map((a) => a.name).join(', ')}`);
 
-      const asset = release.assets.find((a) => a.name.toLowerCase() === assetName.toLowerCase()); // keeping comparison to lowercase because Goose vs goose
+      const asset = release.assets.find((a) => a.name.toLowerCase() === assetName.toLowerCase()); // keeping comparison to lowercase because Pleum vs pleum
       if (asset) {
         downloadUrl = asset.browser_download_url;
         log.info(`GitHubUpdater: Found matching asset: ${asset.name} (${asset.size} bytes)`);
@@ -679,7 +679,7 @@ export class GitHubUpdater {
       const buffer = Buffer.concat(chunks.map((chunk) => Buffer.from(chunk)));
       log.info(`GitHubUpdater: Buffer created - ${buffer.length} bytes`);
 
-      const stagingDir = path.join(os.tmpdir(), `goose-update-${latestVersion}-${Date.now()}`);
+      const stagingDir = path.join(os.tmpdir(), `pleum-update-${latestVersion}-${Date.now()}`);
       await fs.mkdir(stagingDir, { recursive: true });
       const fileName = `${this.bundleName}-${latestVersion}.zip`;
       const downloadPath = path.join(stagingDir, fileName);

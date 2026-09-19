@@ -20,7 +20,7 @@ const windowsFiles = [
     '*.exe',
     '*.dll',
     '*.cmd',
-    'goose-npm/**/*'
+    'pleum-npm/**/*'
 ];
 
 // Helper function to check if file matches patterns
@@ -117,7 +117,7 @@ async function ensureWindowsUvBinaries() {
         return;
     }
 
-    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'goose-uv-'));
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'pleum-uv-'));
     const zipPath = path.join(tmpDir, 'uv.zip');
     const extractDir = path.join(tmpDir, 'extract');
     fs.mkdirSync(extractDir, { recursive: true });
@@ -165,7 +165,7 @@ function cleanBinDirectory(targetPlatform) {
         const filePath = path.join(srcBinDir, file.name);
         
         if (targetPlatform === 'darwin' || targetPlatform === 'linux') {
-            const isLegacyBackendBinary = file.name === 'goosed';
+            const isLegacyBackendBinary = file.name === 'pleumd';
             if (isLegacyBackendBinary || matchesPattern(file.name, windowsFiles)) {
                 const fileType = isLegacyBackendBinary ? 'legacy backend binary' : 'Windows file';
                 console.log(`Removing ${fileType}: ${file.name}`);

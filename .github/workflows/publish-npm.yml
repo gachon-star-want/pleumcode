@@ -1,10 +1,10 @@
-name: Goose ACP npm release
+name: Pleum ACP npm release
 
 on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: Versioned Goose release to package, for example v1.49.0
+        description: Versioned Pleum release to package, for example v1.49.0
         required: true
         type: string
       publish:

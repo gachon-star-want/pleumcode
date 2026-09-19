@@ -29,7 +29,7 @@ permissions:
 
 jobs:
   build-cli-linux:
-    name: Build Goose (Linux, ${{ matrix.architecture }}, ${{ matrix.variant }})
+    name: Build Pleum (Linux, ${{ matrix.architecture }}, ${{ matrix.variant }})
     runs-on: ${{ matrix.build-on }}
     container: ${{ matrix.container }}
     strategy:
@@ -141,11 +141,11 @@ jobs:
           fi
 
           if [ "${{ matrix.variant }}" = "musl" ]; then
-            cargo build --release --target ${TARGET} -p goose-cli --bin goose \
+            cargo build --release --target ${TARGET} -p pleum-cli --bin pleum \
               --no-default-features \
               --features portable-default
           else
-            cargo build --release --target ${TARGET} -p goose-cli --bin goose "${FEATURE_ARGS[@]}"
+            cargo build --release --target ${TARGET} -p pleum-cli --bin pleum "${FEATURE_ARGS[@]}"
           fi
 
       - name: Build CLI (manylinux container)
@@ -167,7 +167,7 @@ jobs:
           rustup toolchain install "$RUST_CHANNEL" --profile minimal \
             --component rustc,cargo --target "$TARGET"
           rustup show
-          cargo build --release --target "$TARGET" -p goose-cli --bin goose
+          cargo build --release --target "$TARGET" -p pleum-cli --bin pleum
 
       - name: Package CLI
         run: |
@@ -182,40 +182,40 @@ jobs:
           fi
 
           # Create a directory for the package contents
-          mkdir -p "target/${TARGET}/release/goose-package"
+          mkdir -p "target/${TARGET}/release/pleum-package"
 
-          # Copy the goose binary
-          cp "target/${TARGET}/release/goose" "target/${TARGET}/release/goose-package/"
+          # Copy the pleum binary
+          cp "target/${TARGET}/release/pleum" "target/${TARGET}/release/pleum-package/"
 
           cd "target/${TARGET}/release"
-          tar -cjf "goose-${TARGET}${VARIANT_SUFFIX}.tar.bz2" -C goose-package .
-          tar -czf "goose-${TARGET}${VARIANT_SUFFIX}.tar.gz" -C goose-package .
-          echo "ARTIFACT_BZ2=target/${TARGET}/release/goose-${TARGET}${VARIANT_SUFFIX}.tar.bz2" >> $GITHUB_ENV
-          echo "ARTIFACT_GZ=target/${TARGET}/release/goose-${TARGET}${VARIANT_SUFFIX}.tar.gz" >> $GITHUB_ENV
+          tar -cjf "pleum-${TARGET}${VARIANT_SUFFIX}.tar.bz2" -C pleum-package .
+          tar -czf "pleum-${TARGET}${VARIANT_SUFFIX}.tar.gz" -C pleum-package .
+          echo "ARTIFACT_BZ2=target/${TARGET}/release/pleum-${TARGET}${VARIANT_SUFFIX}.tar.bz2" >> $GITHUB_ENV
+          echo "ARTIFACT_GZ=target/${TARGET}/release/pleum-${TARGET}${VARIANT_SUFFIX}.tar.gz" >> $GITHUB_ENV
 
       - name: Upload CLI artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
-          name: goose-${{ matrix.architecture }}-${{ matrix.target-suffix }}${{ matrix.variant != 'standard' && matrix.variant != 'musl' && format('-{0}', matrix.variant) || '' }}
+          name: pleum-${{ matrix.architecture }}-${{ matrix.target-suffix }}${{ matrix.variant != 'standard' && matrix.variant != 'musl' && format('-{0}', matrix.variant) || '' }}
           path: |
             ${{ env.ARTIFACT_BZ2 }}
             ${{ env.ARTIFACT_GZ }}
 
-      - name: Prepare internal Goose binary
+      - name: Prepare internal Pleum binary
         if: ${{ inputs.package_desktop && matrix.target-suffix == 'unknown-linux-gnu' }}
         env:
           TARGET: ${{ matrix.architecture }}-${{ matrix.target-suffix }}
           VARIANT_SUFFIX: ${{ matrix.variant == 'vulkan' && '-vulkan' || '' }}
         run: |
           mkdir -p artifacts
-          cp "target/${TARGET}/release/goose" "artifacts/internal-goose-${TARGET}${VARIANT_SUFFIX}"
+          cp "target/${TARGET}/release/pleum" "artifacts/internal-pleum-${TARGET}${VARIANT_SUFFIX}"
 
-      - name: Upload internal Goose binary
+      - name: Upload internal Pleum binary
         if: ${{ inputs.package_desktop && matrix.target-suffix == 'unknown-linux-gnu' }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
-          name: internal-goose-${{ matrix.architecture }}-${{ matrix.target-suffix }}${{ matrix.variant == 'vulkan' && '-vulkan' || '' }}
-          path: artifacts/internal-goose-${{ matrix.architecture }}-${{ matrix.target-suffix }}${{ matrix.variant == 'vulkan' && '-vulkan' || '' }}
+          name: internal-pleum-${{ matrix.architecture }}-${{ matrix.target-suffix }}${{ matrix.variant == 'vulkan' && '-vulkan' || '' }}
+          path: artifacts/internal-pleum-${{ matrix.architecture }}-${{ matrix.target-suffix }}${{ matrix.variant == 'vulkan' && '-vulkan' || '' }}
           if-no-files-found: error
           retention-days: 1
           overwrite: true
@@ -332,21 +332,21 @@ jobs:
       - name: Setup Flatpak runtimes
         run: flatpak remote-add --if-not-exists --user flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
-      - name: Download internal Goose binary
+      - name: Download internal Pleum binary
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         with:
-          name: internal-goose-${{ matrix.target }}${{ matrix.variant_suffix }}
+          name: internal-pleum-${{ matrix.target }}${{ matrix.variant_suffix }}
           path: backend
 
       - name: Prepare desktop backend
         env:
-          INTERNAL_BINARY: internal-goose-${{ matrix.target }}${{ matrix.variant_suffix }}
+          INTERNAL_BINARY: internal-pleum-${{ matrix.target }}${{ matrix.variant_suffix }}
         run: |
           mkdir -p ui/desktop/src/bin
-          rm -f ui/desktop/src/bin/goose
-          mv "backend/${INTERNAL_BINARY}" ui/desktop/src/bin/goose
-          chmod +x ui/desktop/src/bin/goose
-          file ui/desktop/src/bin/goose
+          rm -f ui/desktop/src/bin/pleum
+          mv "backend/${INTERNAL_BINARY}" ui/desktop/src/bin/pleum
+          chmod +x ui/desktop/src/bin/pleum
+          file ui/desktop/src/bin/pleum
 
       - name: Cache pnpm dependencies
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
@@ -368,13 +368,13 @@ jobs:
         env:
           ELECTRON_ARCH: ${{ matrix.electron_arch }}
           FLATPAK_ARCH: ${{ matrix.flatpak_arch }}
-          GOOSE_DESKTOP_LINUX_VARIANT: ${{ matrix.variant }}
+          PLEUM_DESKTOP_LINUX_VARIANT: ${{ matrix.variant }}
         run: |
           source ./bin/activate-hermit
           cd ui/desktop
           pnpm run make --platform=linux --arch="${ELECTRON_ARCH}"
 
-          if [ "${GOOSE_DESKTOP_LINUX_VARIANT}" = "vulkan" ]; then
+          if [ "${PLEUM_DESKTOP_LINUX_VARIANT}" = "vulkan" ]; then
             for package in \
               "out/make/deb/${ELECTRON_ARCH}/"*.deb \
               "out/make/rpm/${ELECTRON_ARCH}/"*.rpm \
@@ -399,20 +399,20 @@ jobs:
       - name: Upload .deb package
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
-          name: Goose-linux-${{ matrix.electron_arch }}${{ matrix.variant_suffix }}-deb
+          name: Pleum-linux-${{ matrix.electron_arch }}${{ matrix.variant_suffix }}-deb
           path: ui/desktop/out/make/deb/${{ matrix.electron_arch }}/*${{ matrix.variant_suffix }}.deb
           if-no-files-found: error
 
       - name: Upload .rpm package
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
-          name: Goose-linux-${{ matrix.electron_arch }}${{ matrix.variant_suffix }}-rpm
+          name: Pleum-linux-${{ matrix.electron_arch }}${{ matrix.variant_suffix }}-rpm
           path: ui/desktop/out/make/rpm/${{ matrix.electron_arch }}/*${{ matrix.variant_suffix }}.rpm
           if-no-files-found: error
 
       - name: Upload .flatpak package
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
-          name: Goose-linux-${{ matrix.electron_arch }}${{ matrix.variant_suffix }}-flatpak
+          name: Pleum-linux-${{ matrix.electron_arch }}${{ matrix.variant_suffix }}-flatpak
           path: ui/desktop/out/make/flatpak/${{ matrix.flatpak_arch }}/*${{ matrix.variant_suffix }}.flatpak
           if-no-files-found: error

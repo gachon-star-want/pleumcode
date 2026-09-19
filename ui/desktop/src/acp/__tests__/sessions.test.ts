@@ -83,7 +83,7 @@ describe('ACP sessions', () => {
           request: vi.fn().mockResolvedValue({}),
         },
       },
-      goose: {
+      pleum: {
         sessionInfo_unstable: vi
           .fn()
           .mockResolvedValueOnce({ session: sessionInfo() })
@@ -101,7 +101,7 @@ describe('ACP sessions', () => {
       cwd: '/tmp',
       mcpServers: [],
     });
-    expect(client.goose.sessionInfo_unstable).toHaveBeenCalledTimes(2);
+    expect(client.pleum.sessionInfo_unstable).toHaveBeenCalledTimes(2);
     expect(result.sessionInfo).toBe(loadedSessionInfo);
     expect(sessionInfoToSession(result.sessionInfo).provider_name).toBe('anthropic');
     expect(sessionInfoToSession(result.sessionInfo).model_config?.model_name).toBe(
@@ -117,7 +117,7 @@ describe('ACP sessions', () => {
           request: vi.fn().mockResolvedValue({ sessionId: 'session-1' }),
         },
       },
-      goose: {
+      pleum: {
         sessionInfo_unstable: vi.fn().mockResolvedValue({ session: createdSessionInfo }),
       },
     };
@@ -126,7 +126,7 @@ describe('ACP sessions', () => {
     );
 
     await acpNewSession('/tmp', [], {
-      recipeDeeplink: 'goose://recipe?url=example',
+      recipeDeeplink: 'pleum://recipe?url=example',
       recipeParameterScopeId: 'scope-1',
     });
 
@@ -134,8 +134,8 @@ describe('ACP sessions', () => {
       cwd: '/tmp',
       mcpServers: [],
       _meta: {
-        client: 'goose-desktop',
-        recipeDeeplink: 'goose://recipe?url=example',
+        client: 'pleum-desktop',
+        recipeDeeplink: 'pleum://recipe?url=example',
         recipeParameterScopeId: 'scope-1',
       },
     });
@@ -143,7 +143,7 @@ describe('ACP sessions', () => {
 
   it('returns a list item from ACP session info', async () => {
     const client = {
-      goose: {
+      pleum: {
         sessionInfo_unstable: vi.fn().mockResolvedValue({
           session: sessionInfo({
             title: 'Subagent session',
@@ -165,7 +165,7 @@ describe('ACP sessions', () => {
 
     const item = await acpGetSessionListItem('session-1');
 
-    expect(client.goose.sessionInfo_unstable).toHaveBeenCalledWith({ sessionId: 'session-1' });
+    expect(client.pleum.sessionInfo_unstable).toHaveBeenCalledWith({ sessionId: 'session-1' });
     expect(item).toMatchObject({
       id: 'session-1',
       name: 'Subagent session',

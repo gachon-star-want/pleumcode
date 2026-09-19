@@ -1,4 +1,4 @@
-import type { RecipeExtensionDto } from '@aaif/goose-acp-client';
+import type { RecipeExtensionDto } from '@aaif/pleum-acp-client';
 
 export type Envs = Record<string, string>;
 

@@ -7,7 +7,7 @@ import type {
   RefreshProviderInventoryResponse_unstable,
   ProviderTemplateCatalogEntryDto,
   ProviderTemplateDto,
-} from '@aaif/goose-acp-client';
+} from '@aaif/pleum-acp-client';
 import { methods } from '@agentclientprotocol/sdk';
 import type {
   ProviderDetails,
@@ -98,7 +98,7 @@ function updateRequestToCreate(
 
 export async function acpListProviderDetails(): Promise<ProviderDetails[]> {
   const client = await getAcpClient();
-  const { entries } = await client.goose.providersList_unstable({});
+  const { entries } = await client.pleum.providersList_unstable({});
   return entries.map(providerEntryToDetails);
 }
 
@@ -114,7 +114,7 @@ export async function acpListSettingsProviderDetails(): Promise<ProviderDetails[
 
 export async function acpGetProviderDetails(providerId: string): Promise<ProviderDetails> {
   const client = await getAcpClient();
-  const { entries } = await client.goose.providersList_unstable({ providerIds: [providerId] });
+  const { entries } = await client.pleum.providersList_unstable({ providerIds: [providerId] });
   const entry = entries.find((candidate) => candidate.providerId === providerId);
   if (!entry) throw new Error(`Unknown provider: ${providerId}`);
   return providerEntryToDetails(entry);
@@ -138,7 +138,7 @@ async function waitForProviderInventoryRefresh(
     : 1;
   for (let attempt = 0; attempt < attempts; attempt += 1) {
     throwIfAborted(signal);
-    const response = await client.goose.providersList_unstable({ providerIds: [providerId] });
+    const response = await client.pleum.providersList_unstable({ providerIds: [providerId] });
     throwIfAborted(signal);
     entry = response.entries.find((candidate) => candidate.providerId === providerId);
     if (!entry) throw new Error(`Unknown provider: ${providerId}`);
@@ -160,7 +160,7 @@ export async function acpRefreshProviderDetails(
 }> {
   const client = await getAcpClient();
   throwIfAborted(signal);
-  let { entries } = await client.goose.providersList_unstable({ providerIds: [providerId] });
+  let { entries } = await client.pleum.providersList_unstable({ providerIds: [providerId] });
   throwIfAborted(signal);
   let entry = entries.find((candidate) => candidate.providerId === providerId);
   if (!entry) throw new Error(`Unknown provider: ${providerId}`);
@@ -173,7 +173,7 @@ export async function acpRefreshProviderDetails(
     };
   }
 
-  const readiness = await client.goose.providersReadinessCheck_unstable({ providerId });
+  const readiness = await client.pleum.providersReadinessCheck_unstable({ providerId });
   throwIfAborted(signal);
   if (!readiness.ready) {
     return {
@@ -184,7 +184,7 @@ export async function acpRefreshProviderDetails(
   }
 
   if (entry.supportsRefresh) {
-    const refresh = await client.goose.providersInventoryRefresh_unstable({
+    const refresh = await client.pleum.providersInventoryRefresh_unstable({
       providerIds: [providerId],
     });
     const provider = await waitForProviderInventoryRefresh(client, providerId, refresh, signal);
@@ -200,7 +200,7 @@ export async function acpRefreshProviderDetails(
 
 export async function acpListProviderModels(providerId: string) {
   const client = await getAcpClient();
-  const { entries } = await client.goose.providersList_unstable({ providerIds: [providerId] });
+  const { entries } = await client.pleum.providersList_unstable({ providerIds: [providerId] });
   return entries.find((e) => e.providerId === providerId)?.models ?? [];
 }
 
@@ -208,13 +208,13 @@ export async function acpListProviderCatalogEntries(
   format?: string
 ): Promise<ProviderTemplateCatalogEntryDto[]> {
   const client = await getAcpClient();
-  const { providers } = await client.goose.providersCatalogList_unstable(format ? { format } : {});
+  const { providers } = await client.pleum.providersCatalogList_unstable(format ? { format } : {});
   return providers;
 }
 
 export async function acpGetProviderTemplate(providerId: string): Promise<ProviderTemplateDto> {
   const client = await getAcpClient();
-  const { template } = await client.goose.providersCatalogTemplate_unstable({ providerId });
+  const { template } = await client.pleum.providersCatalogTemplate_unstable({ providerId });
   return template;
 }
 
@@ -222,14 +222,14 @@ export async function acpGetCustomProvider(
   providerId: string
 ): Promise<CustomProviderReadResponse_unstable> {
   const client = await getAcpClient();
-  return client.goose.providersCustomRead_unstable({ providerId });
+  return client.pleum.providersCustomRead_unstable({ providerId });
 }
 
 export async function acpCreateCustomProviderFromRequest(
   request: UpdateCustomProviderRequest
 ): Promise<{ provider_name: string }> {
   const client = await getAcpClient();
-  const response = await client.goose.providersCustomCreate_unstable(
+  const response = await client.pleum.providersCustomCreate_unstable(
     updateRequestToCreate(request)
   );
   return { provider_name: response.providerId };
@@ -240,7 +240,7 @@ export async function acpUpdateCustomProviderFromRequest(
   request: UpdateCustomProviderRequest
 ): Promise<void> {
   const client = await getAcpClient();
-  await client.goose.providersCustomUpdate_unstable({
+  await client.pleum.providersCustomUpdate_unstable({
     providerId,
     ...updateRequestToCreate(request),
   });
@@ -248,18 +248,18 @@ export async function acpUpdateCustomProviderFromRequest(
 
 export async function acpDeleteCustomProvider(providerId: string): Promise<void> {
   const client = await getAcpClient();
-  await client.goose.providersCustomDelete_unstable({ providerId });
+  await client.pleum.providersCustomDelete_unstable({ providerId });
 }
 
 export async function acpReadProviderConfig(providerId: string) {
   const client = await getAcpClient();
-  const { fields } = await client.goose.providersConfigRead_unstable({ providerId });
+  const { fields } = await client.pleum.providersConfigRead_unstable({ providerId });
   return fields;
 }
 
 export async function acpDeleteProviderConfig(providerId: string): Promise<void> {
   const client = await getAcpClient();
-  await client.goose.providersConfigDelete_unstable({ providerId });
+  await client.pleum.providersConfigDelete_unstable({ providerId });
 }
 
 export async function acpSaveProviderConfig(
@@ -267,7 +267,7 @@ export async function acpSaveProviderConfig(
   fields: { key: string; value: string }[]
 ): Promise<void> {
   const client = await getAcpClient();
-  await client.goose.providersConfigSave_unstable({ providerId, fields });
+  await client.pleum.providersConfigSave_unstable({ providerId, fields });
 }
 
 export async function acpEnableProvider(
@@ -276,7 +276,7 @@ export async function acpEnableProvider(
 ): Promise<ProviderDetails> {
   const client = await getAcpClient();
   throwIfAborted(signal);
-  const { refresh } = await client.goose.providersConfigSave_unstable({
+  const { refresh } = await client.pleum.providersConfigSave_unstable({
     providerId,
     fields: [],
   });
@@ -286,18 +286,18 @@ export async function acpEnableProvider(
 
 export async function acpAuthenticateProvider(providerId: string): Promise<void> {
   const client = await getAcpClient();
-  await client.goose.providersConfigAuthenticate_unstable({ providerId });
+  await client.pleum.providersConfigAuthenticate_unstable({ providerId });
 }
 
 export async function acpListProviderSecrets(): Promise<ProviderSecretDto[]> {
   const client = await getAcpClient();
-  const { secrets } = await client.goose.providersSecretsList_unstable({});
+  const { secrets } = await client.pleum.providersSecretsList_unstable({});
   return secrets;
 }
 
 export async function acpDeleteProviderSecret(id: string): Promise<void> {
   const client = await getAcpClient();
-  await client.goose.providersSecretsDelete_unstable({ id });
+  await client.pleum.providersSecretsDelete_unstable({ id });
 }
 
 export async function acpGetCanonicalModelInfo(
@@ -305,7 +305,7 @@ export async function acpGetCanonicalModelInfo(
   model: string
 ): Promise<CanonicalModelInfoDto | null> {
   const client = await getAcpClient();
-  const { modelInfo } = await client.goose.providersCanonicalModelInfo_unstable({
+  const { modelInfo } = await client.pleum.providersCanonicalModelInfo_unstable({
     provider,
     model,
   });
@@ -317,7 +317,7 @@ export async function acpReadDefaults(): Promise<{
   modelId: string | null;
 }> {
   const client = await getAcpClient();
-  const response = await client.goose.defaultsRead_unstable({});
+  const response = await client.pleum.defaultsRead_unstable({});
   return {
     providerId: response.providerId ?? null,
     modelId: response.modelId ?? null,
@@ -326,25 +326,25 @@ export async function acpReadDefaults(): Promise<{
 
 export async function acpSaveDefaults(providerId: string, modelId?: string | null): Promise<void> {
   const client = await getAcpClient();
-  await client.goose.defaultsSave_unstable({ providerId, modelId: modelId ?? null });
+  await client.pleum.defaultsSave_unstable({ providerId, modelId: modelId ?? null });
 }
 
 export async function acpClearDefaults(): Promise<void> {
   const client = await getAcpClient();
-  await client.goose.defaultsClear_unstable({});
+  await client.pleum.defaultsClear_unstable({});
 }
 
 export async function acpReadThinkingEffort(): Promise<ThinkingEffort | null> {
   const client = await getAcpClient();
-  const response = await client.goose.preferencesRead_unstable({ keys: ['gooseThinkingEffort'] });
-  const value = response.values.find((v) => v.key === 'gooseThinkingEffort')?.value;
+  const response = await client.pleum.preferencesRead_unstable({ keys: ['pleumThinkingEffort'] });
+  const value = response.values.find((v) => v.key === 'pleumThinkingEffort')?.value;
   return typeof value === 'string' ? (value as ThinkingEffort) : null;
 }
 
 export async function acpSaveThinkingEffort(effort: ThinkingEffort): Promise<void> {
   const client = await getAcpClient();
-  await client.goose.preferencesSave_unstable({
-    values: [{ key: 'gooseThinkingEffort', value: effort }],
+  await client.pleum.preferencesSave_unstable({
+    values: [{ key: 'pleumThinkingEffort', value: effort }],
   });
 }
 

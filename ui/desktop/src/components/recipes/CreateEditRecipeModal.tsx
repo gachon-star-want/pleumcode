@@ -137,8 +137,8 @@ export default function CreateEditRecipeModal({
         jsonSchema: recipe.response?.json_schema
           ? JSON.stringify(recipe.response.json_schema, null, 2)
           : '',
-        model: recipe.settings?.goose_model ?? undefined,
-        provider: recipe.settings?.goose_provider ?? undefined,
+        model: recipe.settings?.pleum_model ?? undefined,
+        provider: recipe.settings?.pleum_provider ?? undefined,
         extensions: recipe.extensions || undefined,
         subRecipes: (recipe.sub_recipes || []).map((sr) => ({
           name: sr.name,
@@ -275,14 +275,14 @@ export default function CreateEditRecipeModal({
       ...(recipe?.settings || {}),
     };
     if (model !== undefined) {
-      mergedSettings.goose_model = model || null;
-    } else if ('goose_model' in mergedSettings) {
-      delete mergedSettings.goose_model;
+      mergedSettings.pleum_model = model || null;
+    } else if ('pleum_model' in mergedSettings) {
+      delete mergedSettings.pleum_model;
     }
     if (provider !== undefined) {
-      mergedSettings.goose_provider = provider || null;
-    } else if ('goose_provider' in mergedSettings) {
-      delete mergedSettings.goose_provider;
+      mergedSettings.pleum_provider = provider || null;
+    } else if ('pleum_provider' in mergedSettings) {
+      delete mergedSettings.pleum_provider;
     }
     const settings = Object.values(mergedSettings).some(
       (value) => value !== undefined && value !== null
@@ -510,7 +510,7 @@ export default function CreateEditRecipeModal({
                   ? intl.formatMessage(i18n.createSubtitle)
                   : intl.formatMessage(i18n.editSubtitle)}{' '}
                 <a
-                  href="https://goose-docs.ai/docs/guides/recipes/"
+                  href="https://docs.pleum.ai/docs/guides/recipes/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1 text-blue-500 hover:text-blue-600 hover:underline"

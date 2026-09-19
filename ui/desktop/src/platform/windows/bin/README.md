@@ -6,7 +6,7 @@ This directory contains Windows-specific scripts that are only included during W
 
 ### Node.js Installation
 
-- `npx.cmd` downloads portable Node.js to `%LOCALAPPDATA%\Goose\node` when needed.
+- `npx.cmd` downloads portable Node.js to `%LOCALAPPDATA%\Pleum\node` when needed.
 
 ### Windows Binaries
 

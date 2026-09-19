@@ -2,42 +2,42 @@
 sidebar_position: 6
 title: Customizing Prompt Templates
 sidebar_label: Prompt Templates
-description: Learn how to customize the prompt templates that define goose's behavior in different situations
+description: Learn how to customize the prompt templates that define pleum's behavior in different situations
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import { PanelLeft } from 'lucide-react';
 
-goose comes with built-in prompt templates that guide its behavior in different situations. You can edit these templates to customize how goose responds, creates plans, decides what to save during compaction, and more.
+pleum comes with built-in prompt templates that guide its behavior in different situations. You can edit these templates to customize how pleum responds, creates plans, decides what to save during compaction, and more.
 
 ## How It Works
 
-goose's default prompt templates are defined in the codebase and embedded in the application. You can override any default by creating a custom version in your local config directory (either directly or via goose Desktop).
+pleum's default prompt templates are defined in the codebase and embedded in the application. You can override any default by creating a custom version in your local config directory (either directly or via pleum Desktop).
 
 When you customize a template:
 
-- Your customizations persist across goose updates
+- Your customizations persist across pleum updates
 - Changes to defaults in the codebase don't affect your customized templates
 - You can reset to default templates at any time
 - Changes take effect in new sessions
 
 Your changes can range from major updates to minor adjustments such as:
-- Edit `system.md` to have goose respond in Dutch by adding an instruction to "Reply in Dutch"
+- Edit `system.md` to have pleum respond in Dutch by adding an instruction to "Reply in Dutch"
 - Edit `compaction.md` to keep more detail when summarizing by adding an instruction to "Preserve every file path and command that was run."
 
 See [Template Variable Syntax](#template-variable-syntax) for important information about modifying template variables.
 
 :::info Related Configuration
-Other goose settings and features can also affect behavior or provide context, such as [config files](/docs/guides/config-files), [.goosehints](/docs/guides/context-engineering/using-goosehints), and [skills](/docs/guides/context-engineering/using-skills).
+Other pleum settings and features can also affect behavior or provide context, such as [config files](/docs/guides/config-files), [.pleumhints](/docs/guides/context-engineering/using-pleumhints), and [skills](/docs/guides/context-engineering/using-skills).
 :::
 
 ## Managing Prompt Templates
 
 <Tabs groupId="interface">
-  <TabItem value="ui" label="goose Desktop" default>
+  <TabItem value="ui" label="pleum Desktop" default>
   
-  goose Desktop users can manage templates from the `Settings` page.
+  pleum Desktop users can manage templates from the `Settings` page.
 
   **To customize a template:**
 
@@ -61,14 +61,14 @@ Other goose settings and features can also affect behavior or provide context, s
   Or click `Reset All` at the top of the tab to delete all of your local template files. 
 
   </TabItem>
-  <TabItem value="cli" label="goose CLI">
+  <TabItem value="cli" label="pleum CLI">
 
-  goose CLI users can edit template files directly in the file system.
+  pleum CLI users can edit template files directly in the file system.
 
   Custom templates are stored in:
 
-  - **macOS/Linux:** `~/.config/goose/prompts/`
-  - **Windows:** `%APPDATA%\Block\goose\config\prompts\`
+  - **macOS/Linux:** `~/.config/pleum/prompts/`
+  - **Windows:** `%APPDATA%\Block\pleum\config\prompts\`
 
   **To customize a template:**
 
@@ -90,16 +90,16 @@ The following default templates can be customized.
 
 | Template | Description | Applies To |
 |----------|-------------|------------|
-| [system.md](https://github.com/aaif-goose/goose/blob/main/crates/goose/src/prompts/system.md) | General system prompt defining goose's role, capabilities, and response format | Desktop and CLI |
-| [apps_create.md](https://github.com/aaif-goose/goose/blob/main/crates/goose/src/prompts/apps_create.md) | Prompt for generating new standalone apps (in development) | Desktop only |
-| [apps_iterate.md](https://github.com/aaif-goose/goose/blob/main/crates/goose/src/prompts/apps_iterate.md) | Prompt for updating existing standalone apps (in development) | Desktop only |
-| [compaction.md](https://github.com/aaif-goose/goose/blob/main/crates/goose/src/prompts/compaction.md) | Prompt for summarizing conversation history when context limits are reached | Desktop and CLI |
-| [permission_judge.md](https://github.com/aaif-goose/goose/blob/main/crates/goose/src/prompts/permission_judge.md) | Prompt for analyzing tool operations for read-only detection | Desktop and CLI |
-| [subagent_system.md](https://github.com/aaif-goose/goose/blob/main/crates/goose/src/prompts/subagent_system.md) | System prompt for subagents spawned to handle specific tasks | Desktop and CLI |
-| [tiny_model_system.md](https://github.com/aaif-goose/goose/blob/main/crates/goose/src/prompts/tiny_model_system.md) | System prompt for tiny local models using shell command emulation | CLI |
-| [session_name.md](https://github.com/aaif-goose/goose/blob/main/crates/goose/src/prompts/session_name.md) | Prompt for generating short session names from conversation history | Desktop and CLI |
+| [system.md](https://github.com/gachon-star-want/pleumcode/blob/main/crates/pleum/src/prompts/system.md) | General system prompt defining pleum's role, capabilities, and response format | Desktop and CLI |
+| [apps_create.md](https://github.com/gachon-star-want/pleumcode/blob/main/crates/pleum/src/prompts/apps_create.md) | Prompt for generating new standalone apps (in development) | Desktop only |
+| [apps_iterate.md](https://github.com/gachon-star-want/pleumcode/blob/main/crates/pleum/src/prompts/apps_iterate.md) | Prompt for updating existing standalone apps (in development) | Desktop only |
+| [compaction.md](https://github.com/gachon-star-want/pleumcode/blob/main/crates/pleum/src/prompts/compaction.md) | Prompt for summarizing conversation history when context limits are reached | Desktop and CLI |
+| [permission_judge.md](https://github.com/gachon-star-want/pleumcode/blob/main/crates/pleum/src/prompts/permission_judge.md) | Prompt for analyzing tool operations for read-only detection | Desktop and CLI |
+| [subagent_system.md](https://github.com/gachon-star-want/pleumcode/blob/main/crates/pleum/src/prompts/subagent_system.md) | System prompt for subagents spawned to handle specific tasks | Desktop and CLI |
+| [tiny_model_system.md](https://github.com/gachon-star-want/pleumcode/blob/main/crates/pleum/src/prompts/tiny_model_system.md) | System prompt for tiny local models using shell command emulation | CLI |
+| [session_name.md](https://github.com/gachon-star-want/pleumcode/blob/main/crates/pleum/src/prompts/session_name.md) | Prompt for generating short session names from conversation history | Desktop and CLI |
 
-Customizable templates are enumerated in the `TEMPLATE_REGISTRY` array in [`prompt_template.rs`](https://github.com/aaif-goose/goose/blob/main/crates/goose/src/prompt_template.rs).
+Customizable templates are enumerated in the `TEMPLATE_REGISTRY` array in [`prompt_template.rs`](https://github.com/gachon-star-want/pleumcode/blob/main/crates/pleum/src/prompt_template.rs).
 
 ### Template Variable Syntax
 

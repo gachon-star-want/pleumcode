@@ -25,26 +25,26 @@ async function makeTempDir(prefix: string): Promise<string> {
 
 async function writeLauncher(dir: string, markerPath: string): Promise<string> {
   if (process.platform === 'win32') {
-    const launcher = path.join(dir, 'Goose.cmd');
+    const launcher = path.join(dir, 'Pleum.cmd');
     await fs.writeFile(launcher, `@echo off\r\necho relaunched> "${markerPath}"\r\n`);
     return launcher;
   }
 
-  const launcher = path.join(dir, 'Goose');
+  const launcher = path.join(dir, 'Pleum');
   await fs.writeFile(launcher, `#!/bin/sh\necho relaunched > "${markerPath}"\n`, { mode: 0o755 });
   return launcher;
 }
 
 function executableRelativePath(): string {
   if (process.platform === 'darwin') {
-    return path.join('Contents', 'MacOS', 'Goose');
+    return path.join('Contents', 'MacOS', 'Pleum');
   }
-  return process.platform === 'win32' ? 'Goose.cmd' : 'Goose';
+  return process.platform === 'win32' ? 'Pleum.cmd' : 'Pleum';
 }
 
 async function makePayload(root: string, version: string, markerPath: string): Promise<string> {
   if (process.platform === 'darwin') {
-    const bundle = path.join(root, 'Goose.app');
+    const bundle = path.join(root, 'Pleum.app');
     const macOsDir = path.join(bundle, 'Contents', 'MacOS');
     await fs.mkdir(macOsDir, { recursive: true });
     await fs.writeFile(
@@ -52,8 +52,8 @@ async function makePayload(root: string, version: string, markerPath: string): P
       `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0"><dict>
-<key>CFBundleExecutable</key><string>Goose</string>
-<key>CFBundleIdentifier</key><string>dev.goose.updater.test.${version}</string>
+<key>CFBundleExecutable</key><string>Pleum</string>
+<key>CFBundleIdentifier</key><string>dev.pleum.updater.test.${version}</string>
 <key>CFBundlePackageType</key><string>APPL</string>
 </dict></plist>
 `
@@ -63,7 +63,7 @@ async function makePayload(root: string, version: string, markerPath: string): P
     return bundle;
   }
 
-  const payload = path.join(root, 'Goose');
+  const payload = path.join(root, 'Pleum');
   await fs.mkdir(payload, { recursive: true });
   await writeLauncher(payload, markerPath);
   await fs.writeFile(path.join(payload, 'version.txt'), version);
@@ -72,7 +72,7 @@ async function makePayload(root: string, version: string, markerPath: string): P
 
 // A structurally valid payload directory that was packaged without the application executable.
 async function makeEmptyPayload(root: string): Promise<string> {
-  const payload = path.join(root, process.platform === 'darwin' ? 'Goose.app' : 'Goose');
+  const payload = path.join(root, process.platform === 'darwin' ? 'Pleum.app' : 'Pleum');
   await fs.mkdir(payload, { recursive: true });
   await fs.writeFile(path.join(payload, 'README.txt'), 'no executable here');
   return payload;
@@ -157,7 +157,7 @@ afterEach(async () => {
 
 describe('prepareUpdateInstall', () => {
   it('waits for the app to exit, swaps in the new version, and relaunches it', async () => {
-    const workspace = await makeTempDir('goose-update-test-');
+    const workspace = await makeTempDir('pleum-update-test-');
     const stagingDir = path.join(workspace, 'staging');
     const payloadSource = path.join(workspace, 'payload');
     const installRoot = path.join(workspace, 'install');
@@ -167,7 +167,7 @@ describe('prepareUpdateInstall', () => {
     await fs.mkdir(installRoot, { recursive: true });
 
     const newPayload = await makePayload(payloadSource, '2.0.0', markerPath);
-    const archivePath = path.join(stagingDir, 'Goose-2.0.0.zip');
+    const archivePath = path.join(stagingDir, 'Pleum-2.0.0.zip');
     await zip(newPayload, archivePath);
 
     const installedRoot = await makePayload(installRoot, '1.0.0', markerPath);
@@ -212,11 +212,11 @@ describe('prepareUpdateInstall', () => {
     expect(await waitFor(() => exists(markerPath), 60000)).toBe(true);
     expect(await waitFor(async () => !(await exists(stagingDir)), 60000)).toBe(true);
     expect(await fs.readFile(unrelatedFile, 'utf8')).toBe('keep me');
-    expect(await exists(`${installedRoot}.goose-previous`)).toBe(false);
+    expect(await exists(`${installedRoot}.pleum-previous`)).toBe(false);
   }, 150000);
 
   it('restores the previous install when the new payload cannot be copied', async () => {
-    const workspace = await makeTempDir('goose-update-rollback-');
+    const workspace = await makeTempDir('pleum-update-rollback-');
     const stagingDir = path.join(workspace, 'staging');
     const payloadSource = path.join(workspace, 'payload');
     const installRoot = path.join(workspace, 'install');
@@ -226,7 +226,7 @@ describe('prepareUpdateInstall', () => {
     await fs.mkdir(installRoot, { recursive: true });
 
     const newPayload = await makePayload(payloadSource, '2.0.0', markerPath);
-    const archivePath = path.join(stagingDir, 'Goose-2.0.0.zip');
+    const archivePath = path.join(stagingDir, 'Pleum-2.0.0.zip');
     await zip(newPayload, archivePath);
 
     const installedRoot = await makePayload(installRoot, '1.0.0', markerPath);
@@ -257,27 +257,27 @@ describe('prepareUpdateInstall', () => {
     // ran to completion rather than merely that the rollback has not happened yet.
     const relaunched = await waitFor(() => exists(markerPath), 30000);
     expect(relaunched, await diagnostics(stagingDir, installRoot)).toBe(true);
-    expect(await exists(`${installedRoot}.goose-previous`)).toBe(false);
+    expect(await exists(`${installedRoot}.pleum-previous`)).toBe(false);
     expect(await fs.readFile(versionFile, 'utf8')).toBe('1.0.0');
     expect(await exists(path.join(installedRoot, executableRelativePath()))).toBe(true);
   }, 60000);
 
   it('refuses to install a payload that is missing its executable', async () => {
-    const workspace = await makeTempDir('goose-update-invalid-');
+    const workspace = await makeTempDir('pleum-update-invalid-');
     const stagingDir = path.join(workspace, 'staging');
     const payloadSource = path.join(workspace, 'payload');
     await fs.mkdir(stagingDir, { recursive: true });
     await fs.mkdir(payloadSource, { recursive: true });
 
     const emptyPayload = await makeEmptyPayload(payloadSource);
-    const archivePath = path.join(stagingDir, 'Goose-2.0.0.zip');
+    const archivePath = path.join(stagingDir, 'Pleum-2.0.0.zip');
     await zip(emptyPayload, archivePath);
 
     await expect(
       prepareUpdateInstall({
         archivePath,
-        targetPath: path.join(workspace, 'install', 'Goose'),
-        relaunchPath: path.join(workspace, 'install', 'Goose'),
+        targetPath: path.join(workspace, 'install', 'Pleum'),
+        relaunchPath: path.join(workspace, 'install', 'Pleum'),
         executableRelativePath: executableRelativePath(),
         pid: process.pid,
       })

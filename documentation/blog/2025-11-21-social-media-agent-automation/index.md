@@ -65,14 +65,14 @@ async function fetchYoutube(): Promise<ContentItem[]> {
 // Fetching YouTube videos tool
 server.addTool({
   name: "fetchYoutube",
-  description: "Fetch ALL YouTube videos from the goose channel.",
+  description: "Fetch ALL YouTube videos from the pleum channel.",
   parameters: z.object({}),
   execute: async () => JSON.stringify(await fetchYoutube()),
 });
 ```
 </details>
 
-Same pattern for blogs and GitHub releases, straightforward tool functions with clear descriptions. The key is making your tool descriptions super simple and direct. goose needs to know exactly what each tool does.
+Same pattern for blogs and GitHub releases, straightforward tool functions with clear descriptions. The key is making your tool descriptions super simple and direct. pleum needs to know exactly what each tool does.
 
 The `last_seen.json` file is our source of truth. It tracks everything we've already promoted so we don't spam people with the same content over and over.
 
@@ -154,14 +154,14 @@ Here's where Sprout kind of did me dirty though. Their API doesn't let you creat
 
 ## Testing It Out
 
-Once both MCP servers were built, I plugged them into goose. For local servers, you just:
+Once both MCP servers were built, I plugged them into pleum. For local servers, you just:
 
-1. Go to Extensions in goose
+1. Go to Extensions in pleum
 2. Add the server with `node` command and path to your server
 3. Add any environment variables
 4. Toggle it on
 
-Then I asked goose: "Hey, can you tell me if we have any new content?"
+Then I asked pleum: "Hey, can you tell me if we have any new content?"
 
 And it just... worked. It hit all the tools, checked the `last_seen.json`, and came back with new releases, blog posts, and YouTube videos. Seeing those green checkmarks was *chef's kiss*.
 
@@ -170,7 +170,7 @@ And it just... worked. It hit all the tools, checked the `last_seen.json`, and c
 
 ## So How Do We Actually Automate This?
 
-Once both MCP servers were built, I still needed something to pull them together. MCP servers do not talk to each other on their own. Without goose and an orchestrating recipe, they are just two separate tools waiting to be called.
+Once both MCP servers were built, I still needed something to pull them together. MCP servers do not talk to each other on their own. Without pleum and an orchestrating recipe, they are just two separate tools waiting to be called.
 
 At first I created a setup with multiple subrecipes, each handling one part of the workflow. It technically worked, but it felt heavier than it needed to be.
 
@@ -181,9 +181,9 @@ Sometimes the right move is to reduce instead of add, and this new version ended
 :::tip Don’t Forget to Schedule It
 
 To fully automate this workflow, you must schedule your recipe. 
-In goose Desktop, open the `recipe` section, click the `calendar icon` , and choose when it should run (I set mine to 10 AM daily).
+In pleum Desktop, open the `recipe` section, click the `calendar icon` , and choose when it should run (I set mine to 10 AM daily).
 
-You can read more in the [Shareable Recipes Guide](https://goose-docs.ai/docs/guides/recipes/session-recipes#schedule-recipe).
+You can read more in the [Shareable Recipes Guide](https://docs.pleum.ai/docs/guides/recipes/session-recipes#schedule-recipe).
 :::
 
 <details>
@@ -191,7 +191,7 @@ You can read more in the [Shareable Recipes Guide](https://goose-docs.ai/docs/gu
 ```yaml
 version: "1.0.0"
 title: "Daily Social Promo Automation"
-description: "Fetches new goose content or posts evergreen, generates platform-specific captions, and creates Sprout drafts."
+description: "Fetches new pleum content or posts evergreen, generates platform-specific captions, and creates Sprout drafts."
 
 instructions: |
   You are Ebony's daily social media automation assistant.
@@ -201,7 +201,7 @@ instructions: |
   ### STEP 1: Fetch All Content
   Call these MCP tools to gather everything:
   - contentfetcher__fetchYoutube
-  - contentfetcher__fetchGooseBlog  
+  - contentfetcher__fetchPleumBlog  
   - contentfetcher__fetchGithubReleases
   
   Each returns a JSON array. Combine them into one array of items with:
@@ -220,7 +220,7 @@ instructions: |
   - Use that item for posting
   
   **IF NO new content exists:**
-  - Load the file /Users/ebonyl/.config/goose/evergreen.json
+  - Load the file /Users/ebonyl/.config/pleum/evergreen.json
   - Parse the JSON array
   - Randomly select ONE item from the array
   - Use that item for posting
@@ -355,7 +355,7 @@ instructions: |
   
   **IF the item was NEW content (not evergreen):**
   - Call contentfetcher__markContentSeen with { id, type }
-  - This updates ~/.config/goose/content-fetcher-mcp/last_seen.json
+  - This updates ~/.config/pleum/content-fetcher-mcp/last_seen.json
   
   **IF the item was EVERGREEN:**
   - DO NOT mark as seen (so it can be reused in the future)
@@ -398,7 +398,7 @@ extensions:
       - SPROUT_PROFILE_ID_YOUTUBE
 
 activities:
-  - "Fetching latest goose content from all sources"
+  - "Fetching latest pleum content from all sources"
   - "Checking for new items against last_seen.json"
   - "Generating platform-specific captions with Ebony's tone"
   - "Creating draft posts in Sprout Social"
@@ -442,7 +442,7 @@ I need to add:
 
 This whole project took maybe an evening of focused coding, and now we have an agent that handles social promotion automatically. Is it perfect? No. But it's pretty damn close.
 
-The best part? You can take this same approach for whatever automation you need. Spin up some MCP servers, create a recipe, let goose handle the orchestration. It's honestly so much fun watching it all come together.
+The best part? You can take this same approach for whatever automation you need. Spin up some MCP servers, create a recipe, let pleum handle the orchestration. It's honestly so much fun watching it all come together.
 
 If you want to try this yourself, I'll be sharing the GitHub repo with all the code. You'll need your own Sprout Social API key, but I'll put the setup steps in the readme.
 
@@ -459,12 +459,12 @@ Got questions or ideas? Come chat with us on [Discord](https://discord.gg/block-
 <head>
   <meta property="og:title" content="Building a Social Media Agent" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://goose-docs.ai/blog/2025/11/21/building-social-media-agent" />
+  <meta property="og:url" content="https://docs.pleum.ai/blog/2025/11/21/building-social-media-agent" />
   <meta property="og:description" content="I built a fully automated social media agent using MCP servers to fetch content and post through Sprout Social." />
-  <meta property="og:image" content="https://goose-docs.ai/assets/images/header-image-7f5ab50f65332fb53302ca30a3f86e46.png" />
+  <meta property="og:image" content="https://docs.pleum.ai/assets/images/header-image-7f5ab50f65332fb53302ca30a3f86e46.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:domain" content="goose-docs.ai" />
+  <meta property="twitter:domain" content="docs.pleum.ai" />
   <meta name="twitter:title" content="Building a Social Media Agent" />
   <meta name="twitter:description" content="I built a fully automated social media agent using MCP servers to fetch content and post through Sprout Social." />
-  <meta name="twitter:image" content="https://goose-docs.ai/assets/images/header-image-7f5ab50f65332fb53302ca30a3f86e46.png" />
+  <meta name="twitter:image" content="https://docs.pleum.ai/assets/images/header-image-7f5ab50f65332fb53302ca30a3f86e46.png" />
 </head>

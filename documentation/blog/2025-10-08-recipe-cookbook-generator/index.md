@@ -1,6 +1,6 @@
 ---
-title: "Build Your Own Recipe Cookbook Generator for goose"
-description: Discover how goose can study your past sessions and turn your favorite workflows into reusable automation templates.
+title: "Build Your Own Recipe Cookbook Generator for pleum"
+description: Discover how pleum can study your past sessions and turn your favorite workflows into reusable automation templates.
 authors: 
     - ian
 ---
@@ -9,9 +9,9 @@ authors:
 
 > **Update:** This post is preserved for historical reference. The public Recipe Cookbook submission program has ended, and we are no longer accepting new recipe submissions.
 
-You've been using goose for weeks, maybe months. You have dozens of successful [sessions](/docs/guides/sessions/) where you asked for help with blog posts, code reviews, documentation, or data analysis. Each time you think "Didn't I already do this?" but never get around to checking. Sound familiar?
+You've been using pleum for weeks, maybe months. You have dozens of successful [sessions](/docs/guides/sessions/) where you asked for help with blog posts, code reviews, documentation, or data analysis. Each time you think "Didn't I already do this?" but never get around to checking. Sound familiar?
 
-I myself had over a hundred goose sessions and as many megabytes of conversation data. I was sitting on a goldmine of potential automation. A coworker suggested something brilliant: "What if goose could analyze your sessions and build recipes automatically?" Wait, wait, wait!! Create a personalized cookbook based on my own session history? Yes, please! Let's build a "cookbook generator" recipe!
+I myself had over a hundred pleum sessions and as many megabytes of conversation data. I was sitting on a goldmine of potential automation. A coworker suggested something brilliant: "What if pleum could analyze your sessions and build recipes automatically?" Wait, wait, wait!! Create a personalized cookbook based on my own session history? Yes, please! Let's build a "cookbook generator" recipe!
 
 <!--truncate-->
 
@@ -27,17 +27,17 @@ Creating recipes manually is time-consuming, especially if you're looking throug
 
 Isn't this the goal of having an AI agent in the first place? To save time and effort?
 
-Let's boost our productivity by implementing some automation. We're gonna get goose to write a recipe that creates OTHER recipes!
+Let's boost our productivity by implementing some automation. We're gonna get pleum to write a recipe that creates OTHER recipes!
 
 ## What is the Cookbook Generator Recipe?
 
-The "cookbook generator" I'm describing here is a way to get goose to look at your previous sessions, analyze them for commonalities, and automatically create new recipes from common patterns. It's automation that creates automation -- meta-programming at its finest.
+The "cookbook generator" I'm describing here is a way to get pleum to look at your previous sessions, analyze them for commonalities, and automatically create new recipes from common patterns. It's automation that creates automation -- meta-programming at its finest.
 
 I'm going to share my own cookbook generator at the end.
 
 Here's what it does:
 
-1. **Scans your session history** -- Finds and reads all your goose session files
+1. **Scans your session history** -- Finds and reads all your pleum session files
 2. **Identifies successful workflows** -- Filters out incomplete or failed sessions
 3. **Detects patterns** -- Groups similar requests and workflows together
 4. **Generates parameterized recipes** -- Creates reusable YAML files with proper templating
@@ -48,11 +48,11 @@ The end result is a personalized cookbook of recipes tailored to your own specif
 
 ## The Vibe Prompting Process
 
-[I demonstrated on a livestream](https://www.youtube.com/watch?v=-_1GALH2ER0) my whole process of creating this generator using "[vibe prompting](https://www.youtube.com/watch?v=IjXmT0W4f2Q)" -- having an extended conversation with goose to refine the idea and answer potential questions upfront. This approach uses fewer tokens than iterative coding, resulting in higher success rates.
+[I demonstrated on a livestream](https://www.youtube.com/watch?v=-_1GALH2ER0) my whole process of creating this generator using "[vibe prompting](https://www.youtube.com/watch?v=IjXmT0W4f2Q)" -- having an extended conversation with pleum to refine the idea and answer potential questions upfront. This approach uses fewer tokens than iterative coding, resulting in higher success rates.
 
-<iframe class="aspect-ratio" src="https://www.youtube.com/embed/-_1GALH2ER0" title="Vibe Code with goose: Automate my workflow" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe class="aspect-ratio" src="https://www.youtube.com/embed/-_1GALH2ER0" title="Vibe Code with pleum: Automate my workflow" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-During my own conversation with goose, goose asked smart questions like:
+During my own conversation with pleum, pleum asked smart questions like:
 
 - **Pattern recognition**: How should we identify common workflows vs one-off tasks?
 - **Granularity**: Should we create specific recipes or more general patterns?
@@ -66,21 +66,21 @@ By answering these questions upfront, we created a comprehensive specification b
 
 ### 1. Smart Session Analysis
 
-The generator reads through your session files (typically stored in `~/.local/share/goose/sessions/` but this may vary on your platform, and may change in future goose releases) and analyzes:
+The generator reads through your session files (typically stored in `~/.local/share/pleum/sessions/` but this may vary on your platform, and may change in future pleum releases) and analyzes:
 - Overall outcome success
 - User request patterns
 - Tool usage sequences
 - Common parameter types it could extract
 
-This last one was really important for me. I ask goose all the time to help me build an outline for blog posts like this, or video scripts for our [YouTube channel](https://youtube.com/@goose-oss), or tutorial pages. They all follow a similar pattern, around a topic or subject, but the output format may vary.
+This last one was really important for me. I ask pleum all the time to help me build an outline for blog posts like this, or video scripts for our [YouTube channel](https://youtube.com/@pleum-oss), or tutorial pages. They all follow a similar pattern, around a topic or subject, but the output format may vary.
 
 ### 2. Intelligent Filtering
 
 Not every session should become a recipe. The generator should skip sessions that seem incomplete or abandoned, or compared with other sessions to determine if this was a one-off task. Still, what might appear to be a one-off task might actually be the start of something I want to repeat.
 
-Having goose prompt me for whether I know ahead of time if there are any sessions I want to exclude was helpful -- I have several REALLY large, long sessions about the [community cookbook security scanner](/blog/2025/08/25/goose-became-its-own-watchdog/) I built, but I didn't want to build a recipe out of all of that.
+Having pleum prompt me for whether I know ahead of time if there are any sessions I want to exclude was helpful -- I have several REALLY large, long sessions about the [community cookbook security scanner](/blog/2025/08/25/pleum-became-its-own-watchdog/) I built, but I didn't want to build a recipe out of all of that.
 
-Instead, I wanted goose to focus on workflows that appear multiple times, and ask me to confirm any cases that it was unsure about.
+Instead, I wanted pleum to focus on workflows that appear multiple times, and ask me to confirm any cases that it was unsure about.
 
 ### 3. Parameterization Logic
 
@@ -94,10 +94,10 @@ The tool should automatically identify good candidates for parameters. I had ide
 ### 4. Template Generation
 
 :::tip
-I wanted goose to write all the recipes for me, but to be as up-to-date as possible. I cloned the [goose repository](https://github.com/aaif-goose/goose) and told goose to examine its own source code to learn how to successfully create recipes, and be sure to use proper YAML syntax.
+I wanted pleum to write all the recipes for me, but to be as up-to-date as possible. I cloned the [pleum repository](https://github.com/gachon-star-want/pleumcode) and told pleum to examine its own source code to learn how to successfully create recipes, and be sure to use proper YAML syntax.
 :::
 
-From that, I had goose think about the following ideas as it considered how to make my recipes:
+From that, I had pleum think about the following ideas as it considered how to make my recipes:
 
 - Parameter validation and defaults
 - Conditional logic for different scenarios
@@ -106,7 +106,7 @@ From that, I had goose think about the following ideas as it considered how to m
 
 ## Real-World Results
 
-Building the cookbook generator took a little over an hour of "vibe prompting" and refining the idea, and then goose gave me a recipe. I always verify my AI-generated work, and then spent about 15 minutes more after the livestream refining some ideas and adding more guardrails to the recipe.
+Building the cookbook generator took a little over an hour of "vibe prompting" and refining the idea, and then pleum gave me a recipe. I always verify my AI-generated work, and then spent about 15 minutes more after the livestream refining some ideas and adding more guardrails to the recipe.
 
 The recipes it generated for me were exactly as I had predicted:
 
@@ -114,19 +114,19 @@ The recipes it generated for me were exactly as I had predicted:
 - **Open Source Code Generator**: I often make little code samples to work alongside my blog posts or need code to demonstrate a concept in a video, but might change up the programming language. Nah, who am I kidding, it's always gonna be Python for me.
 - **Research Assistant**: I frequently ask for help gathering information on a topic, but the scope and depth varies. This recipe lets me specify how deep to go and what kinds of sources to prioritize.
 - **Image Generation**: I need thumbnail ideas for videos and blog posts, but the style and focus can vary widely. This recipe lets me specify the theme and mood.
-- **Social Media Posts**: I struggle a lot with coming up with catchy social media posts, so I want to give goose the kind of content (blog, video, etc), point it at the content (in the case of video, I give it my narration script), and have it generate many different options that I can choose from later.
+- **Social Media Posts**: I struggle a lot with coming up with catchy social media posts, so I want to give pleum the kind of content (blog, video, etc), point it at the content (in the case of video, I give it my narration script), and have it generate many different options that I can choose from later.
 
 The recipes were about 90% workable, and I went through and refined some of those a bit further.
 
 ### Do the recipes ACTUALLY work though?
 
-By running the outline generator recipe (three times), the image generator recipe, and social media recipe, goose took care of the following work:
+By running the outline generator recipe (three times), the image generator recipe, and social media recipe, pleum took care of the following work:
 
 - the outline for this blog post, so I could write the content faster
 - the "conveyor belt" image at the top of this post (via Gemini)
 - the social media posts you saw that brought you here
 - the video script for the short video in the social media posts
-- the script outline for a longer video going on our [YouTube channel](https://youtube.com/@goose-oss)
+- the script outline for a longer video going on our [YouTube channel](https://youtube.com/@pleum-oss)
 
 So, yeah. They work!
 
@@ -135,7 +135,7 @@ So, yeah. They work!
 This approach represents a new level of AI-assisted productivity. Instead of manually identifying automation opportunities, the AI identifies them for you. It's like having a productivity consultant that never sleeps, that can analyze your work patterns on demand, and suggest ways of automating things.
 
 :::info
-If you want to try some hands-free automation, check out the experimental [Perception](https://github.com/michaelneale/goose-perception) project from one of our teammates!
+If you want to try some hands-free automation, check out the experimental [Perception](https://github.com/michaelneale/pleum-perception) project from one of our teammates!
 :::
 
 The cookbook generator also handles the tedious parts of recipe creation:
@@ -158,13 +158,13 @@ Could we expand the idea from here? Absolutely!
 - **Dependency detection** -- Identify better places for recipes to use sub-recipes -- maybe I want to do a blog post AND a video AND social media posts all from the same recipe
 - **Performance optimization** -- Incremental analysis and caching for large session histories
 
-The last thing I'd want to improve would be to have goose re-analyze the recipes it made with newer sessions to refine existing recipes, instead of creating new recipes each time it runs.
+The last thing I'd want to improve would be to have pleum re-analyze the recipes it made with newer sessions to refine existing recipes, instead of creating new recipes each time it runs.
 
 ## The Meta-Programming Future
 
 The recipe cookbook generator is just the beginning. As AI agents become more sophisticated, we'll see more tools that create tools, automation that builds automation, and meta-programming approaches that amplify human productivity.
 
-The key insight is that AI agents shouldn't just execute tasks -- they should learn from those executions and help us build better systems. This generator turns your goose usage history into a productivity asset, creating a personalized automation toolkit from your actual work patterns.
+The key insight is that AI agents shouldn't just execute tasks -- they should learn from those executions and help us build better systems. This generator turns your pleum usage history into a productivity asset, creating a personalized automation toolkit from your actual work patterns.
 
 Start building your own cookbook generator, and stop doing the same work twice. Your future self will thank you for the automation you create today.
 
@@ -176,16 +176,16 @@ The Recipe Cookbook remains available to browse, but we are no longer accepting 
 
 ## My Own Cookbook Generator Recipe
 
-Here's the cookbook generator that goose helped me create, plus my own notes. You could try using it as-is, but I think a better approach would be to try vibe prompting with goose yourself to go analyze your own session history to see what kind of automation you want to set up for yourself.
+Here's the cookbook generator that pleum helped me create, plus my own notes. You could try using it as-is, but I think a better approach would be to try vibe prompting with pleum yourself to go analyze your own session history to see what kind of automation you want to set up for yourself.
 
 ```yaml
 version: "1.0.0"
 title: Recipe Cookbook Generator
 description: |
-  Analyze your goose session history to automatically generate recipes from your common workflows. This tool examines your past interactions with goose, identifies repetitive patterns, and creates reusable recipes that can automate similar tasks in the future. Perfect for capturing your personal automation patterns and building a custom recipe library.
+  Analyze your pleum session history to automatically generate recipes from your common workflows. This tool examines your past interactions with pleum, identifies repetitive patterns, and creates reusable recipes that can automate similar tasks in the future. Perfect for capturing your personal automation patterns and building a custom recipe library.
 
 prompt: |
-  I want to analyze my goose session history and create recipes from common workflows I've used. I've done a variety of work, and I'd like your help finding repetitive tasks that we can turn into goose recipes to build my own personal 'cookbook' based on my goose usage patterns.
+  I want to analyze my pleum session history and create recipes from common workflows I've used. I've done a variety of work, and I'd like your help finding repetitive tasks that we can turn into pleum recipes to build my own personal 'cookbook' based on my pleum usage patterns.
 
   {% if work_priorities %}My work priorities are: {{ work_priorities }}{% endif %}
   {% if exclusion_keywords %}Please skip sessions containing these topics: {{ exclusion_keywords }}{% endif %}
@@ -193,7 +193,7 @@ prompt: |
   I want to organize the recipes {{ organization_preference }} and review them in {{ review_mode }} mode.
   
   The process should:
-  1. Find and analyze my goose session files{% if session_storage_path %} (located at {{ session_storage_path }}){% endif %}
+  1. Find and analyze my pleum session files{% if session_storage_path %} (located at {{ session_storage_path }}){% endif %}
   2. Identify successful workflows, prioritizing those I use repeatedly (at least {{ min_workflow_frequency }} times)
   3. Distinguish between repetitive patterns (high priority) and one-off tasks (user choice)
   4. Let me choose which patterns to turn into recipes, and subtasks that could be turned into subrecipes
@@ -209,7 +209,7 @@ parameters:
     input_type: string
     requirement: required
   - key: session_storage_path
-    description: Path to goose session storage (will auto-detect if not provided)
+    description: Path to pleum session storage (will auto-detect if not provided)
     input_type: string
     requirement: optional
   - key: work_priorities
@@ -242,10 +242,10 @@ parameters:
     default: "true"
 
 instructions: |
-  You are helping the user build a 'cookbook' of goose recipes based on their actual usage patterns.
+  You are helping the user build a 'cookbook' of pleum recipes based on their actual usage patterns.
   
   ## Step 1: Setup and Discovery
-  - Determine the goose session storage path (try default locations like ~/.local/share/goose/sessions, or ask the user)
+  - Determine the pleum session storage path (try default locations like ~/.local/share/pleum/sessions, or ask the user)
   - Check if this is an incremental run by looking for last-run timestamp in recipe_output_dir
   - Look for existing analysis metadata file (cookbook_analysis.json) to reuse previous work
   - Identify which session files to analyze (all files or only newer than last run)
@@ -301,7 +301,7 @@ instructions: |
     - Organization preference for naming/structure
   - Subagents work in parallel to generate recipes faster
   - Each recipe includes:
-    - Proper goose YAML format with version, title, description
+    - Proper pleum YAML format with version, title, description
     - Parameterized prompts using minijinja templating
     - Comprehensive instructions for headless mode
     - Custom metadata: cookbook_generator_metadata with source info
@@ -358,14 +358,14 @@ activities:
 
 
 <head>
-  <meta property="og:title" content="Build Your Own Recipe Cookbook Generator for goose" />
+  <meta property="og:title" content="Build Your Own Recipe Cookbook Generator for pleum" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://goose-docs.ai/blog/2025/10/08/recipe-cookbook-generator" />
-  <meta property="og:description" content="Discover how goose can study your past sessions and turn your favorite workflows into reusable automation templates." />
-  <meta property="og:image" content="https://goose-docs.ai/assets/images/recipe-cookbook-generator-ba6ce396585e1fc591e339720ee80a30.png" />
+  <meta property="og:url" content="https://docs.pleum.ai/blog/2025/10/08/recipe-cookbook-generator" />
+  <meta property="og:description" content="Discover how pleum can study your past sessions and turn your favorite workflows into reusable automation templates." />
+  <meta property="og:image" content="https://docs.pleum.ai/assets/images/recipe-cookbook-generator-ba6ce396585e1fc591e339720ee80a30.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Build Your Own Recipe Cookbook Generator for goose" />
-  <meta name="twitter:description" content="Discover how goose can study your past sessions and turn your favorite workflows into reusable automation templates." />
-  <meta property="twitter:domain" content="goose-docs.ai" />
-  <meta name="twitter:image" content="https://goose-docs.ai/assets/images/recipe-cookbook-generator-ba6ce396585e1fc591e339720ee80a30.png" />
+  <meta name="twitter:title" content="Build Your Own Recipe Cookbook Generator for pleum" />
+  <meta name="twitter:description" content="Discover how pleum can study your past sessions and turn your favorite workflows into reusable automation templates." />
+  <meta property="twitter:domain" content="docs.pleum.ai" />
+  <meta name="twitter:image" content="https://docs.pleum.ai/assets/images/recipe-cookbook-generator-ba6ce396585e1fc591e339720ee80a30.png" />
 </head>

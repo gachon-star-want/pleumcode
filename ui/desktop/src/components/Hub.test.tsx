@@ -24,7 +24,7 @@ vi.mock('./ChatInput', () => ({
   },
 }));
 
-vi.mock('./LoadingGoose', () => ({ default: () => <div /> }));
+vi.mock('./LoadingPleum', () => ({ default: () => <div /> }));
 
 vi.mock('./ConfigContext', () => ({
   useConfig: () => ({ extensionsList: [] }),
@@ -33,8 +33,8 @@ vi.mock('./ConfigContext', () => ({
 vi.mock('../sessions', () => ({ createSession: vi.fn() }));
 
 vi.mock('../utils/workingDir', () => ({
-  getInitialWorkingDir: () => '/tmp/goose',
-  getEffectiveWorkingDir: () => Promise.resolve('/tmp/goose'),
+  getInitialWorkingDir: () => '/tmp/pleum',
+  getEffectiveWorkingDir: () => Promise.resolve('/tmp/pleum'),
 }));
 
 vi.mock('../utils/nextChatExtensions', () => ({

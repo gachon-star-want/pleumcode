@@ -1,10 +1,10 @@
 # AGENTS Instructions
 
-goose is an AI agent framework in Rust with CLI and Electron desktop interfaces.
+pleum is an AI agent framework in Rust with CLI and Electron desktop interfaces.
 
 ## Contribution Workflow
 
-The issue is the source of truth for work intended for an upstream pull request. Track issue status on the [Goose Issues board](https://github.com/orgs/aaif-goose/projects/1).
+The issue is the source of truth for work intended for an upstream pull request. Track issue status on the [Pleum Issues board](https://github.com/orgs/gachon-star-want/projects/1).
 
 - Before implementing an issue for a pull request, confirm that it is on the board with Status **Ready**.
 - Do not implement issues in **Inbox**, **Needs info**, or **Accepted / design**. Help resolve the issue discussion instead.
@@ -18,14 +18,14 @@ Maintainer-directed work, urgent security fixes, release automation, and local o
 
 ## MCP Server Directory
 
-goose is retiring its project-specific MCP server directory in favor of the [official MCP Registry](https://github.com/modelcontextprotocol/registry) and its `server.json` format.
+pleum is retiring its project-specific MCP server directory in favor of the [official MCP Registry](https://github.com/modelcontextprotocol/registry) and its `server.json` format.
 
 - Do not add new third-party servers to `documentation/static/servers.json`; these contributions are no longer accepted.
 - Direct server authors to publish to the official MCP Registry instead.
-- Treat the existing goose directory as legacy data while registry-backed discovery and installation are implemented.
+- Treat the existing pleum directory as legacy data while registry-backed discovery and installation are implemented.
 - Changes that maintain, migrate, or remove existing directory entries are allowed when they support the migration and are within an approved issue's scope.
 
-See [Discussion #10830](https://github.com/aaif-goose/goose/discussions/10830) for the decision and migration direction.
+See [Discussion #10830](https://github.com/gachon-star-want/pleumcode/discussions/10830) for the decision and migration direction.
 
 ## GitHub Communication
 
@@ -38,7 +38,7 @@ Write issue and pull request comments for humans, not as exhaustive work logs.
 
 ## Agent Loop Migration
 
-We are replacing the legacy agent loop in `crates/goose/src/agents/agent.rs` with the state machine in `crates/goose/src/agents/state_machine/`. The state-machine path is enabled with `GOOSE_STATE_MACHINE=1`.
+We are replacing the legacy agent loop in `crates/pleum/src/agents/agent.rs` with the state machine in `crates/pleum/src/agents/state_machine/`. The state-machine path is enabled with `PLEUM_STATE_MACHINE=1`.
 
 Until the migration is complete, changes to agent-loop behavior must be implemented and tested in both paths. When reviewing code, check whether a change to either path also applies to the other and flag missing parity.
 
@@ -60,8 +60,8 @@ just release-binary           # release binary
 ### Test
 ```bash
 cargo test                   # all tests
-cargo test -p goose          # specific crate
-cargo test --package goose --test mcp_integration_test
+cargo test -p pleum          # specific crate
+cargo test --package pleum --test mcp_integration_test
 just record-mcp-tests        # record MCP
 ```
 
@@ -101,11 +101,11 @@ ui/text/      # deprecated ACP TUI (see ui/text/README.md)
 
 ## Rules
 
-- Test: Prefer tests/ folder, e.g. crates/goose/tests/
-- Test: When adding features, update goose-self-test.yaml, rebuild, then run `goose run --recipe goose-self-test.yaml` to validate
+- Test: Prefer tests/ folder, e.g. crates/pleum/tests/
+- Test: When adding features, update pleum-self-test.yaml, rebuild, then run `pleum run --recipe pleum-self-test.yaml` to validate
 - Error: Use anyhow::Result
 - Provider: Implement Provider trait see providers/base.rs
-- MCP: Extensions in crates/goose-mcp/
+- MCP: Extensions in crates/pleum-mcp/
 - UI Desktop: Use ACP SDK types or local `src/types/*` types. Do not import generated OpenAPI types/client code from `ui/desktop/src/api`
 
 ## Code Quality
@@ -130,6 +130,6 @@ ui/text/      # deprecated ACP TUI (see ui/text/README.md)
 - Never: Overwrite a live binary in place (e.g. `cp`/`fs.copyFileSync` onto an existing executable) - unlink or atomic-rename the destination first, otherwise macOS SIGKILLs running processes with "Code Signature Invalid"
 
 ## Entry Points
-- CLI: crates/goose-cli/src/main.rs
+- CLI: crates/pleum-cli/src/main.rs
 - UI: ui/desktop/src/main.ts
-- Agent: crates/goose/src/agents/agent.rs
+- Agent: crates/pleum/src/agents/agent.rs

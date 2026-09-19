@@ -127,7 +127,7 @@ sandbox-exec)나 컨테이너/microVM 중 하나를 goose-cli 실행 진입점�
 ### 03 문서 구현 위치 정정
 
 03의 "goose-mcp developer extension" 표현은 v1.51.0에서 틀렸다. 셸/편집 도구는
-`crates/goose/src/agents/platform_extensions/developer/`에, 서브에이전트 위임은 `summon` platform extension
+`crates/pleum/src/agents/platform_extensions/developer/`에(업스트림 v1.51.0에선 `crates/goose/...`), 서브에이전트 위임은 `summon` platform extension
 (`platform_extensions/summon.rs`)에 있다. v0.2 verify wrapper와 v0.3 디스패치는 이 위치를 기준으로 설계한다.
 
 ### OS 샌드박스 v0.1 첫 컷 (macOS만)
@@ -135,7 +135,7 @@ sandbox-exec)나 컨테이너/microVM 중 하나를 goose-cli 실행 진입점�
 설계는 Codex 방식의 분리: **에이전트 프로세스는 그대로 두고(모델 API 통신 필요), 도구가 spawn하는 명령만
 샌드박스에 넣는다.** 런타임 opt-out 없음(env·config 키 없음).
 
-- `crates/goose/src/sandbox.rs` — `wrap()`(Seatbelt `sandbox-exec`, 경로는 `-D` 파라미터로 전달해 프로파일에
+- `crates/pleum/src/sandbox.rs` — `wrap()`(Seatbelt `sandbox-exec`, 경로는 `-D` 파라미터로 전달해 프로파일에
   문자열 삽입 없음)과 `check_write()`(프로세스 내부 쓰기용 동일 정책).
 - 정책: 쓰기는 canonical 워크스페이스 + 임시 디렉토리만 / 네트워크 전면 차단 / `.git/hooks`·`.git/config`
   쓰기 금지(나중에 호스트에서 실행되는 탈출 경로) / `~/.ssh`·`~/.aws`·`~/.gnupg`·goose 설정 디렉토리
@@ -161,8 +161,8 @@ sandbox-exec)나 컨테이너/microVM 중 하나를 goose-cli 실행 진입점�
 **이 결정으로 02의 `PLEUM.md`와 03 원칙 4의 `pleumcode.md`(둘 사이 이름도 불일치였음)는 만들지 않는다** —
 pleumcode 전용 규칙이 실제로 필요해질 때까지 YAGNI.
 
-- v1.51.0 기본값은 `[".goosehints", "AGENTS.md"]`였고 `CLAUDE.md`는 읽지 않았다.
-- pleumcode 기본값: `["AGENTS.md", "CLAUDE.md", ".goosehints"]`(`hints/load_hints.rs`).
+- 업스트림 v1.51.0 기본값은 `[".goosehints", "AGENTS.md"]`였고 `CLAUDE.md`는 읽지 않았다.
+- pleumcode 기본값: `["AGENTS.md", "CLAUDE.md", ".pleumhints"]`(`hints/load_hints.rs`).
   `CONTEXT_FILE_NAMES`로 덮어쓰면 그 값을 그대로 따른다.
 - **`CLAUDE.md`는 같은 디렉토리에 `AGENTS.md`가 없을 때만 읽는다.** 실제 저장소의 `CLAUDE.md`는 대개
   `@AGENTS.md` 한 줄 포인터나 심볼릭 링크라서, 둘 다 읽으면 같은 내용이 프롬프트에 두 번 들어간다(토큰=KRW).
@@ -171,3 +171,48 @@ pleumcode 전용 규칙이 실제로 필요해질 때까지 YAGNI.
   몰래 가져오는 셈). 필요하면 사용자가 `~/.agents/AGENTS.md`에 두면 된다.
 - 레포 안의 이 파일들은 신뢰 경계 밖 데이터다(03 안전성 권고). 로딩 대상이 넓어진 게 아니라 이미 로드하던
   `AGENTS.md`와 같은 종류라 표면은 그대로지만, 프롬프트 인젝션 태깅은 v0.2에서 별도로 점검한다.
+
+### goose → pleum 전면 리네임 (2026-09-19)
+
+코드·파일명·식별자에서 goose 흔적을 걷어냈다. **이 문서의 위쪽 섹션이 `goose`로 적은 코드 경로·이름은 리네임
+이전(=업스트림) 기준**이며, 현재 fork에서는 아래 표로 대응한다.
+
+| 업스트림 | 현재 |
+|---|---|
+| crate `goose*` (`crates/goose-cli` …) | `pleum*` (`crates/pleum-cli` …) |
+| 바이너리 `goose` | `pleum` |
+| 환경변수 `GOOSE_*` | `PLEUM_*` (예: `PLEUM_PATH_ROOT`, `PLEUM_MODE`) |
+| `~/.config/goose` 등 | `~/.config/pleum`, `~/.local/share/pleum` |
+| `.goosehints` / `.gooseignore` | `.pleumhints` / `.pleumignore` |
+| `aaif-goose/goose`, `block/goose` | `gachon-star-want/pleumcode` |
+| `goose-docs.ai` | `docs.pleum.ai` (**자리표시자** — 우리 도메인 하위지만 사이트는 아직 없음) |
+
+**방식**: `pleum/rebrand.py`(결정적·멱등)가 내용 1,261개 파일과 경로 1,031개를 바꿨다. 저장소 슬러그와
+도메인은 일부러 명시 매핑했다 — 그냥 `goose→pleum`이면 `aaif-pleum/pleum` 같은 **우리가 소유하지 않은 org**가
+생겨 update/install 경로가 선점될 수 있다.
+
+**일부러 안 바꾼 것**: `LICENSE`(+ `NOTICE` 추가: Apache-2.0 attribution·변경 고지), `docs/`·`README.md`(우리
+문서, 업스트림 출처를 서술), crates.io의 **`v8-goose` crate**(실제 외부 의존성이라 바꾸면 빌드가 깨짐,
+`vendor/v8` 포함), git remote `upstream`.
+
+**검증**: 잔여 `goose`는 위 제외 대상뿐 / 워크스페이스 전체 `--all-targets` 컴파일 통과 / lib 테스트
+2,266 통과·7 실패 — **리네임 이전 커밋에서도 동일한 7개가 동일하게 실패**(최소 feature 빌드의
+`jsonwebtoken` CryptoProvider 부재 등), 리네임이 만든 실패는 0 / 컴파일된 바이너리에 goose 문자열 0개 /
+더미 키로 게이트웨이 401 재확인(provider 배선 정상).
+
+**업스트림 병합 절차** (모든 파일이 바뀌었으므로 이걸 지키지 않으면 병합마다 전 파일이 충돌한다 — *아직 한 번도
+실행해 보지 않음, v1.52 때 첫 검증*):
+1. 기준점: `v1.51.0`에 스크립트를 적용해 브랜치 `rebranded-upstream`을 만든다(업스트림 히스토리 보존).
+2. 새 릴리스 `vX`: 그 브랜치에서 트리를 `vX`로 교체 → `python3 pleum/rebrand.py .` → 커밋. 이 커밋의 diff가
+   곧 "리네임된 순수 업스트림 변경"이다.
+3. `main`에 `rebranded-upstream`을 merge. 양쪽이 같은 리네임을 했으므로 진짜 충돌만 남는다.
+
+**남은 것 / 결정 필요**
+- **바이너리 이름 충돌**: `pleum`은 기존 npm 런처(`pleum`)와 같은 이름이라 한 PATH에 못 둔다. 00은 `pleum-code`를
+  가칭으로 잡았었다. 바꾸면 `--help`·에러 메시지의 `pleum <명령>` 안내문도 함께 바뀌어야 한다.
+- **눈에 보이는 흔적**: 시작 배너의 ASCII 거위(`__( O)>`), 🪿 이모지, `ui/`·`documentation/`의 이미지·블로그
+  (goose 그림은 텍스트 치환이 못 바꾼다).
+- **`ui/`(Electron)·`documentation/`(Docusaurus) 628개 파일은 v1(터미널 CLI만) 범위 밖**이라 삭제를 권한다 —
+  흔적과 포크 유지비의 최대 원인.
+- goose가 아닌 상류 흔적: `@aaif/*` npm scope, `Block` 표기·PostHog 등 텔레메트리 키(위 샌드박스 잔여 목록의
+  `telemetry` 항목과 같은 건).

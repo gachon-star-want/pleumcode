@@ -1,17 +1,17 @@
 ---
-title: "Automated MCP Testing: Using Composable Goose Recipes to Validate Tool Metadata"
-description: "Automate MCP tool metadata validation using composable Goose recipes to catch regressions, optimize token usage, and ensure AI agents can reliably discover and use your tools."
+title: "Automated MCP Testing: Using Composable Pleum Recipes to Validate Tool Metadata"
+description: "Automate MCP tool metadata validation using composable Pleum recipes to catch regressions, optimize token usage, and ensure AI agents can reliably discover and use your tools."
 authors: 
     - rarora
 ---
 
 ![Automated MCP Testing](automated_mcp_testing.jpg)
 
-# Automated MCP Testing: Using Composable Goose Recipes to Validate Tool Metadata
+# Automated MCP Testing: Using Composable Pleum Recipes to Validate Tool Metadata
 
-When building Model Context Protocol (MCP) servers, most development focuses on tool functionality, ensuring tools execute and return expected results. But just as critical is the quality of tool metadata: descriptions, tooltips, and input schemas. These elements form the "interface language" between tools and AI agents like Goose.
+When building Model Context Protocol (MCP) servers, most development focuses on tool functionality, ensuring tools execute and return expected results. But just as critical is the quality of tool metadata: descriptions, tooltips, and input schemas. These elements form the "interface language" between tools and AI agents like Pleum.
 
-Yet metadata often goes untested. This can break tool discovery and silently degrade agent behavior. In this post, we’ll show how to automate metadata validation using **composable Goose recipes**, turning manual QA into modular, repeatable workflows that:
+Yet metadata often goes untested. This can break tool discovery and silently degrade agent behavior. In this post, we’ll show how to automate metadata validation using **composable Pleum recipes**, turning manual QA into modular, repeatable workflows that:
 
 - Validate tool discoverability and parameter accuracy
 - Detect regressions early
@@ -36,9 +36,9 @@ Manually validating MCP metadata—by running queries and inspecting agent behav
 To keep pace with growing MCP complexity, **automated metadata validation becomes a practical necessity**.
 
 
-## 2. System Overview: Modular and Composable Goose Recipes
+## 2. System Overview: Modular and Composable Pleum Recipes
 
-The foundation of this framework is [Goose’s recipe engine](https://goose-docs.ai/docs/guides/recipes/). Recipes define reusable, declarative workflows for AI-assisted tasks. Each one encapsulates a step—like generating predictions or comparing results—and can be composed into larger pipelines.
+The foundation of this framework is [Pleum’s recipe engine](https://docs.pleum.ai/docs/guides/recipes/). Recipes define reusable, declarative workflows for AI-assisted tasks. Each one encapsulates a step—like generating predictions or comparing results—and can be composed into larger pipelines.
 
 We start with a core recipe that maps natural language queries to tool calls. It reads queries, analyzes the toolset, and produces structured JSON mappings. This recipe becomes the building block for workflows like:
 
@@ -48,9 +48,9 @@ We start with a core recipe that maps natural language queries to tool calls. It
 
 By chaining and wrapping recipes, we avoid duplication and unlock scalable, repeatable QA for MCP tool discoverability.
 
-## 3. The Core Engine: Goose Recipe for Tool Prediction
+## 3. The Core Engine: Pleum Recipe for Tool Prediction
 
-At the heart of the system is a Goose recipe that systematically transforms natural language queries into structured tool predictions. This recipe follows a clear three-step process: 
+At the heart of the system is a Pleum recipe that systematically transforms natural language queries into structured tool predictions. This recipe follows a clear three-step process: 
 
 > **read queries → analyze tools → generate predictions**
 
@@ -61,13 +61,13 @@ The recipe starts by reading a plain text file containing natural language queri
 
 ```
 List contributors to the block/mcp repository
-List the top 10 contributors to aaif-goose/goose
+List the top 10 contributors to gachon-star-want/pleumcode
 Show me the closed branches in block/mcp
-Show me all branches in the aaif-goose/goose repository
+Show me all branches in the gachon-star-want/pleumcode repository
 ```
 
-**Step 2: Ask Goose to Make Predictions**
-Using the developer extension, Goose analyzes the MCP server source code and documentation to understand available tools, their parameters, and usage patterns. It then maps each query to the most appropriate tool call.
+**Step 2: Ask Pleum to Make Predictions**
+Using the developer extension, Pleum analyzes the MCP server source code and documentation to understand available tools, their parameters, and usage patterns. It then maps each query to the most appropriate tool call.
 
 **Step 3: Write Predictions to JSON**
 The output is a structured JSON file with each query mapped to its expected tool and parameters.
@@ -96,12 +96,12 @@ instructions: |
     {
         "test_cases": [
             {
-                "query": "Show me open pull requests in the aaif-goose/goose repository",
+                "query": "Show me open pull requests in the gachon-star-want/pleumcode repository",
                 "expected": {
                     "tool": "tool_name",
                     "parameters": {
                         "repo_owner": "block",
-                        "repo_name": "goose",
+                        "repo_name": "pleum",
                         "p1": "test",
                         "p2": "test"
                     }
@@ -133,8 +133,8 @@ extensions:
   timeout: 300
   bundled: true
 settings:
-  goose_provider: databricks
-  goose_model: goose-claude-4-sonnet
+  pleum_provider: databricks
+  pleum_model: pleum-claude-4-sonnet
   temperature: 0.0
 parameters:
 - key: server_input
@@ -172,7 +172,7 @@ author:
 #### 🚀 Running the Recipe
 
 ```bash
-goose run --recipe generate_predictions_recipe.yaml --params output_file=my_predictions.json
+pleum run --recipe generate_predictions_recipe.yaml --params output_file=my_predictions.json
 ```
 
 #### 🧪 Example Output JSON
@@ -225,13 +225,13 @@ The recipe generates a comprehensive JSON file mapping each query to its predict
 }
 ```
 
-This JSON becomes the foundation for all downstream evaluation workflows—it captures exactly how Goose interprets each query given the current tool metadata, creating a baseline for detecting future regressions.
+This JSON becomes the foundation for all downstream evaluation workflows—it captures exactly how Pleum interprets each query given the current tool metadata, creating a baseline for detecting future regressions.
 
 ## 4. Workflow 1: Automated Metadata Regression Detection
 
 ![Automated Metadata Regression Detection](evaluate_predictions.png)
 
-Having established the core Goose recipe component in Section 3, we can now leverage its modularity to build more complex workflows. The beauty of this architecture is that the core prediction recipe becomes a reusable building block—we can reference it from other recipes, chain it with comparison logic, and compose end-to-end testing pipelines. This demonstrates the power of treating recipes as separate modules that can be orchestrated together for sophisticated automation workflows.
+Having established the core Pleum recipe component in Section 3, we can now leverage its modularity to build more complex workflows. The beauty of this architecture is that the core prediction recipe becomes a reusable building block—we can reference it from other recipes, chain it with comparison logic, and compose end-to-end testing pipelines. This demonstrates the power of treating recipes as separate modules that can be orchestrated together for sophisticated automation workflows.
 
 Once predictions are generated via the core recipe, the next step is to detect regressions by comparing them against a curated "gold standard" dataset. This automated evaluation follows a clear three-step process: 
 
@@ -243,7 +243,7 @@ Once predictions are generated via the core recipe, the next step is to detect r
 First, we run the core recipe from Section 3 to generate fresh predictions based on the current tool metadata:
 
 ```bash
-goose run --recipe generate_predictions_recipe.yaml --params output_file=new_evaluation.json
+pleum run --recipe generate_predictions_recipe.yaml --params output_file=new_evaluation.json
 ```
 
 This produces a JSON file with current tool predictions.
@@ -257,8 +257,8 @@ python compare_results.py new_evaluation.json mcp_github_query_tool_truth.json
 
 The script performs a structured diff, flagging mismatches in tool names, parameters, or values.
 
-**Step 3: Ask Goose to Interpret Results**
-Finally, Goose analyzes the comparison output and highlights what's not matching, providing human-readable explanations of the differences.
+**Step 3: Ask Pleum to Interpret Results**
+Finally, Pleum analyzes the comparison output and highlights what's not matching, providing human-readable explanations of the differences.
 
 #### 🧪 Complete Evaluation Recipe
 
@@ -272,7 +272,7 @@ description: Generate predictions and evaluate against a known correct output
 instructions: |
   This task involves running automated evaluation scripts to generate tool-parameter mappings from natural language queries, then comparing the output against gold standard datasets to identify discrepancies. 
 
-  Command to generate output: goose run --recipe generate_predictions_recipe.yaml --params output_file={{ output_file }}
+  Command to generate output: pleum run --recipe generate_predictions_recipe.yaml --params output_file={{ output_file }}
   Script to compare 2 files: python compare_results.py {{ output_file }} {{ gold_file }}
 
   Go over the output of the comparison script and highlight what cases differ in terms of tool name or parameters. You can ignore minor mismatches like:
@@ -286,8 +286,8 @@ extensions:
   timeout: 300
   bundled: true
 settings:
-  goose_provider: databricks
-  goose_model: goose-claude-4-sonnet
+  pleum_provider: databricks
+  pleum_model: pleum-claude-4-sonnet
   temperature: 0.0
 parameters:
 - key: output_file
@@ -315,7 +315,7 @@ author:
 #### 🚀 Running the Complete Evaluation
 
 ```bash
-goose run --recipe evaluate_predictions.yaml --params output_file=new_evaluation.json gold_file=mcp_github_query_tool_truth.json
+pleum run --recipe evaluate_predictions.yaml --params output_file=new_evaluation.json gold_file=mcp_github_query_tool_truth.json
 ```
 
 #### 📉 Example Comparison Results
@@ -349,7 +349,7 @@ Here are two common types of mismatches the system detects:
 - **Issue:** Tool name changed from `list_branches` to `get_repo_branches`, likely due to a tooltip or function name update
 
 **❌ Example 2: Parameter Mismatch**
-- **Query:** "Search for files containing console.log in aaif-goose/goose"
+- **Query:** "Search for files containing console.log in gachon-star-want/pleumcode"
 - **Gold Standard:**
   ```json
   {
@@ -357,7 +357,7 @@ Here are two common types of mismatches the system detects:
     "parameters": {
       "search_term": "console.log",
       "repo_owner": "block",
-      "repo_name": "goose"
+      "repo_name": "pleum"
     }
   }
   ```
@@ -392,7 +392,7 @@ This feedback loop becomes essential for pull request validation—especially wh
 
 Building on the modular recipe architecture established in previous sections, we can create even more sophisticated workflows that combine multiple automation steps. One powerful example is an iterative token reduction pipeline that safely compresses MCP tool descriptions while ensuring functionality remains intact.
 
-This workflow demonstrates the true power of composable Goose recipes—we can orchestrate the core prediction recipe from Section 3 and the evaluation workflow from Section 4 into a continuous optimization loop that reduces token usage without breaking tool discoverability.
+This workflow demonstrates the true power of composable Pleum recipes—we can orchestrate the core prediction recipe from Section 3 and the evaluation workflow from Section 4 into a continuous optimization loop that reduces token usage without breaking tool discoverability.
 
 #### 🔄 The Optimization Loop: Step-by-Step
 
@@ -401,13 +401,13 @@ The token reduction workflow follows an iterative process:
 > **reduce tokens → run evaluation → fix issues → run evaluation → repeat**
 
 **Step 1: Compress Tool Descriptions**
-Using natural language processing, Goose identifies verbose tooltips, redundant documentation, and unnecessary examples, then compresses them while preserving essential information.
+Using natural language processing, Pleum identifies verbose tooltips, redundant documentation, and unnecessary examples, then compresses them while preserving essential information.
 
 **Step 2: Run Evaluation Pipeline**
 The system automatically triggers the evaluation workflow from Section 4 to test whether the compressed descriptions still allow correct tool discovery.
 
 **Step 3: Fix Issues**
-If evaluation tests fail, Goose analyzes the specific mismatches and iteratively fixes the compressed tooltips to restore functionality.
+If evaluation tests fail, Pleum analyzes the specific mismatches and iteratively fixes the compressed tooltips to restore functionality.
 
 **Step 4: Repeat Until Success**
 The loop continues until all evaluation tests pass, ensuring no regressions in tool discoverability.
@@ -433,7 +433,7 @@ instructions: |
   MCP server file: {{ server_input }}
   MCP tool documentation {{ tool_documentation }}
   Script to count tokens {{ count_token_script }}
-  Command to run evaluation goose run --recipe evaluate_predictions.yaml
+  Command to run evaluation pleum run --recipe evaluate_predictions.yaml
 prompt: Reduce token count for tool descriptions and tooltips and make sure evaluation succeeds. Read instructions for more details
 extensions:
 - type: builtin
@@ -442,8 +442,8 @@ extensions:
   timeout: 300
   bundled: true
 settings:
-  goose_provider: databricks
-  goose_model: goose-claude-4-sonnet
+  pleum_provider: databricks
+  pleum_model: pleum-claude-4-sonnet
   temperature: 0.0
 parameters:
 - key: server_input
@@ -481,7 +481,7 @@ author:
 #### 🚀 Running the Token Reduction Loop
 
 ```bash
-goose run --recipe compress_evaluate_mcp.yaml --params target_reduction=10
+pleum run --recipe compress_evaluate_mcp.yaml --params target_reduction=10
 ```
 
 #### 📉 Real Example: Iterative Fixing Process
@@ -552,7 +552,7 @@ The one mismatch was a **style difference** rather than a functional error:
 
 ## 6. Conclusion
 
-Automated MCP metadata validation doesn’t have to be brittle or one-off. By using a **modular Goose recipe architecture**, we’ve shown how a single core prediction recipe can power multiple high-value workflows—from **catching regressions early** to **reducing tokens safely** without sacrificing discoverability.
+Automated MCP metadata validation doesn’t have to be brittle or one-off. By using a **modular Pleum recipe architecture**, we’ve shown how a single core prediction recipe can power multiple high-value workflows—from **catching regressions early** to **reducing tokens safely** without sacrificing discoverability.
 
 This composable approach offers three big wins:  
 - **Reusability** – The same core logic supports different workflows without rewriting code.  
@@ -562,14 +562,14 @@ This composable approach offers three big wins:
 With these building blocks in place, teams can confidently expand their automation toolkit—knowing every new optimization or enhancement will be backed by the same rigorous, repeatable validation process.
 
 <head>
-  <meta property="og:title" content="Automated MCP Testing: Using Composable Goose Recipes to Validate Tool Metadata" />
+  <meta property="og:title" content="Automated MCP Testing: Using Composable Pleum Recipes to Validate Tool Metadata" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://goose-docs.ai/blog/2025/08/12/mcp-testing" />
-  <meta property="og:description" content="Automate MCP tool metadata validation using composable Goose recipes to catch regressions, optimize token usage, and ensure AI agents can reliably discover and use your tools" />
-  <meta property="og:image" content="https://goose-docs.ai/assets/images/automated_mcp_testing-296dac2cd2b1b327e58854f4bfb0c89a.jpg" />
+  <meta property="og:url" content="https://docs.pleum.ai/blog/2025/08/12/mcp-testing" />
+  <meta property="og:description" content="Automate MCP tool metadata validation using composable Pleum recipes to catch regressions, optimize token usage, and ensure AI agents can reliably discover and use your tools" />
+  <meta property="og:image" content="https://docs.pleum.ai/assets/images/automated_mcp_testing-296dac2cd2b1b327e58854f4bfb0c89a.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:domain" content="goose-docs.ai" />
-  <meta name="twitter:title" content="Automated MCP Testing: Using Composable Goose Recipes to Validate Tool Metadata" />
-  <meta name="twitter:description" content="Automate MCP tool metadata validation using composable Goose recipes to catch regressions, optimize token usage, and ensure AI agents can reliably discover and use your tools" />
-  <meta name="twitter:image" content="https://goose-docs.ai/assets/images/automated_mcp_testing-296dac2cd2b1b327e58854f4bfb0c89a.jpg" />
+  <meta property="twitter:domain" content="docs.pleum.ai" />
+  <meta name="twitter:title" content="Automated MCP Testing: Using Composable Pleum Recipes to Validate Tool Metadata" />
+  <meta name="twitter:description" content="Automate MCP tool metadata validation using composable Pleum recipes to catch regressions, optimize token usage, and ensure AI agents can reliably discover and use your tools" />
+  <meta name="twitter:image" content="https://docs.pleum.ai/assets/images/automated_mcp_testing-296dac2cd2b1b327e58854f4bfb0c89a.jpg" />
 </head>

@@ -28,15 +28,15 @@ Before I explain, it’s better if I just show you.
 
 It’s a collaborative API testing playground where kids can run sample requests, get playful error messages, and see live responses in real time. Everyone in the session sees the API response together, turning the experience of solo debugging into multiplayer coding. And it looks like a literal playground.
 
-I was inspired to build this after attending our company’s Bring Your Kids to Work Day. I didn’t bring my kid because she’s still an infant, but I attended to support my teammate Adewale Abati, who led a virtual session introducing kids to Goose. They used it to build comics, games, and music apps that were fun, imaginative, and genuinely impressive.
+I was inspired to build this after attending our company’s Bring Your Kids to Work Day. I didn’t bring my kid because she’s still an infant, but I attended to support my teammate Adewale Abati, who led a virtual session introducing kids to Pleum. They used it to build comics, games, and music apps that were fun, imaginative, and genuinely impressive.
 
 I decided to create a digital resource that teaches foundational concepts like APIs in a way that feels inviting instead of intimidating. Traditional API testing tools are powerful, but for a kid just starting out, they can be confusing and unclear.
 
-**The wild part is that I let Goose and six subagents bring this idea to life.**
+**The wild part is that I let Pleum and six subagents bring this idea to life.**
 
 ## Meet the Subagents
 
-[Subagents](/docs/guides/context-engineering/subagents) are individual AI instances that take on specific tasks. Each one runs in its own session, which helps preserve the main context window and keeps your primary Goose conversation uncluttered and focused on high-level orchestration. I think of subagents as temporary teammates. Goose assigns each subagent a job and deallocates it when the work is complete.
+[Subagents](/docs/guides/context-engineering/subagents) are individual AI instances that take on specific tasks. Each one runs in its own session, which helps preserve the main context window and keeps your primary Pleum conversation uncluttered and focused on high-level orchestration. I think of subagents as temporary teammates. Pleum assigns each subagent a job and deallocates it when the work is complete.
 
 For this project, I turned my subagents into an on-demand dev squad, and I assigned them the following roles:
 
@@ -56,7 +56,7 @@ As of version 1.10.0, subagents are no longer experimental and don't require ena
 
 ## Instructing My Team
 
-There are a few ways to create subagents in Goose. You can use natural language prompts, define them through [recipes](/docs/guides/recipes/), or even spin up [external subagents](/docs/guides/context-engineering/subagents/#external-subagents) like Codex or Claude Code.
+There are a few ways to create subagents in Pleum. You can use natural language prompts, define them through [recipes](/docs/guides/recipes/), or even spin up [external subagents](/docs/guides/context-engineering/subagents/#external-subagents) like Codex or Claude Code.
 
 I took the natural language prompt approach because it felt convenient to directly configure a subagent through one prompt. Here’s the prompt I used:
   
@@ -85,7 +85,7 @@ Set the time out to 9 minutes.
 ```
 
 :::note TLDR
-Goose lets you run subagents in parallel or sequentially. I chose a hybrid approach instructing Goose to run the first subagents sequentially (since their tasks relied on the previous step) and the last three subagents in parallel (since they only needed the core app to exist). 
+Pleum lets you run subagents in parallel or sequentially. I chose a hybrid approach instructing Pleum to run the first subagents sequentially (since their tasks relied on the previous step) and the last three subagents in parallel (since they only needed the core app to exist). 
 
 I also set the timeout to 9 minutes, giving the subagents more time than the default 5 minutes to accomplish their tasks.
 :::
@@ -94,7 +94,7 @@ The subagents delivered a working collaborative API playground.  The functionali
 
 ## My Parallel Prompt Fail
 
-After the agents completed the initial task, I proceeded with a follow-up prompt asking Goose to spawn five more subagents to work in parallel, each responsible for a different UI component: the header, request builder, tab layout, and collaboration panel. I figured that having the subagents execute the work in parallel would get the job done faster.
+After the agents completed the initial task, I proceeded with a follow-up prompt asking Pleum to spawn five more subagents to work in parallel, each responsible for a different UI component: the header, request builder, tab layout, and collaboration panel. I figured that having the subagents execute the work in parallel would get the job done faster.
 
 But the result of this prompt made the app look worse! Each subagent brought its own interpretation of what "kid-friendly" meant. The header had a gaming-like design with black and purple colors, the tabs used Comic Sans while the rest of the app didn't, and the panels used a glassmorphic design. 
 
@@ -102,7 +102,7 @@ This happened because each subagent wasn't aware of the other subagents' plan. T
 
 ## A Better Prompt Strategy
 
-This time, I took a different approach. I told Goose to spin up one subagent to analyze the UI and come up with a shared design plan. Once the plan was ready, Goose could then spawn four more subagents to implement the plan in parallel.
+This time, I took a different approach. I told Pleum to spin up one subagent to analyze the UI and come up with a shared design plan. Once the plan was ready, Pleum could then spawn four more subagents to implement the plan in parallel.
 
 ```
 Can you take a look at the UI? The color scheme is all over the place. I want it to be unified but also have a playground theme like a real-life playground. Not just the colors but the elements as well.
@@ -152,7 +152,7 @@ Phase 4: Content (Area 4)
 - Rewrite copy with playground metaphors
 ```
 
-The result was a much more cohesive, playful interface that actually looked like a digital playground. Having Goose coordinate subagents based on a shared design plan worked way better than running them loose in parallel.
+The result was a much more cohesive, playful interface that actually looked like a digital playground. Having Pleum coordinate subagents based on a shared design plan worked way better than running them loose in parallel.
 
 ## Final Thoughts
 
@@ -161,27 +161,27 @@ This was my first experience with subagents, and I learned that:
 * Sequential execution works better when one task builds on another.   
 * Parallel execution works when tasks are independent or follow a shared plan  
 * Use subagents for complex projects with independent tasks you can delegate.  
-* You can let Goose do the planning for you. You don’t have to micromanage every step.
+* You can let Pleum do the planning for you. You don’t have to micromanage every step.
 
-I loved that instead of managing every detail, I could assign focused jobs and let Goose coordinate the flow. 
+I loved that instead of managing every detail, I could assign focused jobs and let Pleum coordinate the flow. 
 
 The next experiment I want to try is using external subagents, which would allow me to delegate one-off tasks to tools like Claude Code or Codex.
 
 What will you build with subagents?
 
-[Download Goose](/)
+[Download Pleum](/)
 
 [Learn about subagents](/docs/guides/context-engineering/subagents)
 
 <head>
   <meta property="og:title" content="Orchestrating 6 Subagents to Build a Collaborative API Playground for Kids" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://goose-docs.ai/blog/2025/07/21/orchestrating-subagents" />
+  <meta property="og:url" content="https://docs.pleum.ai/blog/2025/07/21/orchestrating-subagents" />
   <meta property="og:description" content="Delegating backend, frontend, docs, and tests so six subagents could build collaborative API tool for kids." />
-  <meta property="og:image" content="https://goose-docs.ai/assets/images/built-by-subagents-869a01d4b147ebdb54334dcc22dc521e.png" />
+  <meta property="og:image" content="https://docs.pleum.ai/assets/images/built-by-subagents-869a01d4b147ebdb54334dcc22dc521e.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:domain" content="goose-docs.ai" />
+  <meta property="twitter:domain" content="docs.pleum.ai" />
   <meta name="twitter:title" content="Orchestrating 6 Subagents to Build a Collaborative API Playground for Kids" />
   <meta name="twitter:description" content="Delegating backend, frontend, docs, and tests so six subagents could build collaborative API tool for kids." />
-  <meta name="twitter:image" content="https://goose-docs.ai/assets/images/built-by-subagents-869a01d4b147ebdb54334dcc22dc521e.png" />
+  <meta name="twitter:image" content="https://docs.pleum.ai/assets/images/built-by-subagents-869a01d4b147ebdb54334dcc22dc521e.png" />
 </head>

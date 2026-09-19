@@ -1,11 +1,11 @@
-# goose Documentation
-# https://goose-docs.ai/
+# pleum Documentation
+# https://docs.pleum.ai/
 
 User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://goose-docs.ai/sitemap.xml
+Sitemap: https://docs.pleum.ai/sitemap.xml
 
 # LLM context file available at /llms.txt
 

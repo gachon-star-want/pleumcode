@@ -342,8 +342,8 @@ export function setupAutoUpdater(tray?: Tray) {
   // Set the feed URL for GitHub releases
   const feedConfig = {
     provider: 'github' as const,
-    owner: 'aaif-goose',
-    repo: 'goose',
+    owner: 'gachon-star-want',
+    repo: 'pleum',
     releaseType: 'release' as const,
   };
 
@@ -358,13 +358,13 @@ export function setupAutoUpdater(tray?: Tray) {
     log.error('Error getting feed URL:', e);
   }
 
-  // Respect GOOSE_DISABLE_AUTO_DOWNLOAD env var (takes precedence over user setting)
+  // Respect PLEUM_DISABLE_AUTO_DOWNLOAD env var (takes precedence over user setting)
   const envDisabled =
-    process.env.GOOSE_DISABLE_AUTO_DOWNLOAD === '1' ||
-    process.env.GOOSE_DISABLE_AUTO_DOWNLOAD === 'true';
+    process.env.PLEUM_DISABLE_AUTO_DOWNLOAD === '1' ||
+    process.env.PLEUM_DISABLE_AUTO_DOWNLOAD === 'true';
   if (envDisabled) {
     autoDownloadDisabled = true;
-    log.info('Auto-download disabled via GOOSE_DISABLE_AUTO_DOWNLOAD environment variable');
+    log.info('Auto-download disabled via PLEUM_DISABLE_AUTO_DOWNLOAD environment variable');
   }
 
   // Configure auto-updater settings
@@ -646,7 +646,7 @@ export function setupAutoUpdater(tray?: Tray) {
     // Show native notification
     const notification = new Notification({
       title: 'Update Ready',
-      body: `Version ${info.version} will be installed when you quit Goose. Click to install now.`,
+      body: `Version ${info.version} will be installed when you quit Pleum. Click to install now.`,
     });
     notification.show();
 
@@ -723,7 +723,7 @@ async function githubAutoDownload(
 function updateTrayIcon(hasUpdate: boolean) {
   if (!trayRef) return;
 
-  if (process.env.GOOSE_VERSION) {
+  if (process.env.PLEUM_VERSION) {
     hasUpdate = false;
   }
 
@@ -737,7 +737,7 @@ function updateTrayIcon(hasUpdate: boolean) {
     } else {
       iconPath = path.join(process.resourcesPath, 'images', 'iconTemplateUpdate.png');
     }
-    trayRef.setToolTip('Goose - Update Available');
+    trayRef.setToolTip('Pleum - Update Available');
   } else {
     // Use normal icon
     if (isDev) {
@@ -745,7 +745,7 @@ function updateTrayIcon(hasUpdate: boolean) {
     } else {
       iconPath = path.join(process.resourcesPath, 'images', 'iconTemplate.png');
     }
-    trayRef.setToolTip('Goose');
+    trayRef.setToolTip('Pleum');
   }
 
   const icon = nativeImage.createFromPath(iconPath);

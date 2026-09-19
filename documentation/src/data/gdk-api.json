@@ -3,7 +3,7 @@
     {
       "version": "0.1.0-alpha.9",
       "docVersion": "0.1",
-      "source": "crates/goose-sdk/src/bindings.rs",
+      "source": "crates/pleum-sdk/src/bindings.rs",
       "functions": [
         {
           "name": "anthropic_default_model",
@@ -37,7 +37,7 @@
             }
           ],
           "returns": "Provider",
-          "throws": "GooseError",
+          "throws": "PleumError",
           "isAsync": false
         },
         {
@@ -66,7 +66,7 @@
             }
           ],
           "returns": "Provider",
-          "throws": "GooseError",
+          "throws": "PleumError",
           "isAsync": false
         },
         {
@@ -101,7 +101,7 @@
             }
           ],
           "returns": "Provider",
-          "throws": "GooseError",
+          "throws": "PleumError",
           "isAsync": false
         },
         {
@@ -116,7 +116,7 @@
             }
           ],
           "returns": "Provider",
-          "throws": "GooseError",
+          "throws": "PleumError",
           "isAsync": false
         },
         {
@@ -147,7 +147,7 @@
             }
           ],
           "returns": "Provider",
-          "throws": "GooseError",
+          "throws": "PleumError",
           "isAsync": false
         },
         {
@@ -162,7 +162,7 @@
             }
           ],
           "returns": null,
-          "throws": "GooseError",
+          "throws": "PleumError",
           "isAsync": false
         },
         {
@@ -185,13 +185,13 @@
             }
           ],
           "returns": "Provider",
-          "throws": "GooseError",
+          "throws": "PleumError",
           "isAsync": false
         }
       ],
       "items": [
         {
-          "name": "GooseError",
+          "name": "PleumError",
           "kind": "error",
           "docs": "",
           "fields": [],
@@ -294,7 +294,7 @@
               "docs": "",
               "params": [],
               "returns": "u64",
-              "throws": "GooseError",
+              "throws": "PleumError",
               "isAsync": false
             },
             {
@@ -315,7 +315,7 @@
                 }
               ],
               "returns": null,
-              "throws": "GooseError",
+              "throws": "PleumError",
               "isAsync": false
             }
           ]
@@ -775,7 +775,7 @@
               "fields": [
                 {
                   "name": "error",
-                  "type": "GooseStreamError",
+                  "type": "PleumStreamError",
                   "default": null,
                   "docs": ""
                 }
@@ -785,13 +785,13 @@
           "methods": []
         },
         {
-          "name": "GooseStreamError",
+          "name": "PleumStreamError",
           "kind": "record",
           "docs": "",
           "fields": [
             {
               "name": "kind",
-              "type": "GooseStreamErrorKind",
+              "type": "PleumStreamErrorKind",
               "default": null,
               "docs": ""
             },
@@ -812,7 +812,7 @@
           "methods": []
         },
         {
-          "name": "GooseStreamErrorKind",
+          "name": "PleumStreamErrorKind",
           "kind": "enum",
           "docs": "",
           "fields": [],
@@ -943,7 +943,7 @@
                 }
               ],
               "returns": "u64",
-              "throws": "GooseError",
+              "throws": "PleumError",
               "isAsync": true
             },
             {
@@ -976,7 +976,7 @@
                 }
               ],
               "returns": "ProviderStream",
-              "throws": "GooseError",
+              "throws": "PleumError",
               "isAsync": true
             },
             {
@@ -1009,7 +1009,7 @@
                 }
               ],
               "returns": "ProviderCompletion",
-              "throws": "GooseError",
+              "throws": "PleumError",
               "isAsync": true
             },
             {
@@ -1036,7 +1036,7 @@
                 }
               ],
               "returns": "CompactionSummary",
-              "throws": "GooseError",
+              "throws": "PleumError",
               "isAsync": true
             }
           ]
@@ -1140,7 +1140,7 @@
               "docs": "",
               "params": [],
               "returns": "Option<StreamChunk>",
-              "throws": "GooseError",
+              "throws": "PleumError",
               "isAsync": true
             }
           ]

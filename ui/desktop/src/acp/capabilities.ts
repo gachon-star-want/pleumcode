@@ -28,12 +28,12 @@ export function hasLocalInferenceCapability(
     return false;
   }
 
-  const goose = meta.goose;
-  if (!isRecord(goose)) {
+  const pleum = meta.pleum;
+  if (!isRecord(pleum)) {
     return false;
   }
 
-  return 'localInference' in goose;
+  return 'localInference' in pleum;
 }
 
 export function hasRecipeParameterScopesCapability(
@@ -49,12 +49,12 @@ export function hasRecipeParameterScopesCapability(
     return false;
   }
 
-  const goose = meta.goose;
-  if (!isRecord(goose)) {
+  const pleum = meta.pleum;
+  if (!isRecord(pleum)) {
     return false;
   }
 
-  return 'recipeParameterScopes' in goose;
+  return 'recipeParameterScopes' in pleum;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

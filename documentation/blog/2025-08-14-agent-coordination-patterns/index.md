@@ -7,7 +7,7 @@ authors:
 
 ![blog banner](agent-coordination.png)
 
-I taught a [vibe coding workshop at UC Berkeley](/blog/2025/08/10/vibe-coding-with-goose-building-apps-with-ai-agents) and informed the students that we'd be spinning up 7 subagents. Someone quickly raised their hand and asked "what is a subagent?". At that moment, I realized we're just throwing out terms like **agent**, **multi agent**, and **subagent**, and not really taking the time to explain what these are. So, here goes... a 101 breaking down these various coordination patterns and when to use them.
+I taught a [vibe coding workshop at UC Berkeley](/blog/2025/08/10/vibe-coding-with-pleum-building-apps-with-ai-agents) and informed the students that we'd be spinning up 7 subagents. Someone quickly raised their hand and asked "what is a subagent?". At that moment, I realized we're just throwing out terms like **agent**, **multi agent**, and **subagent**, and not really taking the time to explain what these are. So, here goes... a 101 breaking down these various coordination patterns and when to use them.
 
 <!-- truncate -->
 
@@ -26,7 +26,7 @@ These terms sound fancy, but at the end of the day, these are just different way
 
 ## The Agent: Solo Hero Mode
 
-You give the task to one AI agent, such as [Goose](/). The agent is an autonomous actor, essentially your army of one.
+You give the task to one AI agent, such as [Pleum](/). The agent is an autonomous actor, essentially your army of one.
 
 You tell your agent, "Add dark mode to the app." It reads the repo, updates the CSS and themes, runs tests, and opens a PR. It handles the whole thing start to finish. No teammates, no handoffs.
 
@@ -76,12 +76,12 @@ These setups are just different ways to organize work, whether it's human work o
 <head>
   <meta property="og:title" content="Agents, Subagents, and Multi Agents: What They Are and When to Use Them" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://goose-docs.ai/blog/2025/08/14/agent-coordination-patterns" />
+  <meta property="og:url" content="https://docs.pleum.ai/blog/2025/08/14/agent-coordination-patterns" />
   <meta property="og:description" content="A straightforward explanation of how agents are organized to work together" />
-  <meta property="og:image" content="https://goose-docs.ai/assets/images/agent-coordination-52282acab8107e9503b17e471465ffa5.png" />
+  <meta property="og:image" content="https://docs.pleum.ai/assets/images/agent-coordination-52282acab8107e9503b17e471465ffa5.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:domain" content="goose-docs.ai" />
+  <meta property="twitter:domain" content="docs.pleum.ai" />
   <meta name="twitter:title" content="Agents, Subagents, and Multi Agents: What They Are and When to Use Them" />
   <meta name="twitter:description" content="A straightforward explanation of how agents are organized to work together" />
-  <meta name="twitter:image" content="https://goose-docs.ai/assets/images/agent-coordination-52282acab8107e9503b17e471465ffa5.png" />
+  <meta name="twitter:image" content="https://docs.pleum.ai/assets/images/agent-coordination-52282acab8107e9503b17e471465ffa5.png" />
 </head>

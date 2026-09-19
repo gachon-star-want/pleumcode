@@ -8,7 +8,7 @@ export interface StartupTraceEvent {
   details?: Record<string, unknown>;
 }
 
-export interface GooseServeStartupDiagnostics {
+export interface PleumServeStartupDiagnostics {
   attemptId: string;
   startedAt: string;
   binaryPath: string | null;
@@ -26,9 +26,9 @@ export interface GooseServeStartupDiagnostics {
   events: StartupTraceEvent[];
 }
 
-export interface GooseServeStartupTrace {
+export interface PleumServeStartupTrace {
   diagnosticsPath: string;
-  diagnostics: GooseServeStartupDiagnostics;
+  diagnostics: PleumServeStartupDiagnostics;
   record: (name: string, details?: Record<string, unknown>) => void;
   flush: () => void;
 }
@@ -43,13 +43,13 @@ export const appendTail = (target: string[], lines: string[]) => {
   }
 };
 
-const cleanupGooseServeStartupDiagnostics = (diagnosticsDir: string) => {
+const cleanupPleumServeStartupDiagnostics = (diagnosticsDir: string) => {
   const startupLogs = fs
     .readdirSync(diagnosticsDir, { withFileTypes: true })
     .filter(
       (entry) =>
         entry.isFile() &&
-        entry.name.startsWith('goose-serve-startup-') &&
+        entry.name.startsWith('pleum-serve-startup-') &&
         entry.name.endsWith('.json')
     )
     .map((entry) => {
@@ -66,22 +66,22 @@ const cleanupGooseServeStartupDiagnostics = (diagnosticsDir: string) => {
   }
 };
 
-export const createGooseServeStartupDiagnostics = (
+export const createPleumServeStartupDiagnostics = (
   diagnosticsDir: string | undefined,
   workingDir: string
-): GooseServeStartupTrace | null => {
+): PleumServeStartupTrace | null => {
   if (!diagnosticsDir) {
     return null;
   }
 
   fs.mkdirSync(diagnosticsDir, { recursive: true });
-  cleanupGooseServeStartupDiagnostics(diagnosticsDir);
+  cleanupPleumServeStartupDiagnostics(diagnosticsDir);
   const startedAt = new Date();
-  const attemptId = `goose-serve-startup-${startedAt.toISOString().replace(/:/g, '-')}-${process.pid}.json`;
+  const attemptId = `pleum-serve-startup-${startedAt.toISOString().replace(/:/g, '-')}-${process.pid}.json`;
   const diagnosticsPath = path.join(diagnosticsDir, attemptId);
   const monotonicStart = Date.now();
 
-  const diagnostics: GooseServeStartupDiagnostics = {
+  const diagnostics: PleumServeStartupDiagnostics = {
     attemptId,
     startedAt: startedAt.toISOString(),
     binaryPath: null,

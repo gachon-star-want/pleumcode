@@ -8,11 +8,11 @@ authors:
 
 ![blog cover](/img/blog/adversary-mode.png)
 
-One of the desires of goose (well for some of us) was to avoid the constant asking for permissions, delegating all the decisions to end users in an attempt to keep agent execution of tools safe. Sometimes that gets pretty noisy and annoying and ends up being less secure when you get tired of reading and approving. 
+One of the desires of pleum (well for some of us) was to avoid the constant asking for permissions, delegating all the decisions to end users in an attempt to keep agent execution of tools safe. Sometimes that gets pretty noisy and annoying and ends up being less secure when you get tired of reading and approving. 
 
 You can of course adjust settings as you see fit, but it is nice to consider how things could be made safe without assuming that you can interrupt the user constantly for permission, especially around things they may not currently have the context for (in their head!)
 
-In goose there are layers of things you can enable, but we wanted to also think about general solutions when we observed agents (of all kinds) being really helpful, and as a side effect, being accidentally harmful. This birthed "adversary mode" where the idea is: why not use another agent to fight fire with fire. Agents want to be helpful, and they can be oriented to help the user, but another one can be oriented to protect against the agent "helping" the user, to keep things in policy, and safe.
+In pleum there are layers of things you can enable, but we wanted to also think about general solutions when we observed agents (of all kinds) being really helpful, and as a side effect, being accidentally harmful. This birthed "adversary mode" where the idea is: why not use another agent to fight fire with fire. Agents want to be helpful, and they can be oriented to help the user, but another one can be oriented to protect against the agent "helping" the user, to keep things in policy, and safe.
 
 <!--truncate-->
 
@@ -31,11 +31,11 @@ The configuration is trivial (just plain language, something an agent or a perso
 3. Blocked calls are denied — the main agent sees the rejection and cannot retry
 4. If the reviewer fails for any reason, the call is allowed through (fail-open)
 
-The adversary uses the same model and provider goose is already configured with. No extra API keys or setup needed.
+The adversary uses the same model and provider pleum is already configured with. No extra API keys or setup needed.
 
 ## Turning It On
 
-Create a file at `~/.config/goose/adversary.md` with your rules:
+Create a file at `~/.config/pleum/adversary.md` with your rules:
 
 ```markdown
 BLOCK if the tool call:
@@ -52,7 +52,7 @@ That's it. File exists → adversary mode is on. Delete the file → it's off. A
 
 ## Why Not Just Use Pattern Matching?
 
-Pattern-based detection is great for catching known attack signatures, and goose supports that too. The adversary reviewer can tell the difference between `curl` downloading a dependency and `curl` exfiltrating your SSH keys — because it knows what you actually asked for. It can even sense if an agent is creatively writing scripts, in fragments, to egress data to a public URL (again, to be helpful!) which wouldn't be obviously caught by patterns or rules or filters. 
+Pattern-based detection is great for catching known attack signatures, and pleum supports that too. The adversary reviewer can tell the difference between `curl` downloading a dependency and `curl` exfiltrating your SSH keys — because it knows what you actually asked for. It can even sense if an agent is creatively writing scripts, in fragments, to egress data to a public URL (again, to be helpful!) which wouldn't be obviously caught by patterns or rules or filters. 
 
 The two approaches are complementary. Use both. Use all the layers!
 
@@ -66,6 +66,6 @@ For full configuration details — including how to expand which tools get revie
 <head>
   <meta property="og:title" content="Adversary Agent: using a hidden agent to keep the main agent safe" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://goose-docs.ai/blog/2026/03/31/adversary-mode" />
+  <meta property="og:url" content="https://docs.pleum.ai/blog/2026/03/31/adversary-mode" />
   <meta property="og:description" content="Introducing adversary mode — an independent agent reviewer that silently watches the main agent to keep it away from danger." />
 </head>

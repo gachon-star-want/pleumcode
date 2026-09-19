@@ -1,24 +1,24 @@
-import { DEFAULT_GOOSE_MCP_HOST_CAPABILITIES } from '@aaif/goose-acp-client';
+import { DEFAULT_PLEUM_MCP_HOST_CAPABILITIES } from '@aaif/pleum-acp-client';
 import { methods, PROTOCOL_VERSION, type InitializeResponse } from '@agentclientprotocol/sdk';
 import { createWebSocketStream } from '@agentclientprotocol/sdk/experimental/ws-client';
 import packageJson from '../../package.json';
-import { GOOSE_SERVE_EXITED_USER_MESSAGE } from '../gooseServeLeaseRegistry';
+import { PLEUM_SERVE_EXITED_USER_MESSAGE } from '../pleumServeLeaseRegistry';
 import {
-  handleAcpGooseSessionNotification,
+  handleAcpPleumSessionNotification,
   handleAcpProviderDeviceCodeNotification,
   handleAcpSessionNotification,
 } from './chatNotifications';
 import { requestAcpElicitation } from './elicitationRequests';
 import {
-  connectGooseAcpClient,
-  type GooseAcpCallbacks,
-  type GooseAcpClient,
-} from './gooseAcpClient';
+  connectPleumAcpClient,
+  type PleumAcpCallbacks,
+  type PleumAcpClient,
+} from './pleumAcpClient';
 import { requestAcpPermission } from './permissionRequests';
 import { requestAcpRecipeParams } from './recipeParamRequests';
 
 type AcpConnection = {
-  client: GooseAcpClient;
+  client: PleumAcpClient;
   initializeResponse: InitializeResponse;
 };
 
@@ -35,7 +35,7 @@ let connectionGeneration = 0;
 let recovering = false;
 const recoveryListeners = new Set<AcpRecoveryListener>();
 
-export async function getAcpClient(): Promise<GooseAcpClient> {
+export async function getAcpClient(): Promise<PleumAcpClient> {
   return (await getConnection()).client;
 }
 
@@ -84,7 +84,7 @@ function recoverConnection(immediate: boolean): void {
   const generation = connectionGeneration;
   const recoveryAttempt = immediate
     ? openConnection(generation).catch((error) => {
-        if (generation !== connectionGeneration || isGooseServeExitedError(error)) {
+        if (generation !== connectionGeneration || isPleumServeExitedError(error)) {
           throw error;
         }
         return retryWithBackoff(generation);
@@ -136,20 +136,20 @@ async function openConnection(generation: number): Promise<AcpConnection> {
 
   // Electron treats an explicitly passed undefined protocol as a subprotocol.
   const stream = createWebSocketStream(wsUrl, { protocols: [] });
-  const client = connectGooseAcpClient(stream, createClientCallbacks());
+  const client = connectPleumAcpClient(stream, createClientCallbacks());
 
   try {
     const initializeResponse = await withTimeout(
       client.connection.agent.request(methods.agent.initialize, {
         protocolVersion: ACP_V1_PROTOCOL_VERSION,
         _meta: {
-          'goose/useLoginShellPath': true,
+          'pleum/useLoginShellPath': true,
         },
         clientCapabilities: {
           elicitation: { form: {} },
           _meta: {
-            goose: {
-              mcpHostCapabilities: DEFAULT_GOOSE_MCP_HOST_CAPABILITIES,
+            pleum: {
+              mcpHostCapabilities: DEFAULT_PLEUM_MCP_HOST_CAPABILITIES,
               customNotifications: true,
               recipeParameterRequests: true,
             },
@@ -198,7 +198,7 @@ async function retryWithBackoff(generation: number): Promise<AcpConnection> {
     try {
       return await openConnection(generation);
     } catch (error) {
-      if (generation !== connectionGeneration || isGooseServeExitedError(error)) {
+      if (generation !== connectionGeneration || isPleumServeExitedError(error)) {
         throw error;
       }
     }
@@ -207,21 +207,21 @@ async function retryWithBackoff(generation: number): Promise<AcpConnection> {
   throw new Error('ACP connection attempt is no longer current');
 }
 
-function isGooseServeExitedError(error: unknown): boolean {
-  return error instanceof Error && error.message.includes(GOOSE_SERVE_EXITED_USER_MESSAGE);
+function isPleumServeExitedError(error: unknown): boolean {
+  return error instanceof Error && error.message.includes(PLEUM_SERVE_EXITED_USER_MESSAGE);
 }
 
 function delay(delayMs: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, delayMs));
 }
 
-function createClientCallbacks(): GooseAcpCallbacks {
+function createClientCallbacks(): PleumAcpCallbacks {
   return {
     requestPermission: requestAcpPermission,
     unstable_createElicitation: requestAcpElicitation,
     unstable_sessionRecipeRequestParams: requestAcpRecipeParams,
     sessionUpdate: handleAcpSessionNotification,
-    unstable_sessionUpdate: handleAcpGooseSessionNotification,
+    unstable_sessionUpdate: handleAcpPleumSessionNotification,
     unstable_providerDeviceCode: handleAcpProviderDeviceCodeNotification,
   };
 }

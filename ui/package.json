@@ -1,10 +1,10 @@
 {
   "private": true,
   "workspaces": [
-    "goose-acp-client",
-    "goose-acp",
+    "pleum-acp-client",
+    "pleum-acp",
     "desktop",
-    "goose-binary/*"
+    "pleum-binary/*"
   ],
   "scripts": {
     "changeset": "changeset",

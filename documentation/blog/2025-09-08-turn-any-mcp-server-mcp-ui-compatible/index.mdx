@@ -9,7 +9,7 @@ authors:
 
 [MCP-UI](https://mcpui.dev/guide/introduction) is in its infancy, and there's something addictive about being this early to the party. We're at this fascinating point where both the spec and client implementations are actively developing, and I find it thrilling to build alongside that evolution.
 
-I wanted to see how far I could push it. So I grabbed two open source MCP servers, [Cloudinary](https://github.com/felores/cloudinary-mcp-server) and [Filesystem](https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem), and gave them a UI. Instead of boring text, I now get rich, interactive interfaces right inside goose.
+I wanted to see how far I could push it. So I grabbed two open source MCP servers, [Cloudinary](https://github.com/felores/cloudinary-mcp-server) and [Filesystem](https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem), and gave them a UI. Instead of boring text, I now get rich, interactive interfaces right inside pleum.
 
 <!-- truncate -->
 
@@ -206,7 +206,7 @@ A clean UI is nice, but it gets way more interesting when those buttons actually
 
 In my Cloudinary server, I added **two** UI actions right after the `ResizeObserver` in the `<script>` block of `createUploadResultUI`:
 
-- **Prompt Action** → Fires off a prompt to goose asking it to caption the image like a meme.  
+- **Prompt Action** → Fires off a prompt to pleum asking it to caption the image like a meme.  
 
 <details>
 <summary>Click to see the code</summary>
@@ -229,7 +229,7 @@ In my Cloudinary server, I added **two** UI actions right after the `ResizeObser
 ```ts
         function shareOnTwitter() {
             const tweetText = encodeURIComponent(
-            "I didn’t write this tweet… goose did. (${result.resource_type} included). & here’s how you can do it too 🧵 #MCPUI");
+            "I didn’t write this tweet… pleum did. (${result.resource_type} included). & here’s how you can do it too 🧵 #MCPUI");
             const imageUrl = encodeURIComponent("${result.secure_url}");
             const twitterUrl = "https://twitter.com/intent/tweet?text=" + tweetText + "&url=" + imageUrl;
 
@@ -241,7 +241,7 @@ In my Cloudinary server, I added **two** UI actions right after the `ResizeObser
 ```
 </details>
 
-> Want to see it live? [Here’s the tweet goose posted for me](https://x.com/EbonyJLouis/status/1966203455955157337).
+> Want to see it live? [Here’s the tweet pleum posted for me](https://x.com/EbonyJLouis/status/1966203455955157337).
 
 :::tip More UI Actions
 Prompt and Link are just two examples. MCP-UI also supports **Tool**, **Intent**, and **Notify** actions.
@@ -284,13 +284,13 @@ return {
 };
 ```
 
-That’s it. One extra resource, and suddenly goose renders a full UI.
+That’s it. One extra resource, and suddenly pleum renders a full UI.
 
 ## Filesystem: Same Pattern
 
 To prove this wasn’t a one-off, I also made the Filesystem MCP server UI-compatible.
 
-**Before:** Text output (what goose shows by default)
+**Before:** Text output (what pleum shows by default)
 
 ![before MCP-UI](filesystemBefore.png)
 
@@ -317,7 +317,7 @@ return {
 
 I’ve now made two MCP servers UI-compatible, before MCP-UI is even fully rolled out. That's crazy to me.
 
-And if you zoom out, you’ll see other companies pushing here too. goose and Postman already support rendering and a couple of UI actions. In goose right now, a button can fire off a new prompt or open an external link. It’s not the full vision yet, but it’s already enough to start building experiences that feel more like mini-apps than static responses.
+And if you zoom out, you’ll see other companies pushing here too. pleum and Postman already support rendering and a couple of UI actions. In pleum right now, a button can fire off a new prompt or open an external link. It’s not the full vision yet, but it’s already enough to start building experiences that feel more like mini-apps than static responses.
 
 That’s what excites me, we’re not waiting around. We’re experimenting in the open, and shaping what the future will feel like.
 
@@ -327,20 +327,20 @@ That’s what excites me, we’re not waiting around. We’re experimenting in t
 
 Wanna see it in action? 
 
-Download [goose](/docs/quickstart#install-goose), give an MCP server a UI facelift of your own, and see the magic for yourself. Boring text prompts will never hit the same again.
+Download [pleum](/docs/quickstart#install-pleum), give an MCP server a UI facelift of your own, and see the magic for yourself. Boring text prompts will never hit the same again.
 
-*Got questions?* Explore our [docs](/docs/category/guides), browse the [blog](/blog), or join the conversation in our [Discord](https://discord.gg/n8R5VaWDAn) and [GitHub Discussions](https://github.com/aaif-goose/goose/discussions). We’d love to have you.
+*Got questions?* Explore our [docs](/docs/category/guides), browse the [blog](/blog), or join the conversation in our [Discord](https://discord.gg/n8R5VaWDAn) and [GitHub Discussions](https://github.com/gachon-star-want/pleumcode/discussions). We’d love to have you.
 
 
 <head>
   <meta property="og:title" content="How to Make An MCP Server MCP-UI Compatible" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://goose-docs.ai/blog/2025/09/08/turn-any-mcp-server-mcp-ui-compatible" />
+  <meta property="og:url" content="https://docs.pleum.ai/blog/2025/09/08/turn-any-mcp-server-mcp-ui-compatible" />
   <meta property="og:description" content="How I made existing MCP servers MCP-UI compatible with just a few lines of code." />
-  <meta property="og:image" content="https://goose-docs.ai/assets/images/mcp-ui-0a7ec9ab9d9b8b0f84e1372e956cfbde.png" />
+  <meta property="og:image" content="https://docs.pleum.ai/assets/images/mcp-ui-0a7ec9ab9d9b8b0f84e1372e956cfbde.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:domain" content="goose-docs.ai" />
+  <meta property="twitter:domain" content="docs.pleum.ai" />
   <meta name="twitter:title" content="How to Make An MCP Server MCP-UI Compatible" />
   <meta name="twitter:description" content="How I made existing MCP servers MCP-UI compatible with just a few lines of code." />
-  <meta name="twitter:image" content="https://goose-docs.ai/assets/images/mcp-ui-0a7ec9ab9d9b8b0f84e1372e956cfbde.png" />
+  <meta name="twitter:image" content="https://docs.pleum.ai/assets/images/mcp-ui-0a7ec9ab9d9b8b0f84e1372e956cfbde.png" />
 </head>

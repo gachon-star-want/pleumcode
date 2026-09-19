@@ -15,20 +15,20 @@ type SidebarItem = {
 };
 
 const config: Config = {
-  title: "goose | Your open source AI agent",
+  title: "pleum | Your open source AI agent",
   tagline: "your local AI agent, automating engineering tasks seamlessly",
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here
-  url: "https://goose-docs.ai/",
+  url: "https://docs.pleum.ai/",
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: process.env.TARGET_PATH || "/",
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: "aaif-goose", // Usually your GitHub org/user name.
-  projectName: "goose", // Usually your repo name.
+  organizationName: "gachon-star-want", // Usually your GitHub org/user name.
+  projectName: "pleum", // Usually your repo name.
 
   onBrokenLinks: "throw",
 
@@ -146,8 +146,8 @@ const config: Config = {
       {
         redirects: [
           {
-            from: "/docs/getting-started/using-goose-free",
-            to: "/docs/getting-started/providers#using-goose-for-free",
+            from: "/docs/getting-started/using-pleum-free",
+            to: "/docs/getting-started/providers#using-pleum-for-free",
           },
           {
             from: "/v1/docs/getting-started/providers",
@@ -182,7 +182,7 @@ const config: Config = {
             to: "/docs/mcp/computer-controller-mcp",
           },
           {
-            from: "/docs/guides/managing-goose-sessions",
+            from: "/docs/guides/managing-pleum-sessions",
             to: "/docs/guides/sessions/session-management",
           },
           {
@@ -190,7 +190,7 @@ const config: Config = {
             to: "/docs/guides/sessions/smart-context-management",
           },
           {
-            from: "/docs/guides/share-goose-sessions",
+            from: "/docs/guides/share-pleum-sessions",
             to: "/docs/guides/recipes/session-recipes",
           },
           {
@@ -218,8 +218,8 @@ const config: Config = {
             to: "/docs/guides/managing-tools/adjust-tool-output",
           },
           {
-            from: "/docs/guides/goose-in-docker",
-            to: "/docs/tutorials/goose-in-docker",
+            from: "/docs/guides/pleum-in-docker",
+            to: "/docs/tutorials/pleum-in-docker",
           },
           {
             from: "/docs/guides/multi-model/creating-plans",
@@ -254,12 +254,12 @@ const config: Config = {
             to: "/docs/guides/context-engineering/prompt-templates",
           },
           {
-            from: "/docs/guides/goose-permissions",
-            to: "/docs/guides/managing-tools/goose-permissions",
+            from: "/docs/guides/pleum-permissions",
+            to: "/docs/guides/managing-tools/pleum-permissions",
           },
           {
-            from: "/docs/guides/using-goosehints",
-            to: "/docs/guides/context-engineering/using-goosehints",
+            from: "/docs/guides/using-pleumhints",
+            to: "/docs/guides/context-engineering/using-pleumhints",
           },
           {
             from: "/docs/guides/managing-tools/hooks",
@@ -434,7 +434,7 @@ const config: Config = {
     navbar: {
       title: "",
       logo: {
-        alt: "goose Logo", // TODO: replace logo assets with AAIF branding
+        alt: "pleum Logo", // TODO: replace logo assets with AAIF branding
         src: "img/logo_light.png",
         srcDark: "img/logo_dark.png",
       },
@@ -481,7 +481,7 @@ const config: Config = {
           position: "right",
         },
         {
-          href: "https://github.com/aaif-goose/goose",
+          href: "https://github.com/gachon-star-want/pleumcode",
           label: "GitHub",
           position: "right",
         },
@@ -493,7 +493,7 @@ const config: Config = {
           title: "Quick Links",
           items: [
             {
-              label: "Install goose",
+              label: "Install pleum",
               to: "docs/getting-started/installation",
             },
             {
@@ -515,15 +515,15 @@ const config: Config = {
             },
             {
               label: "YouTube",
-              href: "https://www.youtube.com/@goose-oss",
+              href: "https://www.youtube.com/@pleum-oss",
             },
             {
               label: "LinkedIn",
-              href: "https://www.linkedin.com/company/goose-oss",
+              href: "https://www.linkedin.com/company/pleum-oss",
             },
             {
               label: "Twitter / X",
-              href: "https://x.com/goose_oss",
+              href: "https://x.com/pleum_oss",
             },
             {
               label: "BlueSky",
@@ -544,7 +544,7 @@ const config: Config = {
             },
             {
               label: "GitHub",
-              href: "https://github.com/aaif-goose/goose",
+              href: "https://github.com/gachon-star-want/pleumcode",
             },
           ],
         },
@@ -556,9 +556,9 @@ const config: Config = {
       darkTheme: prismThemes.nightOwl,
     },
     announcementBar: {
-      id: 'goose-aaif-announcement', // Increment on new announcements to reuse the bar
+      id: 'pleum-aaif-announcement', // Increment on new announcements to reuse the bar
       content:
-        '✨ goose has moved to the Agentic AI Foundation (AAIF): <a href="/blog/2026/04/07/goose-moves-to-aaif">Learn more</a>! ✨',
+        '✨ pleum has moved to the Agentic AI Foundation (AAIF): <a href="/blog/2026/04/07/pleum-moves-to-aaif">Learn more</a>! ✨',
       backgroundColor: '#20232a',
       textColor: '#fff',
       isCloseable: true,

@@ -1,9 +1,9 @@
 name: Model Tool Call Conformance
 
 # Sweeps many models and reports which ones can actually drive an MCP tool call
-# through goose. This is deliberately NOT a PR gate: it exercises third-party
+# through pleum. This is deliberately NOT a PR gate: it exercises third-party
 # models over the network, so a failure here usually means a provider or model
-# regressed, not that a goose change broke. Running it on a schedule keeps the
+# regressed, not that a pleum change broke. Running it on a schedule keeps the
 # signal without turning unrelated PRs red.
 on:
   schedule:
@@ -30,7 +30,7 @@ jobs:
     name: OpenRouter Tool Calls
     runs-on: ubuntu-latest
     # Only meaningful on the upstream repo, which holds the provider secrets.
-    if: github.repository == 'aaif-goose/goose'
+    if: github.repository == 'gachon-star-want/pleumcode'
     timeout-minutes: 60
     steps:
       - name: Checkout Code
@@ -47,17 +47,17 @@ jobs:
         uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d  # v10.0.1
 
       - name: Build Binary
-        run: cargo build --bin goose
+        run: cargo build --bin pleum
 
       - name: Run OpenRouter Tool Call Sweep
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-          HOME: /tmp/goose-home
-          GOOSE_DISABLE_KEYRING: 1
+          HOME: /tmp/pleum-home
+          PLEUM_DISABLE_KEYRING: 1
           SKIP_BUILD: 1
-          GOOSE_BIN: ${{ github.workspace }}/target/debug/goose
+          PLEUM_BIN: ${{ github.workspace }}/target/debug/pleum
         run: |
-          mkdir -p /tmp/goose-home
+          mkdir -p /tmp/pleum-home
           if [ -n "${{ inputs.models }}" ]; then
             bash scripts/test_openrouter_toolcalls.sh \
               --models "${{ inputs.models }}" \

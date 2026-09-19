@@ -9,7 +9,7 @@ authors:
 
 # A Developer's Playbook: Using AI for Team Efficiency
 
-Development teams can operate like sports teams. Each member has a role and a shared playbook helps coordinate efforts. Let's explore how AI-driven "plays" can form a starter "playbook" for your dev team, helping with common technical tasks. You can use recipes with [Goose](/) to leverage the [Model Context Protocol (MCP)](https://modelcontextprotocol.io) to make you more productive.
+Development teams can operate like sports teams. Each member has a role and a shared playbook helps coordinate efforts. Let's explore how AI-driven "plays" can form a starter "playbook" for your dev team, helping with common technical tasks. You can use recipes with [Pleum](/) to leverage the [Model Context Protocol (MCP)](https://modelcontextprotocol.io) to make you more productive.
 
 <!-- truncate -->
 
@@ -31,56 +31,56 @@ Using a shared AI playbook provides several benefits for a development team:
 * **Increased Efficiency:** Automating routine tasks frees developers to focus on more complex problem-solving.
 * **Knowledge Sharing:** Recipes can codify team knowledge and best practices, making them accessible to everyone.
 
-As teams adopt AI tools like Goose, the ability to define and share these automated workflows will become increasingly important.
+As teams adopt AI tools like Pleum, the ability to define and share these automated workflows will become increasingly important.
 
 
 ## AI Plays: Standardizing Your Team's Workflows
 
-Goose can help standardize and automate these tasks, by [creating recipes](/docs/guides/recipes/session-recipes). As a developer on your team uses Goose, they can create a recipe that describes how to perform a task, and then share that with the rest of the team. These recipes can be shared and reused, and improved over time, just like a sports team’s playbook.
+Pleum can help standardize and automate these tasks, by [creating recipes](/docs/guides/recipes/session-recipes). As a developer on your team uses Pleum, they can create a recipe that describes how to perform a task, and then share that with the rest of the team. These recipes can be shared and reused, and improved over time, just like a sports team’s playbook.
 
-Recipes are built with an understanding of the workflow you want Goose to help with, and these may involve one or more MCP servers, such as [GitHub](/docs/mcp/github-mcp/) or [PostgreSQL](/docs/mcp/postgres-mcp/). The recipes are designed to be reusable and adaptable, allowing developers to create a library that can be used across different projects.
+Recipes are built with an understanding of the workflow you want Pleum to help with, and these may involve one or more MCP servers, such as [GitHub](/docs/mcp/github-mcp/) or [PostgreSQL](/docs/mcp/postgres-mcp/). The recipes are designed to be reusable and adaptable, allowing developers to create a library that can be used across different projects.
 
 A shared playbook of AI plays helps everyone on the team perform tasks consistently. It can also reduce the time spent on repetitive work.
 
-## Goose Recipes: The Building Blocks of Your Playbook
+## Pleum Recipes: The Building Blocks of Your Playbook
 
 For a kitchen-related analogy as an overview, check out [Rizel's](/blog/authors/rizel/) recent blog post, [A Recipe for Success](/blog/2025/05/06/recipe-for-success).
 
-A Goose Recipe can be saved from a current Goose session, or written as a YAML file from scratch. It includes instructions for the AI to follow, a prompt for the AI response, optional parameters with data types, and a list of required extensions.
+A Pleum Recipe can be saved from a current Pleum session, or written as a YAML file from scratch. It includes instructions for the AI to follow, a prompt for the AI response, optional parameters with data types, and a list of required extensions.
 
 ### Creating a Recipe
 
-If you [create a recipe from a current Goose session](/docs/guides/recipes/session-recipes/#create-recipe), it will prompt you for a name and description and will generate some activities that you can edit, along with instructions that you should review and edit. You will be given a URL that you can share with your team.
+If you [create a recipe from a current Pleum session](/docs/guides/recipes/session-recipes/#create-recipe), it will prompt you for a name and description and will generate some activities that you can edit, along with instructions that you should review and edit. You will be given a URL that you can share with your team.
 
-To create a recipe from scratch, you can use the Goose CLI to create a new recipe file by using a `/recipe` command in the session. This will create a `recipe.yaml` file in your current directory. To make a custom file you can use `/recipe custom-filename.yaml`. From there, you will add your own instructions and activities.
+To create a recipe from scratch, you can use the Pleum CLI to create a new recipe file by using a `/recipe` command in the session. This will create a `recipe.yaml` file in your current directory. To make a custom file you can use `/recipe custom-filename.yaml`. From there, you will add your own instructions and activities.
 
 ### Validating the Recipe
 
-Like all good developers who test their code (you DO test your code, right??) you can also validate your Goose recipe in your terminal/shell by running `goose validate recipe-filename.yaml` which will check the syntax and structure of the recipe file.
+Like all good developers who test their code (you DO test your code, right??) you can also validate your Pleum recipe in your terminal/shell by running `pleum validate recipe-filename.yaml` which will check the syntax and structure of the recipe file.
 
 ### Sharing the Recipe
 
-If you're using the Goose Desktop app, creating a recipe will give you a URL that you can share directly with your team.
+If you're using the Pleum Desktop app, creating a recipe will give you a URL that you can share directly with your team.
 
-If you're creating the recipe file in YAML, you can share the file with your team, or you can create a URL for it by running this in your terminal/shell: `goose recipe deeplink recipe-filename.yaml`.
+If you're creating the recipe file in YAML, you can share the file with your team, or you can create a URL for it by running this in your terminal/shell: `pleum recipe deeplink recipe-filename.yaml`.
 
 ### Using a Recipe
 
-Clicking a shared URL from your team will open Goose and load the recipe in a new session. No data is shared between users, so you don't have to worry about leaking API keys or other sensitive information.
+Clicking a shared URL from your team will open Pleum and load the recipe in a new session. No data is shared between users, so you don't have to worry about leaking API keys or other sensitive information.
 
-For the CLI, you can run the recipe by using the command `goose run recipe-filename.yaml` in your terminal/shell.
+For the CLI, you can run the recipe by using the command `pleum run recipe-filename.yaml` in your terminal/shell.
 
 :::info PRO TIP
 You can set an environment variable to point to a shared GitHub repo for your team's recipes, and teammates can run the recipes by name:
-`export GOOSE_RECIPE_GITHUB_REPO=github-username/repo-name`
+`export PLEUM_RECIPE_GITHUB_REPO=github-username/repo-name`
 
-Then, to run a recipe: `goose run --recipe <recipe-name>`
+Then, to run a recipe: `pleum run --recipe <recipe-name>`
 :::
 
 
 ## A Starter Pack of AI Plays for Your Team
 
-A "starter pack" of AI plays can address common development workflows. This gives your team a foundation for automating routine tasks. Here are some ideas to get you started about the kinds of tasks you can automate with Goose.
+A "starter pack" of AI plays can address common development workflows. This gives your team a foundation for automating routine tasks. Here are some ideas to get you started about the kinds of tasks you can automate with Pleum.
 
 ### Play 1: Generating Changelogs
 
@@ -155,7 +155,7 @@ activities:
 - Extract PR-linked changes only
 - Categorize commits by conventional commit types
 author:
-  contact: goose-community
+  contact: pleum-community
 ```
 
 </details>
@@ -180,7 +180,7 @@ Using this play helps create consistent and informative PRs. This makes the code
 version: 1.0.0
 title: PR Generator
 author:
-  contact: goose-community
+  contact: pleum-community
 description: Automatically generate pull request descriptions based on changes in a local git repo
 instructions: Your job is to generate descriptive and helpful pull request descriptions without asking for additional information. Generate commit messages and branch names based on the actual code changes.
 parameters:
@@ -293,20 +293,20 @@ Your team can create plays for many other tasks:
 
 ## What kinds of tasks can your team automate?
 
-We'd love for you to share your ideas with us! Share your ideas by creating a recipe and posting it to the [goose community on Discord](http://discord.gg/n8R5VaWDAn).
+We'd love for you to share your ideas with us! Share your ideas by creating a recipe and posting it to the [pleum community on Discord](http://discord.gg/n8R5VaWDAn).
 
 
 
 <head>
   <meta property="og:title" content="Championship Driven Development: Your team's AI Playbook for Peak Performance" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://goose-docs.ai/blog/2025/05/09/developers-ai-playbook-for-team-efficiency" />
+  <meta property="og:url" content="https://docs.pleum.ai/blog/2025/05/09/developers-ai-playbook-for-team-efficiency" />
   <meta property="og:description" content="Learn how AI-driven 'plays,' based on Model Context Protocol, can help development teams improve common workflows like changelog generation and pull requests." />
-  <meta property="og:image" content="https://goose-docs.ai/assets/images/cdd-playbook-69a053588574d8678c2acb92a1b21da6.png" />
+  <meta property="og:image" content="https://docs.pleum.ai/assets/images/cdd-playbook-69a053588574d8678c2acb92a1b21da6.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:domain" content="goose-docs.ai" />
+  <meta property="twitter:domain" content="docs.pleum.ai" />
   <meta name="twitter:title" content="Championship Driven Development: Your team's AI Playbook for Peak Performance" />
   <meta name="twitter:description" content="Learn how AI-driven 'plays,' based on Model Context Protocol, can help development teams improve common workflows like changelog generation and pull requests." />
-  <meta name="twitter:image" content="https://goose-docs.ai/assets/images/cdd-playbook-69a053588574d8678c2acb92a1b21da6.png" />
-  <meta name="keywords" content="AI development; Model Context Protocol; developer productivity; team playbook; AI automation; Goose; software development efficiency; changelogs; pull requests" />
+  <meta name="twitter:image" content="https://docs.pleum.ai/assets/images/cdd-playbook-69a053588574d8678c2acb92a1b21da6.png" />
+  <meta name="keywords" content="AI development; Model Context Protocol; developer productivity; team playbook; AI automation; Pleum; software development efficiency; changelogs; pull requests" />
 </head>

@@ -1,6 +1,6 @@
 ---
 title: "How OpenRouter Unlocked Our Workshop Strategy"
-description: How we used Open Router to provide frictionless LLM access for Goose workshops
+description: How we used Open Router to provide frictionless LLM access for Pleum workshops
 authors: 
     - rizel
 ---
@@ -8,13 +8,13 @@ authors:
 ![Scaling AI Workshops](scaling-ai-workshops-open-router.png)
 
 
-When my team launched [Goose](/) in early January 2025, we knew we had something special. We built a free, open source AI agent that leverages the Model Context Protocol. It was inventive in its approach, offering developers a local solution with the flexibility to bring their LLM of choice.
+When my team launched [Pleum](/) in early January 2025, we knew we had something special. We built a free, open source AI agent that leverages the Model Context Protocol. It was inventive in its approach, offering developers a local solution with the flexibility to bring their LLM of choice.
 
 ## The LLM Cost Problem
 
-After using the product internally for a few months, my teammates were eager to share Goose with the developer community through workshops and hackathons. We wanted to provide hands-on experiences where people could actually build with Goose, because that's how developers fall in love with a product.
+After using the product internally for a few months, my teammates were eager to share Pleum with the developer community through workshops and hackathons. We wanted to provide hands-on experiences where people could actually build with Pleum, because that's how developers fall in love with a product.
 
-But we hit a thorny challenge: while Goose is free, high-performing LLMs are not.
+But we hit a thorny challenge: while Pleum is free, high-performing LLMs are not.
 
 <!--truncate-->
 
@@ -32,7 +32,7 @@ For our small but scrappy team, these options felt insecure, inflexible, and uns
 
 ## Discovering OpenRouter
 
-When I came back from parental leave, I was ready to jump back in and tackle this problem head-on. I started by teaming up with Alex Hancock, an MCP steering committee member and Goose OSS engineer, on planning our first-ever meetup in Boston. My boss, Angie Jones, suggested the meetup would be the perfect moment to get people's hands on Goose.
+When I came back from parental leave, I was ready to jump back in and tackle this problem head-on. I started by teaming up with Alex Hancock, an MCP steering committee member and Pleum OSS engineer, on planning our first-ever meetup in Boston. My boss, Angie Jones, suggested the meetup would be the perfect moment to get people's hands on Pleum.
 
 This gave me the motivation I needed to find a quick solution. I figured I could create a web app that would generate API keys for attendees. They could grab their key, which would already have a preset amount of credits.
 
@@ -48,7 +48,7 @@ Then I discovered [OpenRouter](https://openrouter.ai/): "a unified API platform 
 
 ## Building the Web App
 
-I built a simple web app around OpenRouter's API. Attendees could visit a link, click a button, and instantly get their own temporary API key. They could plug that into Goose and start building without having to set up an account on OpenRouter.
+I built a simple web app around OpenRouter's API. Attendees could visit a link, click a button, and instantly get their own temporary API key. They could plug that into Pleum and start building without having to set up an account on OpenRouter.
 
 ```shell
 curl -X POST https://openrouter.ai/api/v1/keys \
@@ -59,15 +59,15 @@ curl -X POST https://openrouter.ai/api/v1/keys \
 }'
 ```
 
-And it worked. People *actually* used Goose and loved the entire experience, from the meetup to the talks to Goose itself.
+And it worked. People *actually* used Pleum and loved the entire experience, from the meetup to the talks to Pleum itself.
 
-We've now hosted meetups in Sydney, Berlin, Boston, Atlanta, San Francisco, Texas, and New York. You can read about our past experiences in our [Boston](/blog/2025-03-21-goose-boston-meetup/index.mdx) and [New York](/blog/2025-04-17-goose-goes-to-NY/index.mdx) blog posts.
+We've now hosted meetups in Sydney, Berlin, Boston, Atlanta, San Francisco, Texas, and New York. You can read about our past experiences in our [Boston](/blog/2025-03-21-pleum-boston-meetup/index.mdx) and [New York](/blog/2025-04-17-pleum-goes-to-NY/index.mdx) blog posts.
 
 ## Upcoming Denver Workshop
 
-We're bringing this hands-on Goose workshop to Denver on August 5.
+We're bringing this hands-on Pleum workshop to Denver on August 5.
 
-Join us for an evening in collaboration with Temporal and Dagger, where you'll get free API credits, build something tangible with Goose, and learn in-depth about MCP.
+Join us for an evening in collaboration with Temporal and Dagger, where you'll get free API credits, build something tangible with Pleum, and learn in-depth about MCP.
 
 **RSVP here:** https://lu.ma/tylz1e9o
 
@@ -75,28 +75,28 @@ Join us for an evening in collaboration with Temporal and Dagger, where you'll g
 
 ## Future Improvements
 
-This system isn't perfect. Right now, it's still a separate experience outside the Goose interface, and it doesn't scale well for events with different credit amounts or more complex needs.
+This system isn't perfect. Right now, it's still a separate experience outside the Pleum interface, and it doesn't scale well for events with different credit amounts or more complex needs.
 
-We're working on it. Goose engineer, Mic Neale recently opened a [pull request](https://github.com/aaif-goose/goose/pull/3507) to automate Goose's first-time setup. It simplifies the onboarding flow so new users can log into OpenRouter through their browser, securely authenticate, and get a pre-configured Goose setup without touching config files or copying API keys. It's a huge leap in user experience and lays the groundwork for future improvements.
+We're working on it. Pleum engineer, Mic Neale recently opened a [pull request](https://github.com/gachon-star-want/pleumcode/pull/3507) to automate Pleum's first-time setup. It simplifies the onboarding flow so new users can log into OpenRouter through their browser, securely authenticate, and get a pre-configured Pleum setup without touching config files or copying API keys. It's a huge leap in user experience and lays the groundwork for future improvements.
 
 ## Why This Approach Matters
 
 As more developers experiment with local agents and bring-your-own-model setups, we need infrastructure that matches that flexibility without compromising control. The combination of flexible API providers and programmatic key management might just be the missing piece in your event strategy.
 
-Want us to run a Goose workshop or hackathon? We’ll bring the API credits. You bring the builders. 
+Want us to run a Pleum workshop or hackathon? We’ll bring the API credits. You bring the builders. 
 
 
 <head>
   <meta property="og:title" content="How OpenRouter Unlocked Our Workshop Strategy" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://goose-docs.ai/blog/2025/07/29/openrouter-unlocks-workshops" />
-  <meta property="og:description" content="How we used Open Router to provide frictionless LLM access for Goose workshops" />
-  <meta property="og:image" content="https://goose-docs.ai/assets/images/scaling-ai-workshops-open-router-2af052d2b72f502ba14b06c4d784c0cc.png" />
+  <meta property="og:url" content="https://docs.pleum.ai/blog/2025/07/29/openrouter-unlocks-workshops" />
+  <meta property="og:description" content="How we used Open Router to provide frictionless LLM access for Pleum workshops" />
+  <meta property="og:image" content="https://docs.pleum.ai/assets/images/scaling-ai-workshops-open-router-2af052d2b72f502ba14b06c4d784c0cc.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:domain" content="goose-docs.ai" />
+  <meta property="twitter:domain" content="docs.pleum.ai" />
   <meta name="twitter:title" content="How OpenRouter Unlocked Our Workshop Strategy" />
-  <meta name="twitter:description" content="How we used Open Router to provide frictionless LLM access for Goose workshops" />
-  <meta name="twitter:image" content="https://goose-docs.ai/assets/images/scaling-ai-workshops-open-router-2af052d2b72f502ba14b06c4d784c0cc.png" />
+  <meta name="twitter:description" content="How we used Open Router to provide frictionless LLM access for Pleum workshops" />
+  <meta name="twitter:image" content="https://docs.pleum.ai/assets/images/scaling-ai-workshops-open-router-2af052d2b72f502ba14b06c4d784c0cc.png" />
 </head>
 
 

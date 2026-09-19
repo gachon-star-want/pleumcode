@@ -63,7 +63,7 @@ export const SAFE_PROTOCOLS = [
   'googlechrome:',
   'firefox:',
   'safari:',
-  'goose:',
+  'pleum:',
 ];
 
 export type OpenExternalUrlResult = 'opened' | 'blocked' | 'cancelled';

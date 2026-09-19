@@ -18,7 +18,7 @@ import { View, ViewOptions } from '../utils/navigationUtils';
 import { useConfig } from './ConfigContext';
 import { getEffectiveWorkingDir, getInitialWorkingDir } from '../utils/workingDir';
 import { createSession } from '../sessions';
-import LoadingGoose from './LoadingGoose';
+import LoadingPleum from './LoadingPleum';
 import { UserInput } from '../types/message';
 import {
   createNextChatExtensionDraft,
@@ -63,7 +63,7 @@ export default function Hub({
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const { time, meridiem, hour } = useClock();
 
-  // Re-resolve the working dir on mount: GOOSE_WORKING_DIR is fixed at window
+  // Re-resolve the working dir on mount: PLEUM_WORKING_DIR is fixed at window
   // creation, so a configured remote directory may have changed since then.
   useEffect(() => {
     let active = true;
@@ -191,7 +191,7 @@ export default function Hub({
 
       {isCreatingSession && (
         <div className="absolute bottom-4 left-4 z-20 pointer-events-none">
-          <LoadingGoose chatState={ChatState.LoadingConversation} />
+          <LoadingPleum chatState={ChatState.LoadingConversation} />
         </div>
       )}
     </div>

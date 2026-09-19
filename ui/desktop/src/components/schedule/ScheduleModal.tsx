@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, FormEvent, useCallback, useRef } from 'react';
-import type { ScheduledJobDto } from '@aaif/goose-acp-client';
+import type { ScheduledJobDto } from '@aaif/pleum-acp-client';
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -30,7 +30,7 @@ const i18n = defineMessages({
   selected: { id: 'scheduleModal.selected', defaultMessage: 'Selected: {path}' },
   deepLinkPlaceholder: {
     id: 'scheduleModal.deepLinkPlaceholder',
-    defaultMessage: 'Paste goose://recipe link here...',
+    defaultMessage: 'Paste pleum://recipe link here...',
   },
   selectRecipePlaceholder: {
     id: 'scheduleModal.selectRecipePlaceholder',
@@ -64,7 +64,7 @@ const i18n = defineMessages({
   createSchedule: { id: 'scheduleModal.createSchedule', defaultMessage: 'Create Schedule' },
   invalidDeepLink: {
     id: 'scheduleModal.invalidDeepLink',
-    defaultMessage: 'Invalid deep link. Please use a goose://recipe link.',
+    defaultMessage: 'Invalid deep link. Please use a pleum://recipe link.',
   },
   failedReadFile: {
     id: 'scheduleModal.failedReadFile',

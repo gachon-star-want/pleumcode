@@ -7,7 +7,7 @@ authors:
 
 ![blog cover](llm-agent-test.png)
 
-[Goose](/) is LLM-agnostic, meaning you can plug in the model of your choice. However, not every LLM is suitable to work with agents. Some may be great at *answering* things, but not actually *doing* things. If you're considering which model to use with an agent, these 3 prompts can quickly give you a sense of the model's capabilities.
+[Pleum](/) is LLM-agnostic, meaning you can plug in the model of your choice. However, not every LLM is suitable to work with agents. Some may be great at *answering* things, but not actually *doing* things. If you're considering which model to use with an agent, these 3 prompts can quickly give you a sense of the model's capabilities.
 
 <!-- truncate -->
 
@@ -16,7 +16,7 @@ authors:
 This initial prompt tests for tool calling capabilities. Its ask is forceful to reduce a shy model's hesitation to make function calls.
 
 ```bash
-Create a file at ~/workspace/loose-goose/tool-test.txt with the contents "Hello World".
+Create a file at ~/workspace/loose-pleum/tool-test.txt with the contents "Hello World".
 
 Use the write tool. Do not ask for confirmation. Just do it.
 ```
@@ -29,7 +29,7 @@ Use the write tool. Do not ask for confirmation. Just do it.
 
 ```bash
 ─── text_editor | developer ──────────────────────────
-path: ~/workspace/loose-goose/tool-test.txt
+path: ~/workspace/loose-pleum/tool-test.txt
 command: write
 file_text: Hello World
 
@@ -56,7 +56,7 @@ Now append a new line that says: "I know what I'm doing"
 
 ```bash
 ─── text_editor | developer ──────────────────────────
-path: ~/workspace/loose-goose/tool-test.txt
+path: ~/workspace/loose-pleum/tool-test.txt
 command: write
 file_text: Hello World
 I know what I'm doing
@@ -80,7 +80,7 @@ What is the current content of tool-test.txt?
 
 ```bash
 ─── text_editor | developer ──────────────────────────
-path: ~/workspace/loose-goose/tool-test.txt
+path: ~/workspace/loose-pleum/tool-test.txt
 command: read
 
 Hello World
@@ -97,12 +97,12 @@ If a model passes this multi-turn prompt sequence, it's safe to assume that it i
 <head>
   <meta property="og:title" content="3 Prompts to Test for Agent Readiness" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://goose-docs.ai/blog/2025/05/22/llm-agent-readiness" />
+  <meta property="og:url" content="https://docs.pleum.ai/blog/2025/05/22/llm-agent-readiness" />
   <meta property="og:description" content="A series of prompts to test an LLM's capabilities to be used with AI agents" />
-  <meta property="og:image" content="https://goose-docs.ai/assets/images/llm-agent-test-86ce2379ce4dde48ae1448f0f9d75c1f.png" />
+  <meta property="og:image" content="https://docs.pleum.ai/assets/images/llm-agent-test-86ce2379ce4dde48ae1448f0f9d75c1f.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:domain" content="goose-docs.ai" />
+  <meta property="twitter:domain" content="docs.pleum.ai" />
   <meta name="twitter:title" content="3 Prompts to Test for Agent Readiness" />
   <meta name="twitter:description" content="A series of prompts to test an LLM's capabilities to be used with AI agents" />
-  <meta name="twitter:image" content="https://goose-docs.ai/assets/images/llm-agent-test-86ce2379ce4dde48ae1448f0f9d75c1f.png" />
+  <meta name="twitter:image" content="https://docs.pleum.ai/assets/images/llm-agent-test-86ce2379ce4dde48ae1448f0f9d75c1f.png" />
 </head>

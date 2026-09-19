@@ -7,11 +7,11 @@ authors:
     - matt
 ---
 
-![Level Up Your MCP Apps - goose and MCP Jam](/img/blog/mcp-apps-tips-blogbanner.png)
+![Level Up Your MCP Apps - pleum and MCP Jam](/img/blog/mcp-apps-tips-blogbanner.png)
 
 [MCP Apps](https://modelcontextprotocol.io/docs/extensions/apps) allow you to render interactive UI directly inside any agent supporting the Model Context Protocol. Instead of a wall of text, your agent can now provide a functional chart, a checkout form, or a video player. This bridges the gap in agentic workflows: clicking a button is often clearer than describing the action you hope an agent executes.
 
-MCP Apps originated as [MCP-UI](https://mcp-ui.dev/), an experimental project. After adoption by early clients like goose, the MCP maintainers incorporated it as an official extension. Today, it's supported by clients like goose, MCPJam, Claude, ChatGPT, and Postman.
+MCP Apps originated as [MCP-UI](https://mcp-ui.dev/), an experimental project. After adoption by early clients like pleum, the MCP maintainers incorporated it as an official extension. Today, it's supported by clients like pleum, MCPJam, Claude, ChatGPT, and Postman.
 
 Even though MCP Apps use web technologies, building one isn't the same as building a traditional web app. Your UI runs inside an agent you don't control, communicates with a model that can't see user interactions, and needs to feel native across multiple hosts.
 
@@ -23,7 +23,7 @@ After implementing MCP App support in our own hosts and building several individ
 
 At a high level, clients that support MCP Apps load your UI via iFrames. Your MCP App exposes an MCP server with tools and resources. When the client wants to load your app's UI, it calls the associated MCP tool, loads the resource containing the HTML, then loads your HTML into an iFrame to display in the chat interface.
 
-Here's an example flow of what happens when goose renders a cocktail recipe UI:
+Here's an example flow of what happens when pleum renders a cocktail recipe UI:
 
 1. You ask the LLM "Show me a margarita recipe".
 2. The LLM calls the `get-cocktail` tool with the right parameters. This tool has a UI resource link in `_meta.ui.resourceUri` pointing to the resource containing the HTML.
@@ -332,12 +332,12 @@ registerAppTool(server, "delete-email", {
 });
 ```
 
-## Start Building with goose and MCPJam
+## Start Building with pleum and MCPJam
 
 MCP Apps open up a new dimension for agent interactions. Now it's time to build your own.
 
 - **Test with [MCPJam](https://mcpjam.com/)** — the open source local inspector for MCP Apps, ChatGPT apps SDK, and MCP servers. Perfect for debugging and iterating on your app before shipping.
-- **Run in [goose](https://github.com/aaif-goose/goose)** — an open source AI agent that renders MCP Apps directly in the chat interface. See your app come to life in a real agent environment.
+- **Run in [pleum](https://github.com/gachon-star-want/pleumcode)** — an open source AI agent that renders MCP Apps directly in the chat interface. See your app come to life in a real agent environment.
 
 Ready to dive deeper? Check out the [MCP Apps tutorial](/docs/tutorials/building-mcp-apps) or [build your first MCP App with MCPJam](https://docs.mcpjam.com/guides/first-mcp-app).
 
@@ -345,12 +345,12 @@ Ready to dive deeper? Check out the [MCP Apps tutorial](/docs/tutorials/building
   <link rel="canonical" href="https://www.mcpjam.com/blog/mcp-apps-tips" />
   <meta property="og:title" content="5 Tips for Building MCP Apps That Work" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://goose-docs.ai/blog/2026/01/30/5-tips-building-mcp-apps" />
+  <meta property="og:url" content="https://docs.pleum.ai/blog/2026/01/30/5-tips-building-mcp-apps" />
   <meta property="og:description" content="5 expert tips on building better MCP Apps for your AI agents" />
-  <meta property="og:image" content="https://goose-docs.ai/assets/images/blogbanner-2663f4e7979c47f3f4921df4ce960920.png" />
+  <meta property="og:image" content="https://docs.pleum.ai/assets/images/blogbanner-2663f4e7979c47f3f4921df4ce960920.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:domain" content="goose-docs.ai" />
+  <meta property="twitter:domain" content="docs.pleum.ai" />
   <meta name="twitter:title" content="5 Tips for Building MCP Apps That Work" />
   <meta name="twitter:description" content="5 expert tips on building better MCP Apps for your AI agents" />
-  <meta name="twitter:image" content="https://goose-docs.ai/assets/images/blogbanner-2663f4e7979c47f3f4921df4ce960920.png" />
+  <meta name="twitter:image" content="https://docs.pleum.ai/assets/images/blogbanner-2663f4e7979c47f3f4921df4ce960920.png" />
 </head>

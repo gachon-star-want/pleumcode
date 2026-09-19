@@ -65,15 +65,15 @@ jobs:
 
       - name: Build native library
         shell: bash
-        run: cargo build -p goose-sdk --features uniffi --release
+        run: cargo build -p pleum-sdk --features uniffi --release
 
       - name: Stage native library
         shell: bash
         run: |
           case "${{ runner.os }}" in
-            Linux) lib="target/release/libgoose_sdk.so" ;;
-            macOS) lib="target/release/libgoose_sdk.dylib" ;;
-            Windows) lib="target/release/goose_sdk.dll" ;;
+            Linux) lib="target/release/libpleum_sdk.so" ;;
+            macOS) lib="target/release/libpleum_sdk.dylib" ;;
+            Windows) lib="target/release/pleum_sdk.dll" ;;
             *) echo "unsupported runner OS: ${{ runner.os }}" >&2; exit 1 ;;
           esac
           mkdir -p "maven-native/${{ matrix.resource-prefix }}"
@@ -82,7 +82,7 @@ jobs:
       - name: Upload native library artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          name: goose-sdk-native-${{ matrix.name }}
+          name: pleum-sdk-native-${{ matrix.name }}
           path: maven-native/**
           if-no-files-found: error
 
@@ -111,31 +111,31 @@ jobs:
       - name: Download native library artifacts
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
-          pattern: goose-sdk-native-*
+          pattern: pleum-sdk-native-*
           path: native-artifacts
           merge-multiple: true
 
       - name: Generate Kotlin bindings
         shell: bash
         run: |
-          cargo build -p goose-sdk --features uniffi --release
-          crates/goose-sdk/scripts/prepare-maven-package.sh \
-            target/release/libgoose_sdk.so \
+          cargo build -p pleum-sdk --features uniffi --release
+          crates/pleum-sdk/scripts/prepare-maven-package.sh \
+            target/release/libpleum_sdk.so \
             linux-x86-64
 
       - name: Restore downloaded native libraries
         shell: bash
-        run: cp -R native-artifacts/* crates/goose-sdk/maven/src/main/resources/
+        run: cp -R native-artifacts/* crates/pleum-sdk/maven/src/main/resources/
 
       - name: Build Maven publication
-        working-directory: crates/goose-sdk/maven
+        working-directory: crates/pleum-sdk/maven
         run: gradle --no-daemon publishToMavenLocal
 
       - name: Resolve Maven version
         id: version
         shell: bash
         run: |
-          version=$(grep -m1 '^version =' crates/goose-sdk/Cargo.toml | sed -E 's/version = "([^"]+)"/\1/')
+          version=$(grep -m1 '^version =' crates/pleum-sdk/Cargo.toml | sed -E 's/version = "([^"]+)"/\1/')
           echo "value=$version" >> "$GITHUB_OUTPUT"
 
       - name: Stage Maven local artifacts
@@ -144,12 +144,12 @@ jobs:
           VERSION: ${{ steps.version.outputs.value }}
         run: |
           mkdir -p maven-artifacts
-          cp -R "$HOME/.m2/repository/io/github/aaif-goose/gdk/$VERSION" maven-artifacts/
+          cp -R "$HOME/.m2/repository/io/github/gachon-star-want/gdk/$VERSION" maven-artifacts/
 
       - name: Upload Maven artifact bundle
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          name: goose-sdk-maven
+          name: pleum-sdk-maven
           path: maven-artifacts/**
           if-no-files-found: error
 
@@ -174,26 +174,26 @@ jobs:
       - name: Download Maven artifact bundle
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
-          name: goose-sdk-maven
+          name: pleum-sdk-maven
           path: maven-artifacts
 
       - name: Install Maven artifact bundle into local repository
         shell: bash
         run: |
-          version=$(grep -m1 '^version =' crates/goose-sdk/Cargo.toml | sed -E 's/version = "([^"]+)"/\1/')
-          target="$HOME/.m2/repository/io/github/aaif-goose/gdk/$version"
+          version=$(grep -m1 '^version =' crates/pleum-sdk/Cargo.toml | sed -E 's/version = "([^"]+)"/\1/')
+          target="$HOME/.m2/repository/io/github/gachon-star-want/gdk/$version"
           mkdir -p "$target"
           find maven-artifacts -type f -exec cp -t "$target" {} +
 
       - name: Load native library in an ARM64 JVM
         shell: bash
-        working-directory: crates/goose-sdk/examples/uniffi/kotlin
+        working-directory: crates/pleum-sdk/examples/uniffi/kotlin
         run: |
           gradle --no-daemon installDist
           cat > "$RUNNER_TEMP/LoadNativeLibrary.java" <<'JAVA'
           public class LoadNativeLibrary {
               public static void main(String[] args) {
-                  System.out.println(io.github.aaif_goose.GooseKt.openaiDefaultModel());
+                  System.out.println(io.github.gachon_star_want.PleumKt.openaiDefaultModel());
               }
           }
           JAVA
@@ -227,24 +227,24 @@ jobs:
       - name: Download native library artifacts
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
-          pattern: goose-sdk-native-*
+          pattern: pleum-sdk-native-*
           path: native-artifacts
           merge-multiple: true
 
       - name: Generate Kotlin bindings
         shell: bash
         run: |
-          cargo build -p goose-sdk --features uniffi --release
-          crates/goose-sdk/scripts/prepare-maven-package.sh \
-            target/release/libgoose_sdk.so \
+          cargo build -p pleum-sdk --features uniffi --release
+          crates/pleum-sdk/scripts/prepare-maven-package.sh \
+            target/release/libpleum_sdk.so \
             linux-x86-64
 
       - name: Restore downloaded native libraries
         shell: bash
-        run: cp -R native-artifacts/* crates/goose-sdk/maven/src/main/resources/
+        run: cp -R native-artifacts/* crates/pleum-sdk/maven/src/main/resources/
 
       - name: Publish to Maven Central
-        working-directory: crates/goose-sdk/maven
+        working-directory: crates/pleum-sdk/maven
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_TOKEN_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_TOKEN_PASSWORD }}

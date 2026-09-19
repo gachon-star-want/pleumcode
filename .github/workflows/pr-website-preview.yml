@@ -8,8 +8,8 @@ on:
       - synchronize
     paths:
       - 'documentation/**'
-      - 'crates/goose/acp-schema.json'
-      - 'crates/goose/acp-meta.json'
+      - 'crates/pleum/acp-schema.json'
+      - 'crates/pleum/acp-meta.json'
 
 concurrency:
   group: docs-preview-${{ github.event.pull_request.number }}

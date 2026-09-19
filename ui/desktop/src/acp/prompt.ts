@@ -1,5 +1,5 @@
 import { methods, type ContentBlock, type PromptResponse } from '@agentclientprotocol/sdk';
-import type { SteerSessionRequest_unstable, SteerSessionResponse_unstable } from '@aaif/goose-acp-client';
+import type { SteerSessionRequest_unstable, SteerSessionResponse_unstable } from '@aaif/pleum-acp-client';
 import type { Message } from '../types/message';
 import { getAcpClient } from './acpConnection';
 
@@ -12,7 +12,7 @@ export async function acpPromptSession(
   return client.connection.agent.request(methods.agent.session.prompt, {
     sessionId,
     prompt: messageToAcpPromptContent(message),
-    _meta: { goose: { unrolledAgentLoop: !useLegacyAgentLoop } },
+    _meta: { pleum: { unrolledAgentLoop: !useLegacyAgentLoop } },
   });
 }
 
@@ -27,7 +27,7 @@ export async function acpSteerSession(
   expectedRunId: string
 ): Promise<SteerSessionResponse_unstable> {
   const client = await getAcpClient();
-  return client.goose.sessionSteer_unstable({
+  return client.pleum.sessionSteer_unstable({
     sessionId,
     expectedRunId,
     prompt: messageToAcpPromptContent(message) as unknown as SteerSessionRequest_unstable['prompt'],

@@ -141,10 +141,10 @@ export const DiagnosticsModal: React.FC<DiagnosticsModalProps> = ({
       const body = `**Describe the bug**
 
 💡 Before filing, please check common issues:  
-https://goose-docs.ai/docs/troubleshooting  
+https://docs.pleum.ai/docs/troubleshooting  
 
 📦 To help us debug faster, attach your **diagnostics JSON report** if possible.  
-👉 How to capture it: https://goose-docs.ai/docs/troubleshooting/diagnostics-and-reporting/
+👉 How to capture it: https://docs.pleum.ai/docs/troubleshooting/diagnostics-and-reporting/
 
 A clear and concise description of what the bug is.
 
@@ -188,7 +188,7 @@ Add any other context about the problem here.
         labels: 'bug',
       });
 
-      window.open(`https://github.com/aaif-goose/goose/issues/new?${params.toString()}`, '_blank');
+      window.open(`https://github.com/gachon-star-want/pleumcode/issues/new?${params.toString()}`, '_blank');
       onClose();
     } catch {
       toastError({

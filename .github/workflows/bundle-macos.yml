@@ -64,8 +64,8 @@ on:
 name: "Bundle CLI and Desktop (macOS)"
 
 jobs:
-  build-goose:
-    name: Build Goose (macOS)
+  build-pleum:
+    name: Build Pleum (macOS)
     runs-on: ${{ inputs.target == 'x86_64-apple-darwin' && 'macos-15-intel' || 'macos-latest' }}
     env:
       MACOSX_DEPLOYMENT_TARGET: "12.0"
@@ -133,26 +133,26 @@ jobs:
         with:
           key: ${{ inputs.target == 'x86_64-apple-darwin' && 'intel-macos-deployment-target-12' || 'macos-deployment-target-12' }}
 
-      - name: Build goose
+      - name: Build pleum
         env:
           TARGET: ${{ inputs.target }}
         run: |
           source ./bin/activate-hermit
           rustup target add "$TARGET"
-          cargo build --release -p goose-cli --bin goose --target "$TARGET"
+          cargo build --release -p pleum-cli --bin pleum --target "$TARGET"
 
       - name: Prepare binary artifact
         env:
           TARGET: ${{ inputs.target }}
         run: |
           mkdir -p artifacts
-          cp "target/${TARGET}/release/goose" "artifacts/internal-goose-${TARGET}"
+          cp "target/${TARGET}/release/pleum" "artifacts/internal-pleum-${TARGET}"
 
       - name: Upload binary artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
-          name: internal-goose-${{ inputs.target }}
-          path: artifacts/internal-goose-${{ inputs.target }}
+          name: internal-pleum-${{ inputs.target }}
+          path: artifacts/internal-pleum-${{ inputs.target }}
           if-no-files-found: error
           retention-days: 1
           overwrite: true
@@ -160,40 +160,40 @@ jobs:
   package-cli:
     name: Package CLI (macOS)
     if: ${{ inputs.package_cli }}
-    needs: build-goose
+    needs: build-pleum
     runs-on: ubuntu-latest
     permissions: {}
     steps:
       - name: Download binary artifact
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         with:
-          name: internal-goose-${{ inputs.target }}
+          name: internal-pleum-${{ inputs.target }}
           path: package
 
       - name: Package CLI
         env:
           TARGET: ${{ inputs.target }}
         run: |
-          mv "package/internal-goose-${TARGET}" package/goose
-          chmod +x package/goose
+          mv "package/internal-pleum-${TARGET}" package/pleum
+          chmod +x package/pleum
           mkdir -p dist
-          tar -cjf "dist/goose-${TARGET}.tar.bz2" -C package .
-          tar -czf "dist/goose-${TARGET}.tar.gz" -C package .
+          tar -cjf "dist/pleum-${TARGET}.tar.bz2" -C package .
+          tar -czf "dist/pleum-${TARGET}.tar.gz" -C package .
 
       - name: Upload CLI artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
-          name: goose-${{ inputs.target }}
+          name: pleum-${{ inputs.target }}
           path: |
-            dist/goose-${{ inputs.target }}.tar.bz2
-            dist/goose-${{ inputs.target }}.tar.gz
+            dist/pleum-${{ inputs.target }}.tar.bz2
+            dist/pleum-${{ inputs.target }}.tar.gz
           if-no-files-found: error
           overwrite: true
 
   package-desktop:
     name: Package Desktop (macOS)
     if: ${{ inputs.package_desktop }}
-    needs: build-goose
+    needs: build-pleum
     runs-on: ${{ inputs.target == 'x86_64-apple-darwin' && 'macos-15-intel' || 'macos-latest' }}
     environment: ${{ inputs.environment || '' }}
     env:
@@ -223,16 +223,16 @@ jobs:
       - name: Download binary artifact
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
         with:
-          name: internal-goose-${{ inputs.target }}
+          name: internal-pleum-${{ inputs.target }}
           path: ui/desktop/src/bin
 
       - name: Prepare desktop backend
         env:
           TARGET: ${{ inputs.target }}
         run: |
-          rm -f ui/desktop/src/bin/goose
-          mv "ui/desktop/src/bin/internal-goose-${TARGET}" ui/desktop/src/bin/goose
-          chmod +x ui/desktop/src/bin/goose
+          rm -f ui/desktop/src/bin/pleum
+          mv "ui/desktop/src/bin/internal-pleum-${TARGET}" ui/desktop/src/bin/pleum
+          chmod +x ui/desktop/src/bin/pleum
           ls -la ui/desktop/src/bin/
 
       - name: Cache pnpm dependencies
@@ -288,7 +288,7 @@ jobs:
 
       - name: Verify macOS updater resources
         env:
-          APP_PATH: ${{ inputs.target == 'x86_64-apple-darwin' && 'out/Goose-darwin-x64/Goose.app' || 'out/Goose-darwin-arm64/Goose.app' }}
+          APP_PATH: ${{ inputs.target == 'x86_64-apple-darwin' && 'out/Pleum-darwin-x64/Pleum.app' || 'out/Pleum-darwin-arm64/Pleum.app' }}
         run: node scripts/verify-mac-update-resources.js "$APP_PATH"
         working-directory: ui/desktop
 
@@ -301,31 +301,31 @@ jobs:
 
       - name: Final cleanup before artifact upload
         run: |
-          rm -f ui/desktop/src/bin/goose
+          rm -f ui/desktop/src/bin/pleum
           df -h
 
       - name: Upload Desktop artifact
         id: upload-app-bundle
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
-          name: ${{ inputs.target == 'x86_64-apple-darwin' && 'Goose-darwin-x64' || 'Goose-darwin-arm64' }}
-          path: ${{ inputs.target == 'x86_64-apple-darwin' && 'ui/desktop/out/Goose-darwin-x64/Goose_intel_mac.zip' || 'ui/desktop/out/Goose-darwin-arm64/Goose.zip' }}
+          name: ${{ inputs.target == 'x86_64-apple-darwin' && 'Pleum-darwin-x64' || 'Pleum-darwin-arm64' }}
+          path: ${{ inputs.target == 'x86_64-apple-darwin' && 'ui/desktop/out/Pleum-darwin-x64/Pleum_intel_mac.zip' || 'ui/desktop/out/Pleum-darwin-arm64/Pleum.zip' }}
           if-no-files-found: error
           overwrite: true
 
       - name: Quick launch test (macOS)
         env:
-          APP_PATH: ${{ inputs.target == 'x86_64-apple-darwin' && 'ui/desktop/out/Goose-darwin-x64/Goose.app' || 'ui/desktop/out/Goose-darwin-arm64/Goose.app' }}
+          APP_PATH: ${{ inputs.target == 'x86_64-apple-darwin' && 'ui/desktop/out/Pleum-darwin-x64/Pleum.app' || 'ui/desktop/out/Pleum-darwin-arm64/Pleum.app' }}
         run: |
           xattr -cr "$APP_PATH"
-          echo "Opening Goose.app..."
+          echo "Opening Pleum.app..."
           open -g "$APP_PATH"
           sleep 5
 
-          if pgrep -f "Goose.app/Contents/MacOS/Goose" > /dev/null; then
+          if pgrep -f "Pleum.app/Contents/MacOS/Pleum" > /dev/null; then
             echo "App appears to be running."
           else
             echo "App did not stay open. Possible crash or startup error."
             exit 1
           fi
-          pkill -f "Goose.app/Contents/MacOS/Goose"
+          pkill -f "Pleum.app/Contents/MacOS/Pleum"

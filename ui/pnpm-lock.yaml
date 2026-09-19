@@ -18,9 +18,9 @@ importers:
 
   desktop:
     dependencies:
-      '@aaif/goose-acp-client':
+      '@aaif/pleum-acp-client':
         specifier: workspace:*
-        version: link:../goose-acp-client
+        version: link:../pleum-acp-client
       '@agentclientprotocol/sdk':
         specifier: 1.3.0
         version: 1.3.0(zod@4.4.3)
@@ -332,7 +332,7 @@ importers:
         specifier: ^4.1.11
         version: 4.1.11(@opentelemetry/api@1.9.0)(@types/node@26.2.0)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(jsdom@28.1.0(supports-color@8.1.1))(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.50.0)(tsx@4.23.12)(yaml@2.8.2))
 
-  goose-acp:
+  pleum-acp:
     devDependencies:
       '@types/node':
         specifier: ^26.2.0
@@ -344,23 +344,23 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
     optionalDependencies:
-      '@aaif/goose-binary-darwin-arm64':
+      '@aaif/pleum-binary-darwin-arm64':
         specifier: workspace:*
-        version: link:../goose-binary/goose-binary-darwin-arm64
-      '@aaif/goose-binary-darwin-x64':
+        version: link:../pleum-binary/pleum-binary-darwin-arm64
+      '@aaif/pleum-binary-darwin-x64':
         specifier: workspace:*
-        version: link:../goose-binary/goose-binary-darwin-x64
-      '@aaif/goose-binary-linux-arm64':
+        version: link:../pleum-binary/pleum-binary-darwin-x64
+      '@aaif/pleum-binary-linux-arm64':
         specifier: workspace:*
-        version: link:../goose-binary/goose-binary-linux-arm64
-      '@aaif/goose-binary-linux-x64':
+        version: link:../pleum-binary/pleum-binary-linux-arm64
+      '@aaif/pleum-binary-linux-x64':
         specifier: workspace:*
-        version: link:../goose-binary/goose-binary-linux-x64
-      '@aaif/goose-binary-win32-x64':
+        version: link:../pleum-binary/pleum-binary-linux-x64
+      '@aaif/pleum-binary-win32-x64':
         specifier: workspace:*
-        version: link:../goose-binary/goose-binary-win32-x64
+        version: link:../pleum-binary/pleum-binary-win32-x64
 
-  goose-acp-client:
+  pleum-acp-client:
     dependencies:
       '@modelcontextprotocol/ext-apps':
         specifier: ^1.7.5
@@ -391,15 +391,15 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
 
-  goose-binary/goose-binary-darwin-arm64: {}
+  pleum-binary/pleum-binary-darwin-arm64: {}
 
-  goose-binary/goose-binary-darwin-x64: {}
+  pleum-binary/pleum-binary-darwin-x64: {}
 
-  goose-binary/goose-binary-linux-arm64: {}
+  pleum-binary/pleum-binary-linux-arm64: {}
 
-  goose-binary/goose-binary-linux-x64: {}
+  pleum-binary/pleum-binary-linux-x64: {}
 
-  goose-binary/goose-binary-win32-x64: {}
+  pleum-binary/pleum-binary-win32-x64: {}
 
 packages:
 

@@ -27,7 +27,7 @@ const i18n = defineMessages({
   description: {
     id: 'extensionsView.description',
     defaultMessage:
-      "These extensions use the Model Context Protocol (MCP). They can expand Goose's capabilities using three main components: Prompts, Resources, and Tools. {searchShortcut} to search.",
+      "These extensions use the Model Context Protocol (MCP). They can expand Pleum's capabilities using three main components: Prompts, Resources, and Tools. {searchShortcut} to search.",
   },
   defaultNote: {
     id: 'extensionsView.defaultNote',
@@ -155,7 +155,7 @@ export default function ExtensionsView({
               <Button
                 className="flex items-center gap-2 justify-center"
                 variant="secondary"
-                onClick={() => window.open('https://goose-docs.ai/v1/extensions/', '_blank')}
+                onClick={() => window.open('https://docs.pleum.ai/v1/extensions/', '_blank')}
               >
                 <GPSIcon size={12} />
                 {intl.formatMessage(i18n.browseExtensions)}

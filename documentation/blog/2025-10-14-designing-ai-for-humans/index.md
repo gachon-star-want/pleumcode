@@ -16,7 +16,7 @@ My mom was doing her usual Sunday ritual she had her pen, paper, calculator, and
 Last month, halfway through crunching numbers, she sighed and said,  
 > “I just wish I could see where my money’s going.”  
 
-So I opened [**goose**](http://goose-docs.ai/docs/quickstart), added her notes, and turned on [**Auto Visualiser**](https://goose-docs.ai/docs/mcp/autovisualiser-mcp). In seconds, her budget became this colorful, interactive chart. She hovered over each slice, analyzing where her money was going.  
+So I opened [**pleum**](http://docs.pleum.ai/docs/quickstart), added her notes, and turned on [**Auto Visualiser**](https://docs.pleum.ai/docs/mcp/autovisualiser-mcp). In seconds, her budget became this colorful, interactive chart. She hovered over each slice, analyzing where her money was going.  
 
 Now, I'm not saying this is some groundbreaking use case. There are plenty of apps that do this. What stood out to me was how simple it felt. My mom didn’t need to learn anything new or adapt to someone else’s design. The visualization just appeared, and she got it immediately.  
 
@@ -41,7 +41,7 @@ We’re already seeing this shift across the industry. Google’s new AI Mode is
 
 MCP-UI brings that same evolution into the agent world. It extends the [Model Context Protocol](https://modelcontextprotocol.io/docs/getting-started/intro) so your MCP server can return more than just data. It can render interactive components right inside your agent's chat. Whether it’s a chart, button, table, or form, the agent can display live, usable views of your service instead of describing them in text.  
 
-goose’s built-in Auto Visualiser is one example of this in action, automatically turning structured output into interactive visuals using MCP-UI behind the scenes.  
+pleum’s built-in Auto Visualiser is one example of this in action, automatically turning structured output into interactive visuals using MCP-UI behind the scenes.  
 
 But the potential goes much further. When developers build their own MCP servers, they get full control over *how*  their data appears. They can design interfaces that reflect their brand or product style, ensuring users interacting with their API through an AI agent still get a familiar experience. Imagine a Shopify MCP server returning product listings that look like their storefront, or a Notion MCP server displaying content in its block layout inside the chat.  
 
@@ -49,22 +49,22 @@ Both point to the same future: one where AI doesn’t just reply with text, but 
 
 That’s what Agentic UX is really about: building AI that responds to what the user intends to do.  
 
-If you’re building your own MCP server, start by thinking about the experience you want your users to have. Then experiment with MCP-UI and design the flow you’d expect if you were the one using it. For a full walkthrough, see [How To Make An MCP Server MCP-UI Compatible](https://goose-docs.ai/blog/2025/09/08/turn-any-mcp-server-mcp-ui-compatible).
+If you’re building your own MCP server, start by thinking about the experience you want your users to have. Then experiment with MCP-UI and design the flow you’d expect if you were the one using it. For a full walkthrough, see [How To Make An MCP Server MCP-UI Compatible](https://docs.pleum.ai/blog/2025/09/08/turn-any-mcp-server-mcp-ui-compatible).
 
 ---
 
 I have a feeling that next month, when my mom sits down to balance her bills, she’s going to ask me:  
-> “You brought that goose thing again?”  
+> “You brought that pleum thing again?”  
 
 <head>
   <meta property="og:title" content="Designing AI for Users, Not Just LLMs" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://goose-docs.ai/blog/2025/10/14/designing-ai-for-humans" />
+  <meta property="og:url" content="https://docs.pleum.ai/blog/2025/10/14/designing-ai-for-humans" />
   <meta property="og:description" content="Building intent-based AI experiences with MCP-UI." />
-  <meta property="og:image" content="https://goose-docs.ai/assets/images/design-ai-de5d0af69d8d21111dd271624ac7cab3.png" />
+  <meta property="og:image" content="https://docs.pleum.ai/assets/images/design-ai-de5d0af69d8d21111dd271624ac7cab3.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Designing AI for Users, Not Just LLMs" />
   <meta name="twitter:description" content="Building intent-based AI experiences with MCP-UI." />
-  <meta property="twitter:domain" content="goose-docs.ai" />
-  <meta name="twitter:image" content="https://goose-docs.ai/assets/images/design-ai-de5d0af69d8d21111dd271624ac7cab3.png" />
+  <meta property="twitter:domain" content="docs.pleum.ai" />
+  <meta name="twitter:image" content="https://docs.pleum.ai/assets/images/design-ai-de5d0af69d8d21111dd271624ac7cab3.png" />
 </head>

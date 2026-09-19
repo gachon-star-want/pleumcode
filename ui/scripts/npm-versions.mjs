@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 
 const uiDirectory = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const repositoryRoot = resolve(uiDirectory, "..");
-const wrapperPath = resolve(uiDirectory, "goose-acp/package.json");
+const wrapperPath = resolve(uiDirectory, "pleum-acp/package.json");
 const binaryPlatforms = [
   "darwin-arm64",
   "darwin-x64",
@@ -13,13 +13,13 @@ const binaryPlatforms = [
   "win32-x64",
 ];
 const binaryPackages = binaryPlatforms.map(
-  (platform) => `@aaif/goose-binary-${platform}`,
+  (platform) => `@aaif/pleum-binary-${platform}`,
 );
 const packagePaths = [
-  resolve(uiDirectory, "goose-acp-client/package.json"),
+  resolve(uiDirectory, "pleum-acp-client/package.json"),
   wrapperPath,
   ...binaryPlatforms.map((platform) =>
-    resolve(uiDirectory, `goose-binary/goose-binary-${platform}/package.json`),
+    resolve(uiDirectory, `pleum-binary/pleum-binary-${platform}/package.json`),
   ),
 ];
 
@@ -56,7 +56,7 @@ function setVersions(version) {
     writeJson(path, manifest);
   }
 
-  console.log(`Updated Goose npm packages to ${version}`);
+  console.log(`Updated Pleum npm packages to ${version}`);
 }
 
 function checkVersions() {
@@ -66,7 +66,7 @@ function checkVersions() {
 
   if (desktop.version !== expectedVersion) {
     errors.push(
-      `goose-app is ${desktop.version}; expected ${expectedVersion} from Cargo.toml`,
+      `pleum-app is ${desktop.version}; expected ${expectedVersion} from Cargo.toml`,
     );
   }
 
@@ -92,11 +92,11 @@ function checkVersions() {
 
   if (errors.length > 0) {
     throw new Error(
-      `Goose version alignment failed:\n- ${errors.join("\n- ")}`,
+      `Pleum version alignment failed:\n- ${errors.join("\n- ")}`,
     );
   }
 
-  console.log(`Goose versions are aligned at ${expectedVersion}`);
+  console.log(`Pleum versions are aligned at ${expectedVersion}`);
   return expectedVersion;
 }
 
@@ -108,7 +108,7 @@ function checkReleaseVersion(version) {
     );
   }
 
-  console.log(`Goose versions match release ${version}`);
+  console.log(`Pleum versions match release ${version}`);
 }
 
 function checkPackedWrapper(path) {
@@ -127,11 +127,11 @@ function checkPackedWrapper(path) {
 
   if (errors.length > 0) {
     throw new Error(
-      `Packed Goose wrapper version check failed:\n- ${errors.join("\n- ")}`,
+      `Packed Pleum wrapper version check failed:\n- ${errors.join("\n- ")}`,
     );
   }
 
-  console.log(`Packed Goose wrapper uses binary version ${expectedVersion}`);
+  console.log(`Packed Pleum wrapper uses binary version ${expectedVersion}`);
 }
 
 const [command, argument] = process.argv.slice(2);

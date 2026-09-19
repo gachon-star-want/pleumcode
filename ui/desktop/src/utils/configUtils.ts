@@ -1,14 +1,14 @@
 export const configLabels: Record<string, string> = {
-  // goose settings
-  GOOSE_PROVIDER: 'Provider',
-  GOOSE_MODEL: 'Model',
-  GOOSE_TEMPERATURE: 'Temperature',
-  GOOSE_MODE: 'Mode',
-  GOOSE_TOOLSHIM: 'Tool Shim',
-  GOOSE_TOOLSHIM_OLLAMA_MODEL: 'Tool Shim Ollama Model',
-  GOOSE_CLI_MIN_PRIORITY: 'CLI Min Priority',
-  GOOSE_ALLOWLIST: 'Allow List',
-  GOOSE_RECIPE_GITHUB_REPO: 'Recipe GitHub Repo',
+  // pleum settings
+  PLEUM_PROVIDER: 'Provider',
+  PLEUM_MODEL: 'Model',
+  PLEUM_TEMPERATURE: 'Temperature',
+  PLEUM_MODE: 'Mode',
+  PLEUM_TOOLSHIM: 'Tool Shim',
+  PLEUM_TOOLSHIM_OLLAMA_MODEL: 'Tool Shim Ollama Model',
+  PLEUM_CLI_MIN_PRIORITY: 'CLI Min Priority',
+  PLEUM_ALLOWLIST: 'Allow List',
+  PLEUM_RECIPE_GITHUB_REPO: 'Recipe GitHub Repo',
 
   // security settings
   SECURITY_PROMPT_ENABLED: 'Prompt Injection Detection Enabled',

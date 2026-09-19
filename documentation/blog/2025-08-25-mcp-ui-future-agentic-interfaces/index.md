@@ -6,11 +6,11 @@ authors:
 ---
 
 
-![mcp ui](mcpui-goose.png)
+![mcp ui](mcpui-pleum.png)
 
 The days of endless text walls in AI agent conversations are numbered. What if instead of reading through paragraphs of product descriptions, you could browse a beautiful, interactive catalog? What if booking a flight seat could be as simple as clicking on your preferred spot on a visual seat map? This isn't science fiction. It's happening right now with MCP-UI.
 
-In a recent [Wild Goose Case episode](https://www.youtube.com/live/GS-kmreZDgU), we dove deep into MCP-UI with its creators Ido Salomon and Liad Yosef from Monday.com, alongside Block's own Andrew Harvard, to explore how this groundbreaking technology is reshaping the future of agentic interfaces.
+In a recent [Wild Pleum Case episode](https://www.youtube.com/live/GS-kmreZDgU), we dove deep into MCP-UI with its creators Ido Salomon and Liad Yosef from Monday.com, alongside Block's own Andrew Harvard, to explore how this groundbreaking technology is reshaping the future of agentic interfaces.
 
 <!-- truncate -->
 
@@ -76,12 +76,12 @@ return createUIResource({
 
 MCP-UI's success depends on several key stakeholders:
 
-1. **Agent Developers** (like the Goose team): Need to implement MCP-UI support in their platforms
+1. **Agent Developers** (like the Pleum team): Need to implement MCP-UI support in their platforms
 2. **MCP Server Developers**: Build the UI components and integrate them with existing services
 3. **Service Providers** (like Shopify, Square): Create rich interfaces for their platforms
 4. **End Users**: Benefit from more intuitive and visual AI interactions
 
-The beauty of this approach is that it creates a network effect. Once implemented, a Shopify MCP-UI component works across all compatible agents – from Goose to VS Code extensions to future mobile AI assistants.
+The beauty of this approach is that it creates a network effect. Once implemented, a Shopify MCP-UI component works across all compatible agents – from Pleum to VS Code extensions to future mobile AI assistants.
 
 ## Looking Ahead: The Future is Visual
 
@@ -101,7 +101,7 @@ Instead of every company building separate integrations for each AI platform, MC
 
 ## The Adoption Challenge
 
-The technology is ready, but adoption is the next frontier. As the team emphasized, this is now more of an adoption problem than a technical one. The good news? Major players are already on board. Shopify has launched MCP support for all their stores, providing a massive real-world testing ground for commerce experiences. And of course, MCP-UI is supported in Goose.
+The technology is ready, but adoption is the next frontier. As the team emphasized, this is now more of an adoption problem than a technical one. The good news? Major players are already on board. Shopify has launched MCP support for all their stores, providing a massive real-world testing ground for commerce experiences. And of course, MCP-UI is supported in Pleum.
 
 For developers interested in contributing, the focus is on:
 - Building real applications that solve actual user problems
@@ -115,7 +115,7 @@ If you're excited about MCP-UI and want to start experimenting, here's where to 
 1. **Check out the documentation**: The MCP-UI team has created [comprehensive docs and examples](https://mcpui.dev/)
 2. **Join the community**: There's an active [Discord server](https://discord.gg/4ww9QnJgCp) for collaboration and discussion
 3. **Start simple**: Take an existing MCP server and add UI resources to it
-4. **Experiment with Goose**: Try out [MCP-UI in Goose](/docs/guides/interactive-chat/mcp-ui) to see it in action
+4. **Experiment with Pleum**: Try out [MCP-UI in Pleum](/docs/guides/interactive-chat/mcp-ui) to see it in action
 
 ## The Bottom Line
 
@@ -129,7 +129,7 @@ The future of interacting with AI relies on smarter interfaces. And with MCP-UI,
 
 ---
 
-*Want to see MCP-UI in action? Check out the full Wild Goose Chase episode below and join our community to start building the future of agentic interfaces.*
+*Want to see MCP-UI in action? Check out the full Wild Pleum Chase episode below and join our community to start building the future of agentic interfaces.*
 
 <iframe src="https://www.youtube.com/embed/GS-kmreZDgU" title="MCP-UI: The Future of Agentic Interfaces" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="aspect-ratio"></iframe>
 
@@ -138,12 +138,12 @@ The future of interacting with AI relies on smarter interfaces. And with MCP-UI,
 <head>
   <meta property="og:title" content="MCP-UI: The Future of Agentic Interfaces" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://goose-docs.ai/blog/2025/08/25/mcp-ui-future-agentic-interfaces" />
+  <meta property="og:url" content="https://docs.pleum.ai/blog/2025/08/25/mcp-ui-future-agentic-interfaces" />
   <meta property="og:description" content="Discover how MCP-UI is revolutionizing AI agent interactions by bringing rich, interactive web components directly into agent conversations, making AI more accessible and intuitive for everyone." />
-  <meta property="og:image" content="https://goose-docs.ai/assets/images/mcpui-goose-44f248ede0eb5d2e0bddccf76e98b07e.png" />
+  <meta property="og:image" content="https://docs.pleum.ai/assets/images/mcpui-pleum-44f248ede0eb5d2e0bddccf76e98b07e.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:domain" content="goose-docs.ai" />
+  <meta property="twitter:domain" content="docs.pleum.ai" />
   <meta name="twitter:title" content="MCP-UI: The Future of Agentic Interfaces" />
   <meta name="twitter:description" content="Discover how MCP-UI is revolutionizing AI agent interactions by bringing rich, interactive web components directly into agent conversations, making AI more accessible and intuitive for everyone." />
-  <meta name="twitter:image" content="https://goose-docs.ai/assets/images/mcpui-goose-44f248ede0eb5d2e0bddccf76e98b07e.png" />
+  <meta name="twitter:image" content="https://docs.pleum.ai/assets/images/mcpui-pleum-44f248ede0eb5d2e0bddccf76e98b07e.png" />
 </head>

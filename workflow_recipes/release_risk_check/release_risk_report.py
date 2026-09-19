@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Generate a release risk assessment report for a Goose release PR.
+Generate a release risk assessment report for a Pleum release PR.
 
 Usage:
     .release_risk_report.py --version 1.27.0
@@ -15,7 +15,7 @@ import subprocess
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-REPO = "aaif-goose/goose"
+REPO = "gachon-star-want/pleumcode"
 
 # Paths considered documentation-only
 DOC_PATTERNS = [
@@ -24,12 +24,12 @@ DOC_PATTERNS = [
 
 # Paths considered high-risk core code
 CORE_PATHS = [
-    "crates/goose/src/agents/",
-    "crates/goose/src/providers/",
-    "crates/goose/src/acp/",
-    "crates/goose-cli/",
-    "crates/goose/src/session",
-    "crates/goose/src/permission",
+    "crates/pleum/src/agents/",
+    "crates/pleum/src/providers/",
+    "crates/pleum/src/acp/",
+    "crates/pleum-cli/",
+    "crates/pleum/src/session",
+    "crates/pleum/src/permission",
 ]
 
 # Dependency lock files (safe to skip — lock files only, not manifests)

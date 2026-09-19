@@ -6,41 +6,41 @@ git_tag_name = "gdk-v{{ version }}"
 git_release_enable = false
 
 [[package]]
-name = "goose-provider-types"
+name = "pleum-provider-types"
 release = true
 version_group = "gdk"
 
 [[package]]
-name = "goose-sdk-types"
+name = "pleum-sdk-types"
 release = true
 version_group = "gdk"
 
 [[package]]
-name = "goose-download-manager"
+name = "pleum-download-manager"
 release = true
 version_group = "gdk"
 
 [[package]]
-name = "goose-local-inference"
+name = "pleum-local-inference"
 release = true
 version_group = "gdk"
 
 [[package]]
-name = "goose-providers"
+name = "pleum-providers"
 release = true
 version_group = "gdk"
 
 [[package]]
-name = "goose-agent"
+name = "pleum-agent"
 release = true
 version_group = "gdk"
 
 [[package]]
-name = "goose-context-management"
+name = "pleum-context-management"
 release = true
 version_group = "gdk"
 
 [[package]]
-name = "goose-sdk"
+name = "pleum-sdk"
 release = true
 version_group = "gdk"

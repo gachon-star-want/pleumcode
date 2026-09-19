@@ -1,6 +1,6 @@
 ---
 title: Announcing Advent of AI
-description: We're launching an advent calendar of AI engineering challenges to help you build applicable projects with goose.
+description: We're launching an advent calendar of AI engineering challenges to help you build applicable projects with pleum.
 authors: 
     - rizel
 ---
@@ -29,7 +29,7 @@ Step into the role of the lead AI engineer at a bustling Winter Festival. You're
 
 **Day 17:** Deploy a cross-platform wishlist app using MCP-UI so vendors know exactly what visitors want.
 
-You'll master core AI engineering skills like building gesture-controlled interfaces, data visualizations, multi-agent systems, and production deployments using goose. These foundational skills will prepare you to work with any AI agent. Complete all 17 days, and you'll have built a comprehensive portfolio showcasing everything from basic automation to sophisticated multi-agent systems.
+You'll master core AI engineering skills like building gesture-controlled interfaces, data visualizations, multi-agent systems, and production deployments using pleum. These foundational skills will prepare you to work with any AI agent. Complete all 17 days, and you'll have built a comprehensive portfolio showcasing everything from basic automation to sophisticated multi-agent systems.
 
 ## Designed for All Skill Levels
 
@@ -47,7 +47,7 @@ You'll master core AI engineering skills like building gesture-controlled interf
 ## Ready to Build?
 
 1. Sign up at [adventofai.dev](https://adventofai.dev) for daily notifications
-2. Install goose using the [quickstart guide](/docs/quickstart)
+2. Install pleum using the [quickstart guide](/docs/quickstart)
 3. Join the community on [Discord](https://discord.gg/block-opensource)
 
 The first challenge unlocks December 1st at 12 PM ET. The Winter Festival needs your skills. Let's build something amazing together.
@@ -55,12 +55,12 @@ The first challenge unlocks December 1st at 12 PM ET. The Winter Festival needs 
 <head>
   <meta property="og:title" content="Announcing Advent of AI" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://goose-docs.ai/blog/2025/11/30/announcing-advent-of-ai" />
-  <meta property="og:description" content="We're launching an advent calendar of AI engineering challenges to help you build applicable projects with goose." />
-  <meta property="og:image" content="https://goose-docs.ai/assets/images/advent-of-ai-header-7076e6e92caf243b488ff6ea0082c48e.png" />
+  <meta property="og:url" content="https://docs.pleum.ai/blog/2025/11/30/announcing-advent-of-ai" />
+  <meta property="og:description" content="We're launching an advent calendar of AI engineering challenges to help you build applicable projects with pleum." />
+  <meta property="og:image" content="https://docs.pleum.ai/assets/images/advent-of-ai-header-7076e6e92caf243b488ff6ea0082c48e.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:domain" content="goose-docs.ai" />
+  <meta property="twitter:domain" content="docs.pleum.ai" />
   <meta name="twitter:title" content="Announcing Advent of AI" />
-  <meta name="twitter:description" content="We're launching an advent calendar of AI engineering challenges to help you build applicable projects with goose." />
-  <meta name="twitter:image" content="https://goose-docs.ai/assets/images/advent-of-ai-header-7076e6e92caf243b488ff6ea0082c48e.png" />
+  <meta name="twitter:description" content="We're launching an advent calendar of AI engineering challenges to help you build applicable projects with pleum." />
+  <meta name="twitter:image" content="https://docs.pleum.ai/assets/images/advent-of-ai-header-7076e6e92caf243b488ff6ea0082c48e.png" />
 </head>

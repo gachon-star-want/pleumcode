@@ -29,16 +29,16 @@ import 'dotenv/config';
 import { connectRemoteBackend } from './remoteBackends';
 import { installBackendCertificateVerifiers } from './backendCertificateVerifier';
 import { configureProxy } from './proxy';
-import { startGooseServe } from './gooseServe';
+import { startPleumServe } from './pleumServe';
 import { getLoginShellPath } from './loginShellPath';
-import { GooseServeLeaseRegistry, type GooseServeLease } from './gooseServeLeaseRegistry';
+import { PleumServeLeaseRegistry, type PleumServeLease } from './pleumServeLeaseRegistry';
 import { normalizeAcpHttpBaseUrl } from './acp/url';
-import { expandTilde, sanitizeGoosePathRoot } from './utils/pathUtils';
+import { expandTilde, sanitizePleumPathRoot } from './utils/pathUtils';
 import log from './utils/logger';
 import { ensureWinShims } from './utils/winShims';
 import { addRecentDir, loadRecentDirs } from './utils/recentDirs';
 import { formatAppName, errorMessage, formatErrorForLogging } from './utils/conversionUtils';
-import { isRetiredGooseChatApp } from './utils/retiredApps';
+import { isRetiredPleumChatApp } from './utils/retiredApps';
 import type { Settings, SettingKey } from './utils/settings';
 import { defaultSettings, getKeyboardShortcuts } from './utils/settings';
 import * as crypto from 'crypto';
@@ -55,7 +55,7 @@ import {
 import { UPDATES_ENABLED } from './updates';
 import './utils/gitBranchIpc';
 import './utils/recipeHash';
-import type { GooseApp } from './types/apps';
+import type { PleumApp } from './types/apps';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import { WEB_PROTOCOLS } from './utils/urlSecurity';
 import { openExternalUrl } from './utils/openExternalUrl';
@@ -94,7 +94,7 @@ const MENU_TRANSLATIONS_ZH_CN: Record<string, string> = {
   Cut: '剪切',
   Copy: '复制',
   Paste: '粘贴',
-  // Goose-added items
+  // Pleum-added items
   'New Window': '新建窗口',
   Settings: '设置',
   'Find…': '查找…',
@@ -106,11 +106,11 @@ const MENU_TRANSLATIONS_ZH_CN: Record<string, string> = {
   'New Chat Window': '新建聊天窗口',
   'Open Directory...': '打开目录…',
   'Recent Directories': '最近的目录',
-  'Focus Goose Window': '聚焦 Goose 窗口',
+  'Focus Pleum Window': '聚焦 Pleum 窗口',
   'Quick Launcher': '快速启动器',
   'Always on Top': '窗口置顶',
   'Toggle Navigation': '切换导航',
-  'About Goose': '关于 Goose',
+  'About Pleum': '关于 Pleum',
   // Electron's default role-based labels we want to translate as well.
   // (The menu role itself still provides the correct behaviour; only the
   // display string is overridden.)
@@ -136,14 +136,14 @@ const MENU_TRANSLATIONS_ZH_CN: Record<string, string> = {
   'Bring All to Front': '全部置于最前',
   'Emoji & Symbols': '表情符号',
   'Start Dictation…': '开始听写…',
-  'Hide Goose': '隐藏 Goose',
+  'Hide Pleum': '隐藏 Pleum',
   'Hide Others': '隐藏其他',
   'Show All': '全部显示',
   Services: '服务',
 };
 
 function detectMenuLocale(): string {
-  return getConfiguredGooseLocale() ?? 'en';
+  return getConfiguredPleumLocale() ?? 'en';
 }
 
 function menuT(label: string): string {
@@ -218,9 +218,9 @@ function getSettings(): Settings {
     return {
       ...defaultSettings,
       ...stored,
-      externalGoosed: {
-        ...defaultSettings.externalGoosed,
-        ...(stored.externalGoosed ?? {}),
+      externalPleumd: {
+        ...defaultSettings.externalPleumd,
+        ...(stored.externalPleumd ?? {}),
       },
       keyboardShortcuts: {
         ...defaultSettings.keyboardShortcuts,
@@ -237,14 +237,14 @@ function updateSettings(modifier: (settings: Settings) => void): void {
   fsSync.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
 }
 
-function getConfiguredGooseLocale(): string | undefined {
+function getConfiguredPleumLocale(): string | undefined {
   const language = getSettings().language;
   if (isValidLanguageSetting(language) && language !== 'system') {
     return language;
   }
 
-  if (process.env.GOOSE_LOCALE) {
-    return process.env.GOOSE_LOCALE;
+  if (process.env.PLEUM_LOCALE) {
+    return process.env.PLEUM_LOCALE;
   }
 
   try {
@@ -387,13 +387,13 @@ app.on('certificate-error', (event, _webContents, url, _error, certificate, call
 });
 
 app.whenReady().then(() => {
-  appConfig.GOOSE_LOCALE = getConfiguredGooseLocale();
+  appConfig.PLEUM_LOCALE = getConfiguredPleumLocale();
 });
 
 // Main-process net.fetch and renderer WebSockets: pin to the exact cert once known.
 app.whenReady().then(() => {
   installBackendCertificateVerifiers(
-    [session.defaultSession, session.fromPartition('persist:goose')],
+    [session.defaultSession, session.fromPartition('persist:pleum')],
     {
       has: isTrustedHost,
       verify: verifyBackendCertificate,
@@ -411,13 +411,13 @@ if (process.env.ENABLE_PLAYWRIGHT) {
 // In production, register normally
 if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
   // Development mode - force registration
-  console.log('[Main] Development mode: Forcing protocol registration for goose://');
-  app.setAsDefaultProtocolClient('goose');
+  console.log('[Main] Development mode: Forcing protocol registration for pleum://');
+  app.setAsDefaultProtocolClient('pleum');
 
   if (process.platform === 'darwin') {
     try {
       // Reset the default handler to ensure dev version takes precedence
-      spawn('open', ['-a', process.execPath, '--args', '--reset-protocol-handler', 'goose'], {
+      spawn('open', ['-a', process.execPath, '--args', '--reset-protocol-handler', 'pleum'], {
         detached: true,
         stdio: 'ignore',
       });
@@ -427,7 +427,7 @@ if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
   }
 } else {
   // Production mode - normal registration
-  app.setAsDefaultProtocolClient('goose');
+  app.setAsDefaultProtocolClient('pleum');
 }
 
 // Apply single instance lock on Windows and Linux where it's needed for deep links
@@ -441,7 +441,7 @@ if (process.platform !== 'darwin') {
     app.quit();
   } else {
     app.on('second-instance', (_event, commandLine) => {
-      const protocolUrl = commandLine.find((arg) => arg.startsWith('goose://'));
+      const protocolUrl = commandLine.find((arg) => arg.startsWith('pleum://'));
       if (protocolUrl) {
         const parsedUrl = new URL(protocolUrl);
         // If it's a bot/recipe URL, handle it directly by creating a new window
@@ -510,7 +510,7 @@ if (process.platform !== 'darwin') {
   }
 
   // Handle protocol URLs on Windows and Linux startup
-  const protocolUrl = process.argv.find((arg) => arg.startsWith('goose://'));
+  const protocolUrl = process.argv.find((arg) => arg.startsWith('pleum://'));
   if (protocolUrl) {
     app.whenReady().then(async () => {
       let parsedUrl: URL;
@@ -608,7 +608,7 @@ function getResumeSessionId(parsedUrl: URL): string | null {
 async function createResumeChatWindow(parsedUrl: URL, dir?: string): Promise<boolean> {
   const resumeSessionId = getResumeSessionId(parsedUrl);
   if (!resumeSessionId) {
-    log.warn('[Main] Ignoring goose://resume URL without a session id');
+    log.warn('[Main] Ignoring pleum://resume URL without a session id');
     return false;
   }
 
@@ -762,7 +762,7 @@ app.on('open-url', async (_event, url) => {
 app.on('will-finish-launching', () => {
   if (process.platform === 'darwin') {
     app.setAboutPanelOptions({
-      applicationName: 'Goose',
+      applicationName: 'Pleum',
       applicationVersion: app.getVersion(),
     });
   }
@@ -817,7 +817,7 @@ async function handleFileOpen(filePath: string) {
 
     // Show user-friendly error notification
     new Notification({
-      title: 'Goose',
+      title: 'Pleum',
       body: `Could not open directory: ${path.basename(filePath)}`,
     }).show();
   }
@@ -868,13 +868,13 @@ interface BundledConfig {
 
 const getBundledConfig = (): BundledConfig => {
   //{env-macro-start}//
-  //needed when goose is bundled for a specific provider
+  //needed when pleum is bundled for a specific provider
   //{env-macro-end}//
   return {
-    defaultProvider: process.env.GOOSE_DEFAULT_PROVIDER,
-    defaultModel: process.env.GOOSE_DEFAULT_MODEL,
-    predefinedModels: process.env.GOOSE_PREDEFINED_MODELS,
-    version: process.env.GOOSE_VERSION,
+    defaultProvider: process.env.PLEUM_DEFAULT_PROVIDER,
+    defaultModel: process.env.PLEUM_DEFAULT_MODEL,
+    predefinedModels: process.env.PLEUM_PREDEFINED_MODELS,
+    version: process.env.PLEUM_VERSION,
   };
 };
 
@@ -891,16 +891,16 @@ interface ExternalBackend {
 }
 
 const getExternalBackendUrlFromEnv = (): string | null => {
-  if (!process.env.GOOSE_EXTERNAL_BACKEND) {
+  if (!process.env.PLEUM_EXTERNAL_BACKEND) {
     return null;
   }
 
-  const configuredUrl = process.env.GOOSE_EXTERNAL_BACKEND_URL?.trim();
+  const configuredUrl = process.env.PLEUM_EXTERNAL_BACKEND_URL?.trim();
   if (configuredUrl) {
     return configuredUrl;
   }
 
-  return `http://127.0.0.1:${process.env.GOOSE_PORT || '3000'}`;
+  return `http://127.0.0.1:${process.env.PLEUM_PORT || '3000'}`;
 };
 
 const getExternalBackendFromEnv = (): ExternalBackend | null => {
@@ -909,10 +909,10 @@ const getExternalBackendFromEnv = (): ExternalBackend | null => {
     return null;
   }
 
-  const secret = process.env.GOOSE_SERVER__SECRET_KEY;
+  const secret = process.env.PLEUM_SERVER__SECRET_KEY;
   if (!secret) {
     throw new Error(
-      'GOOSE_SERVER__SECRET_KEY must be set when using GOOSE_EXTERNAL_BACKEND. ' +
+      'PLEUM_SERVER__SECRET_KEY must be set when using PLEUM_EXTERNAL_BACKEND. ' +
         'Set it to the same value on both the server and the desktop client.'
     );
   }
@@ -925,8 +925,8 @@ const getExternalBackendFromEnv = (): ExternalBackend | null => {
 };
 
 const getServerSecret = (settings: Settings): string => {
-  if (settings.externalGoosed?.enabled && settings.externalGoosed.secret) {
-    return settings.externalGoosed.secret;
+  if (settings.externalPleumd?.enabled && settings.externalPleumd.secret) {
+    return settings.externalPleumd.secret;
   }
   return GENERATED_SECRET;
 };
@@ -936,17 +936,17 @@ const getActiveExternalBackend = (settings: Settings): ExternalBackend | null =>
   if (envBackend) {
     return {
       ...envBackend,
-      workingDir: settings.externalGoosed?.workingDir,
+      workingDir: settings.externalPleumd?.workingDir,
     };
   }
 
-  if (settings.externalGoosed?.enabled && settings.externalGoosed.url) {
+  if (settings.externalPleumd?.enabled && settings.externalPleumd.url) {
     return {
       source: 'settings',
-      url: settings.externalGoosed.url,
+      url: settings.externalPleumd.url,
       secret: getServerSecret(settings),
-      certFingerprint: settings.externalGoosed.certFingerprint,
-      workingDir: settings.externalGoosed.workingDir,
+      certFingerprint: settings.externalPleumd.certFingerprint,
+      workingDir: settings.externalPleumd.workingDir,
     };
   }
 
@@ -956,33 +956,33 @@ const getActiveExternalBackend = (settings: Settings): ExternalBackend | null =>
 const getExternalBackendForCsp = (settings: Settings) => {
   const envUrl = getExternalBackendUrlFromEnv();
   if (!envUrl) {
-    return settings.externalGoosed;
+    return settings.externalPleumd;
   }
 
   return {
-    ...settings.externalGoosed,
+    ...settings.externalPleumd,
     enabled: true,
     url: envUrl,
   };
 };
 
 let appConfig = {
-  GOOSE_DEFAULT_PROVIDER: defaultProvider,
-  GOOSE_DEFAULT_MODEL: defaultModel,
-  GOOSE_PREDEFINED_MODELS: predefinedModels,
-  GOOSE_PATH_ROOT: sanitizeGoosePathRoot(process.env),
-  GOOSE_WORKING_DIR: '',
+  PLEUM_DEFAULT_PROVIDER: defaultProvider,
+  PLEUM_DEFAULT_MODEL: defaultModel,
+  PLEUM_PREDEFINED_MODELS: predefinedModels,
+  PLEUM_PATH_ROOT: sanitizePleumPathRoot(process.env),
+  PLEUM_WORKING_DIR: '',
   // Whether the window is bound to an external backend (fixed at window
-  // creation via gooseServeLeases) and which URL it is bound to.
-  GOOSE_EXTERNAL_BACKEND: false,
-  GOOSE_EXTERNAL_BACKEND_URL: '',
-  GOOSE_EXTERNAL_BACKEND_SOURCE: '',
+  // creation via pleumServeLeases) and which URL it is bound to.
+  PLEUM_EXTERNAL_BACKEND: false,
+  PLEUM_EXTERNAL_BACKEND_URL: '',
+  PLEUM_EXTERNAL_BACKEND_SOURCE: '',
   // Start with the env-var override; the OS region locale is filled in after app.ready
   // (see updateLocaleFromSystem below) since getSystemLocale() cannot be called earlier.
-  GOOSE_LOCALE: process.env.GOOSE_LOCALE || undefined,
-  // If GOOSE_ALLOWLIST_WARNING env var is not set, defaults to false (strict blocking mode)
-  GOOSE_ALLOWLIST_WARNING: process.env.GOOSE_ALLOWLIST_WARNING === 'true',
-  GOOSE_DISABLE_NOSTR_SHARING: process.env.GOOSE_DISABLE_NOSTR_SHARING === 'true',
+  PLEUM_LOCALE: process.env.PLEUM_LOCALE || undefined,
+  // If PLEUM_ALLOWLIST_WARNING env var is not set, defaults to false (strict blocking mode)
+  PLEUM_ALLOWLIST_WARNING: process.env.PLEUM_ALLOWLIST_WARNING === 'true',
+  PLEUM_DISABLE_NOSTR_SHARING: process.env.PLEUM_DISABLE_NOSTR_SHARING === 'true',
 };
 
 const windowMap = new Map<number, BrowserWindow>();
@@ -1013,7 +1013,7 @@ function getRegularWindows(): BrowserWindow[] {
   return [...windowMap.values()].filter((w) => !w.isDestroyed());
 }
 
-const gooseServeLeases = new GooseServeLeaseRegistry(log);
+const pleumServeLeases = new PleumServeLeaseRegistry(log);
 
 const windowPowerSaveBlockers = new Map<number, number>(); // windowId -> blockerId
 // Track pending initial messages per window
@@ -1087,8 +1087,8 @@ const createChat = async (
 
       if (response === 0) {
         updateSettings((s) => {
-          if (s.externalGoosed) {
-            s.externalGoosed.enabled = false;
+          if (s.externalPleumd) {
+            s.externalPleumd.enabled = false;
           }
         });
         return createChat(app, options);
@@ -1101,7 +1101,7 @@ const createChat = async (
 
   const serverSecret = externalBackend ? externalBackend.secret : GENERATED_SECRET;
   let workingDir = resolveWorkingDir(externalBackend?.workingDir, dir, os.homedir());
-  let gooseServeLease: GooseServeLease | null = null;
+  let pleumServeLease: PleumServeLease | null = null;
 
   if (externalBackend) {
     let externalCertificateTrust: BackendCertificateTrustRegistration | null = null;
@@ -1139,8 +1139,8 @@ const createChat = async (
 
         if (canDisableExternalBackend && response === 0) {
           updateSettings((s) => {
-            if (s.externalGoosed) {
-              s.externalGoosed.enabled = false;
+            if (s.externalPleumd) {
+              s.externalPleumd.enabled = false;
             }
           });
           return createChat(app, options);
@@ -1158,7 +1158,7 @@ const createChat = async (
       const originLease = leaseBackendOrigin(resolvedAcpUrl);
       const leaseCertificateTrust = externalCertificateTrust;
       externalCertificateTrust = null;
-      gooseServeLease = gooseServeLeases.createExternal(resolvedAcpUrl, serverSecret, async () => {
+      pleumServeLease = pleumServeLeases.createExternal(resolvedAcpUrl, serverSecret, async () => {
         originLease.release();
         leaseCertificateTrust?.release();
       });
@@ -1180,8 +1180,8 @@ const createChat = async (
 
       if (canDisableExternalBackend && response === 0) {
         updateSettings((s) => {
-          if (s.externalGoosed) {
-            s.externalGoosed.enabled = false;
+          if (s.externalPleumd) {
+            s.externalPleumd.enabled = false;
           }
         });
         return createChat(app, options);
@@ -1195,14 +1195,14 @@ const createChat = async (
 
     const loginShellPath = await getLoginShellPath(log);
 
-    let gooseServeResult: Awaited<ReturnType<typeof startGooseServe>>;
+    let pleumServeResult: Awaited<ReturnType<typeof startPleumServe>>;
     try {
-      gooseServeResult = await startGooseServe({
+      pleumServeResult = await startPleumServe({
         serverSecret,
         dir: workingDir,
         tls: true,
         env: {
-          GOOSE_PATH_ROOT: appConfig.GOOSE_PATH_ROOT as string | undefined,
+          PLEUM_PATH_ROOT: appConfig.PLEUM_PATH_ROOT as string | undefined,
         },
         loginShellPath,
         isPackaged: app.isPackaged,
@@ -1211,31 +1211,31 @@ const createChat = async (
         diagnosticsDir: STARTUP_LOGS_DIR,
         readinessFetch: net.fetch as unknown as typeof globalThis.fetch,
       });
-      if (!gooseServeResult.certFingerprint) {
-        await gooseServeResult.cleanup();
+      if (!pleumServeResult.certFingerprint) {
+        await pleumServeResult.cleanup();
         throw new Error(
-          'goose serve started with TLS but did not return a certificate fingerprint'
+          'pleum serve started with TLS but did not return a certificate fingerprint'
         );
       }
 
-      const localCertFingerprint = normalizeFingerprint(gooseServeResult.certFingerprint);
+      const localCertFingerprint = normalizeFingerprint(pleumServeResult.certFingerprint);
       if (
         localCertificateTrust.trust.fingerprint &&
         localCertificateTrust.trust.fingerprint !== localCertFingerprint
       ) {
-        await gooseServeResult.cleanup();
-        throw new Error('goose serve TLS certificate fingerprint did not match readiness probe');
+        await pleumServeResult.cleanup();
+        throw new Error('pleum serve TLS certificate fingerprint did not match readiness probe');
       }
       localCertificateTrust.trust.fingerprint = localCertFingerprint;
     } catch (error) {
       localCertificateTrust.release();
-      log.error('goose serve failed to start', error);
+      log.error('pleum serve failed to start', error);
       dialog.showMessageBoxSync({
         type: 'error',
-        title: 'Goose Failed to Start',
+        title: 'Pleum Failed to Start',
         message: 'The backend server failed to start.',
         detail: [
-          'Backend: goose serve',
+          'Backend: pleum serve',
           'Readiness check: HTTPS GET /status',
           `Startup error:\n${errorMessage(error)}`,
         ].join('\n\n'),
@@ -1245,26 +1245,26 @@ const createChat = async (
       return;
     }
 
-    workingDir = gooseServeResult.workingDir;
-    const cleanupGooseServe = gooseServeResult.cleanup;
-    gooseServeResult.cleanup = async () => {
+    workingDir = pleumServeResult.workingDir;
+    const cleanupPleumServe = pleumServeResult.cleanup;
+    pleumServeResult.cleanup = async () => {
       try {
-        await cleanupGooseServe();
+        await cleanupPleumServe();
       } finally {
         localCertificateTrust.release();
       }
     };
-    gooseServeLease = gooseServeLeases.create(gooseServeResult, serverSecret);
+    pleumServeLease = pleumServeLeases.create(pleumServeResult, serverSecret);
   }
 
-  const cleanupUnregisteredGooseServeLease = async () => {
-    if (!gooseServeLease) {
+  const cleanupUnregisteredPleumServeLease = async () => {
+    if (!pleumServeLease) {
       return;
     }
 
-    const lease = gooseServeLease;
-    gooseServeLease = null;
-    await gooseServeLeases.cleanupLease(lease);
+    const lease = pleumServeLease;
+    pleumServeLease = null;
+    await pleumServeLeases.cleanupLease(lease);
   };
 
   let mainWindowState: ReturnType<typeof windowStateKeeper>;
@@ -1302,13 +1302,13 @@ const createChat = async (
         additionalArguments: [
           JSON.stringify({
             ...appConfig,
-            GOOSE_LOCALE: getConfiguredGooseLocale(),
-            GOOSE_WORKING_DIR: workingDir,
-            GOOSE_EXTERNAL_BACKEND: externalBackend !== null,
-            GOOSE_EXTERNAL_BACKEND_URL: externalBackend?.url ?? '',
-            GOOSE_EXTERNAL_BACKEND_SOURCE: externalBackend?.source ?? '',
+            PLEUM_LOCALE: getConfiguredPleumLocale(),
+            PLEUM_WORKING_DIR: workingDir,
+            PLEUM_EXTERNAL_BACKEND: externalBackend !== null,
+            PLEUM_EXTERNAL_BACKEND_URL: externalBackend?.url ?? '',
+            PLEUM_EXTERNAL_BACKEND_SOURCE: externalBackend?.source ?? '',
             REQUEST_DIR: dir,
-            GOOSE_VERSION: version,
+            PLEUM_VERSION: version,
             recipeDeeplink: recipeDeeplink,
             recipeId: recipeId,
             recipeParameters: recipeParameters,
@@ -1319,21 +1319,21 @@ const createChat = async (
               process.env.SECURITY_COMMAND_CLASSIFIER_ENABLED_OVERRIDE,
           }),
         ],
-        partition: 'persist:goose',
+        partition: 'persist:pleum',
       },
     });
   } catch (error) {
-    await cleanupUnregisteredGooseServeLease();
+    await cleanupUnregisteredPleumServeLease();
     throw error;
   }
 
-  if (gooseServeLease) {
-    const lease = gooseServeLease;
+  if (pleumServeLease) {
+    const lease = pleumServeLease;
     mainWindow.once('closed', () => {
-      void gooseServeLeases.releaseWindow(mainWindow.id);
+      void pleumServeLeases.releaseWindow(mainWindow.id);
     });
-    gooseServeLeases.attachWindow(mainWindow.id, lease);
-    gooseServeLease = null;
+    pleumServeLeases.attachWindow(mainWindow.id, lease);
+    pleumServeLease = null;
   }
 
   if (!app.isPackaged) {
@@ -1412,7 +1412,7 @@ const createChat = async (
 
   // Handle new window creation for links (fallback for any links not handled by onClick)
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    void openExternalUrl(url, mainWindow, getConfiguredGooseLocale()).catch((error) => {
+    void openExternalUrl(url, mainWindow, getConfiguredPleumLocale()).catch((error) => {
       log.error('Failed to open external URL:', error);
     });
     return { action: 'deny' };
@@ -1423,7 +1423,7 @@ const createChat = async (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   mainWindow.webContents.on('new-window' as any, function (event: any, url: string) {
     event.preventDefault();
-    void openExternalUrl(url, mainWindow, getConfiguredGooseLocale()).catch((error) => {
+    void openExternalUrl(url, mainWindow, getConfiguredPleumLocale()).catch((error) => {
       log.error('Failed to open external URL:', error);
     });
   });
@@ -1462,7 +1462,7 @@ const createChat = async (
     }
   }
 
-  // Goose's react app uses HashRouter, so the path + search params follow a #/
+  // Pleum's react app uses HashRouter, so the path + search params follow a #/
   url.hash = `${appPath}?${searchParams.toString()}`;
   let formattedUrl = formatUrl(url);
   log.info('Opening URL: ', formattedUrl);
@@ -1577,10 +1577,10 @@ const createLauncher = () => {
       additionalArguments: [
         JSON.stringify({
           ...appConfig,
-          GOOSE_LOCALE: getConfiguredGooseLocale(),
+          PLEUM_LOCALE: getConfiguredPleumLocale(),
         }),
       ],
-      partition: 'persist:goose',
+      partition: 'persist:pleum',
     },
     skipTaskbar: true,
     alwaysOnTop: true,
@@ -1734,7 +1734,7 @@ const openDirectoryDialog = async (): Promise<OpenDialogReturnValue> => {
   if (currentWindow) {
     try {
       const currentWorkingDir = await currentWindow.webContents.executeJavaScript(
-        `window.appConfig ? window.appConfig.get('GOOSE_WORKING_DIR') : null`
+        `window.appConfig ? window.appConfig.get('PLEUM_WORKING_DIR') : null`
       );
 
       if (currentWorkingDir && typeof currentWorkingDir === 'string') {
@@ -1929,7 +1929,7 @@ ipcMain.on('react-ready', (event) => {
 
 ipcMain.handle('open-external', async (event, url: string) => {
   const senderWindow = BrowserWindow.fromWebContents(event.sender) ?? undefined;
-  return openExternalUrl(url, senderWindow, getConfiguredGooseLocale());
+  return openExternalUrl(url, senderWindow, getConfiguredPleumLocale());
 });
 
 ipcMain.handle('directory-chooser', async () => {
@@ -1965,7 +1965,7 @@ const validSettingKeys: Set<string> = new Set([
   'enableWakelock',
   'enableNotifications',
   'spellcheckEnabled',
-  'externalGoosed',
+  'externalPleumd',
   'globalShortcut',
   'keyboardShortcuts',
   'theme',
@@ -1997,7 +1997,7 @@ ipcMain.handle('set-setting', (_event, key: SettingKey, value: unknown) => {
   fsSync.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2));
 
   if (key === 'language') {
-    appConfig.GOOSE_LOCALE = getConfiguredGooseLocale();
+    appConfig.PLEUM_LOCALE = getConfiguredPleumLocale();
   }
 
   // Re-register shortcuts if keyboard shortcuts changed
@@ -2015,7 +2015,7 @@ ipcMain.handle('get-secret-key', (event) => {
   if (!windowId) {
     return null;
   }
-  return gooseServeLeases.getSecretKey(windowId) ?? null;
+  return pleumServeLeases.getSecretKey(windowId) ?? null;
 });
 
 ipcMain.handle('get-acp-url', async (event) => {
@@ -2023,7 +2023,7 @@ ipcMain.handle('get-acp-url', async (event) => {
   if (!windowId) {
     return null;
   }
-  return gooseServeLeases.getAcpUrl(windowId) ?? null;
+  return pleumServeLeases.getAcpUrl(windowId) ?? null;
 });
 
 // Handle menu bar icon visibility
@@ -2237,10 +2237,10 @@ ipcMain.handle('select-file-or-directory', async (_event, defaultPath?: string) 
 
 ipcMain.handle('select-recipe-file', async (event) => {
   const senderWindow = requireRegularRendererWindow(event);
-  const pathRoot = appConfig.GOOSE_PATH_ROOT as string | undefined;
+  const pathRoot = appConfig.PLEUM_PATH_ROOT as string | undefined;
   const recipeDirectory = pathRoot
     ? path.join(pathRoot, 'config', 'recipes')
-    : path.join(os.homedir(), '.config', 'goose', 'recipes');
+    : path.join(os.homedir(), '.config', 'pleum', 'recipes');
   let defaultPath = os.homedir();
   try {
     if ((await fs.stat(recipeDirectory)).isDirectory()) {
@@ -2262,14 +2262,14 @@ ipcMain.handle('select-recipe-file', async (event) => {
   return readSelectedRecipe(result.filePaths[0]);
 });
 
-ipcMain.handle('read-goosehints', async (event) => {
+ipcMain.handle('read-pleumhints', async (event) => {
   const senderWindow = requireRegularRendererWindow(event);
-  return desktopFileAccess.readGoosehints(senderWindow.id);
+  return desktopFileAccess.readPleumhints(senderWindow.id);
 });
 
-ipcMain.handle('write-goosehints', async (event, content) => {
+ipcMain.handle('write-pleumhints', async (event, content) => {
   const senderWindow = requireRegularRendererWindow(event);
-  return desktopFileAccess.writeGoosehints(senderWindow.id, content);
+  return desktopFileAccess.writePleumhints(senderWindow.id, content);
 });
 
 // Native picker tailored for session imports: shows hidden files (so users can
@@ -2462,7 +2462,7 @@ async function appMain() {
     }
   });
 
-  const rendererSession = session.fromPartition('persist:goose');
+  const rendererSession = session.fromPartition('persist:pleum');
   await configureProxy(session.defaultSession, rendererSession);
 
   // Ensure Windows shims are available before any MCP processes are spawned
@@ -2559,7 +2559,7 @@ async function appMain() {
 
   const shortcuts = getKeyboardShortcuts(settings);
 
-  const appMenu = menu?.items.find((item) => item.label === 'Goose');
+  const appMenu = menu?.items.find((item) => item.label === 'Pleum');
   if (appMenu?.submenu) {
     appMenu.submenu.insert(1, new MenuItem({ type: 'separator' }));
     if (shortcuts.settings) {
@@ -2687,7 +2687,7 @@ async function appMain() {
     if (shortcuts.focusWindow) {
       fileMenu.submenu.append(
         new MenuItem({
-          label: menuT('Focus Goose Window'),
+          label: menuT('Focus Pleum Window'),
           accelerator: shortcuts.focusWindow,
           click() {
             focusWindow();
@@ -2794,15 +2794,15 @@ async function appMain() {
         helpMenu.submenu.append(new MenuItem({ type: 'separator' }));
       }
 
-      // Create the About Goose menu item with a submenu
-      const aboutGooseMenuItem = new MenuItem({
-        label: menuT('About Goose'),
+      // Create the About Pleum menu item with a submenu
+      const aboutPleumMenuItem = new MenuItem({
+        label: menuT('About Pleum'),
         submenu: Menu.buildFromTemplate([]), // Start with an empty submenu for About
       });
 
-      // Add the Version menu item (display only) to the About Goose submenu
-      if (aboutGooseMenuItem.submenu) {
-        aboutGooseMenuItem.submenu.append(
+      // Add the Version menu item (display only) to the About Pleum submenu
+      if (aboutPleumMenuItem.submenu) {
+        aboutPleumMenuItem.submenu.append(
           new MenuItem({
             label: `Version ${version || app.getVersion()}`,
             enabled: false,
@@ -2810,7 +2810,7 @@ async function appMain() {
         );
       }
 
-      helpMenu.submenu.append(aboutGooseMenuItem);
+      helpMenu.submenu.append(aboutPleumMenuItem);
     }
   }
 
@@ -3003,7 +3003,7 @@ async function appMain() {
   });
 
   ipcMain.on('get-app-locale', (event) => {
-    event.returnValue = getConfiguredGooseLocale();
+    event.returnValue = getConfiguredPleumLocale();
   });
 
   ipcMain.handle('open-directory-in-explorer', async (_event, path: string) => {
@@ -3015,9 +3015,9 @@ async function appMain() {
     }
   });
 
-  ipcMain.handle('launch-app', async (event, gooseApp: GooseApp) => {
+  ipcMain.handle('launch-app', async (event, pleumApp: PleumApp) => {
     try {
-      if (isRetiredGooseChatApp(gooseApp)) {
+      if (isRetiredPleumChatApp(pleumApp)) {
         throw new Error('This built-in Chat app is no longer supported.');
       }
 
@@ -3027,13 +3027,13 @@ async function appMain() {
       }
 
       const launchingWindowId = launchingWindow.id;
-      const launchingGooseServeLease = gooseServeLeases.get(launchingWindowId);
-      if (!launchingGooseServeLease) {
+      const launchingPleumServeLease = pleumServeLeases.get(launchingWindowId);
+      if (!launchingPleumServeLease) {
         throw new Error('No backend lease found for launching window');
       }
 
       const launchingWorkingDir = await launchingWindow.webContents
-        .executeJavaScript(`window.appConfig ? window.appConfig.get('GOOSE_WORKING_DIR') : null`)
+        .executeJavaScript(`window.appConfig ? window.appConfig.get('PLEUM_WORKING_DIR') : null`)
         .catch((error) => {
           console.warn('Failed to get working directory from launching window:', error);
           return undefined;
@@ -3044,10 +3044,10 @@ async function appMain() {
         app.getPath('home')
       );
       const appWindow = new BrowserWindow({
-        title: formatAppName(gooseApp.name),
-        width: gooseApp.width ?? 800,
-        height: gooseApp.height ?? 600,
-        resizable: gooseApp.resizable ?? true,
+        title: formatAppName(pleumApp.name),
+        width: pleumApp.width ?? 800,
+        height: pleumApp.height ?? 600,
+        resizable: pleumApp.resizable ?? true,
         useContentSize: true,
         webPreferences: {
           preload: path.join(__dirname, 'preload.js'),
@@ -3057,32 +3057,32 @@ async function appMain() {
           additionalArguments: [
             JSON.stringify({
               ...appConfig,
-              GOOSE_LOCALE: getConfiguredGooseLocale(),
-              GOOSE_WORKING_DIR: workingDir,
-              GOOSE_VERSION: version,
+              PLEUM_LOCALE: getConfiguredPleumLocale(),
+              PLEUM_WORKING_DIR: workingDir,
+              PLEUM_VERSION: version,
             }),
           ],
-          partition: 'persist:goose',
+          partition: 'persist:pleum',
         },
       });
 
-      gooseServeLeases.attachWindow(appWindow.id, launchingGooseServeLease);
+      pleumServeLeases.attachWindow(appWindow.id, launchingPleumServeLease);
 
-      appWindows.set(gooseApp.name, appWindow);
+      appWindows.set(pleumApp.name, appWindow);
 
       appWindow.on('closed', () => {
-        void gooseServeLeases.releaseWindow(appWindow.id);
-        appWindows.delete(gooseApp.name);
+        void pleumServeLeases.releaseWindow(appWindow.id);
+        appWindows.delete(pleumApp.name);
       });
 
-      const extensionName = gooseApp.mcpServers?.[0] ?? '';
+      const extensionName = pleumApp.mcpServers?.[0] ?? '';
 
       const url = getAppUrl();
 
       const searchParams = new URLSearchParams();
-      searchParams.set('resourceUri', gooseApp.uri);
+      searchParams.set('resourceUri', pleumApp.uri);
       searchParams.set('extensionName', extensionName);
-      searchParams.set('appName', gooseApp.name);
+      searchParams.set('appName', pleumApp.name);
       searchParams.set('workingDir', workingDir);
 
       url.hash = `/standalone-app?${searchParams.toString()}`;
@@ -3094,11 +3094,11 @@ async function appMain() {
     }
   });
 
-  ipcMain.handle('refresh-app', async (_event, gooseApp: GooseApp) => {
+  ipcMain.handle('refresh-app', async (_event, pleumApp: PleumApp) => {
     try {
-      const appWindow = appWindows.get(gooseApp.name);
+      const appWindow = appWindows.get(pleumApp.name);
       if (!appWindow || appWindow.isDestroyed()) {
-        console.log(`App window for '${gooseApp.name}' not found or destroyed, skipping refresh`);
+        console.log(`App window for '${pleumApp.name}' not found or destroyed, skipping refresh`);
         return;
       }
 
@@ -3137,17 +3137,17 @@ app.whenReady().then(async () => {
   try {
     await appMain();
   } catch (error) {
-    dialog.showErrorBox('Goose Error', `Failed to create main window: ${error}`);
+    dialog.showErrorBox('Pleum Error', `Failed to create main window: ${error}`);
     app.quit();
   }
 });
 
 async function getAllowList(): Promise<string[]> {
-  if (!process.env.GOOSE_ALLOWLIST) {
+  if (!process.env.PLEUM_ALLOWLIST) {
     return [];
   }
 
-  const response = await fetch(process.env.GOOSE_ALLOWLIST);
+  const response = await fetch(process.env.PLEUM_ALLOWLIST);
 
   if (!response.ok) {
     throw new Error(
@@ -3173,10 +3173,10 @@ async function getAllowList(): Promise<string[]> {
 }
 
 app.on('will-quit', async () => {
-  const gooseServeLeaseCount = gooseServeLeases.activeLeaseCount();
-  if (gooseServeLeaseCount > 0) {
-    log.info(`App quitting, cleaning up ${gooseServeLeaseCount} backend lease(s)`);
-    await gooseServeLeases.cleanupAll();
+  const pleumServeLeaseCount = pleumServeLeases.activeLeaseCount();
+  if (pleumServeLeaseCount > 0) {
+    log.info(`App quitting, cleaning up ${pleumServeLeaseCount} backend lease(s)`);
+    await pleumServeLeases.cleanupAll();
   }
 
   for (const [windowId, blockerId] of windowPowerSaveBlockers.entries()) {

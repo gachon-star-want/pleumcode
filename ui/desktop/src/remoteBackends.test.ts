@@ -13,10 +13,10 @@ const respond = (status: number, location?: string) => ({
 describe('connectRemoteBackend', () => {
   it('checks /status and validates the secret against /acp', async () => {
     const request = vi.fn(async (url: string) => {
-      if (url === 'https://example.com/goose/status') {
+      if (url === 'https://example.com/pleum/status') {
         return respond(200);
       }
-      if (url === 'https://example.com/goose/acp') {
+      if (url === 'https://example.com/pleum/acp') {
         return respond(406);
       }
 
@@ -24,7 +24,7 @@ describe('connectRemoteBackend', () => {
     });
 
     const result = await connectRemoteBackend({
-      baseUrl: 'https://example.com/goose',
+      baseUrl: 'https://example.com/pleum',
       serverSecret: 'test-secret',
       request,
     });
@@ -32,19 +32,19 @@ describe('connectRemoteBackend', () => {
     expect(result).toMatchObject({
       ok: true,
       failure: null,
-      acpUrl: 'wss://example.com/goose/acp?token=test-secret',
+      acpUrl: 'wss://example.com/pleum/acp?token=test-secret',
     });
   });
 
   it('follows redirects and keeps the resolved ACP endpoint', async () => {
     const request = vi.fn(async (url: string) => {
       if (url === 'https://example.com/status') {
-        return respond(302, 'https://backend.example.com/goose/status');
+        return respond(302, 'https://backend.example.com/pleum/status');
       }
-      if (url === 'https://backend.example.com/goose/status') {
+      if (url === 'https://backend.example.com/pleum/status') {
         return respond(200);
       }
-      if (url === 'https://backend.example.com/goose/acp') {
+      if (url === 'https://backend.example.com/pleum/acp') {
         return respond(302, 'https://backend.example.com/socket?tenant=x');
       }
       if (url === 'https://backend.example.com/socket?tenant=x') {

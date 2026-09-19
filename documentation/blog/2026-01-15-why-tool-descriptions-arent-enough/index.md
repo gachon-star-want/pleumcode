@@ -22,7 +22,7 @@ But something still felt off.
 
 The tools still weren’t really *thinking*. They were fetching data, returning text, and leaving all the heavy reasoning to my LLM. That’s when I realized the issue wasn’t my descriptions. It was how the system actually worked under the hood.
 
-That’s where [MCP sampling](https://goose-docs.ai/docs/guides/mcp-sampling/) came in.
+That’s where [MCP sampling](https://docs.pleum.ai/docs/guides/mcp-sampling/) came in.
 Not as a magic feature, but as a different way of structuring how tools and the LLM actually collaborate.
 
 ## What actually changed my understanding
@@ -44,7 +44,7 @@ Without sampling, the tool mostly acts like a messenger. It fetches data, return
 ![with sampling](with-mcp.png)
 
 
-With sampling, the behavior changes. The tool gathers its data, then uses the same LLM you already configured in Goose to ask a targeted question from its own context before returning anything. Instead of just passing information upward, it’s now contributing to the thinking.
+With sampling, the behavior changes. The tool gathers its data, then uses the same LLM you already configured in Pleum to ask a targeted question from its own context before returning anything. Instead of just passing information upward, it’s now contributing to the thinking.
 
 It’s the same model and the same agent, but the behavior changes completely.
 
@@ -68,17 +68,17 @@ But on their own, they won’t get you to truly agentic behavior. Descriptions s
 
 That distinction was the missing piece for me. And once I could actually see the flow, everything else started to make more sense.
 
-If this helped make things click, I’d recommend trying the [Council of Mine extension](https://goose-docs.ai/docs/mcp/council-of-mine-mcp) for yourself. It’s one of the clearest ways to see MCP sampling in action.
+If this helped make things click, I’d recommend trying the [Council of Mine extension](https://docs.pleum.ai/docs/mcp/council-of-mine-mcp) for yourself. It’s one of the clearest ways to see MCP sampling in action.
 
 <head>
   <meta property="og:title" content="Why Tool Descriptions Aren’t Enough" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://goose-docs.ai/blog/2026/01/15/why-tool-descriptions-arent-enough" />
+  <meta property="og:url" content="https://docs.pleum.ai/blog/2026/01/15/why-tool-descriptions-arent-enough" />
   <meta property="og:description" content="I thought better tool descriptions would solve everything. They didn’t. Here’s what finally made MCP sampling click for me." />
-  <meta property="og:image" content="https://goose-docs.ai/assets/images/blogbanner-97fb5e20248b53e838888082ac9f5860.png" />
+  <meta property="og:image" content="https://docs.pleum.ai/assets/images/blogbanner-97fb5e20248b53e838888082ac9f5860.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:domain" content="goose-docs.ai" />
+  <meta property="twitter:domain" content="docs.pleum.ai" />
   <meta name="twitter:title" content="Why Tool Descriptions Aren’t Enough" />
   <meta name="twitter:description" content="I thought better tool descriptions would solve everything. They didn’t. Here’s what finally made MCP sampling click for me." />
-  <meta name="twitter:image" content="https://goose-docs.ai/assets/images/blogbanner-97fb5e20248b53e838888082ac9f5860.png" />
+  <meta name="twitter:image" content="https://docs.pleum.ai/assets/images/blogbanner-97fb5e20248b53e838888082ac9f5860.png" />
 </head>

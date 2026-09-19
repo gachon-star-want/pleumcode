@@ -1,8 +1,8 @@
 packages:
-  - 'goose-acp-client'
-  - 'goose-acp'
+  - 'pleum-acp-client'
+  - 'pleum-acp'
   - 'desktop'
-  - 'goose-binary/*'
+  - 'pleum-binary/*'
 
 registry: https://registry.npmjs.org/
 preferOffline: true

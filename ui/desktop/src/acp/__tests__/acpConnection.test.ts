@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { GOOSE_SERVE_EXITED_USER_MESSAGE } from '../../gooseServeLeaseRegistry';
+import { PLEUM_SERVE_EXITED_USER_MESSAGE } from '../../pleumServeLeaseRegistry';
 
 const mockClientFactory = vi.hoisted(() => {
   const initialize = vi.fn();
@@ -10,10 +10,10 @@ const mockClientFactory = vi.hoisted(() => {
       closed: Promise<void>;
       close: ReturnType<typeof vi.fn>;
     };
-    goose: Record<string, never>;
+    pleum: Record<string, never>;
   };
   const instances: Array<{ client: MockClient; resolveClosed: () => void }> = [];
-  const connectGooseAcpClient = vi.fn((_stream: MockStream): MockClient => {
+  const connectPleumAcpClient = vi.fn((_stream: MockStream): MockClient => {
     let resolveClosed: () => void = () => undefined;
     const closed = new Promise<void>((resolve) => {
       resolveClosed = resolve;
@@ -24,25 +24,25 @@ const mockClientFactory = vi.hoisted(() => {
         closed,
         close: vi.fn(),
       },
-      goose: {},
+      pleum: {},
     };
     instances.push({ client, resolveClosed });
     return client;
   });
 
-  return { connectGooseAcpClient, initialize, instances };
+  return { connectPleumAcpClient, initialize, instances };
 });
 
 const transport = vi.hoisted(() => ({
   createWebSocketStream: vi.fn(),
 }));
 
-vi.mock('@aaif/goose-acp-client', () => ({
-  DEFAULT_GOOSE_MCP_HOST_CAPABILITIES: {},
+vi.mock('@aaif/pleum-acp-client', () => ({
+  DEFAULT_PLEUM_MCP_HOST_CAPABILITIES: {},
 }));
 
-vi.mock('../gooseAcpClient', () => ({
-  connectGooseAcpClient: mockClientFactory.connectGooseAcpClient,
+vi.mock('../pleumAcpClient', () => ({
+  connectPleumAcpClient: mockClientFactory.connectPleumAcpClient,
 }));
 
 vi.mock('@agentclientprotocol/sdk/experimental/ws-client', () => ({
@@ -130,7 +130,7 @@ describe('ACP connection ownership', () => {
     expect(mockClientFactory.instances).toHaveLength(3);
   });
 
-  it('stops reconnecting when the Goose backend has exited', async () => {
+  it('stops reconnecting when the Pleum backend has exited', async () => {
     const { getAcpClient, subscribeToAcpRecovery } = await import('../acpConnection');
     const listener = vi.fn();
     subscribeToAcpRecovery(listener);
@@ -139,13 +139,13 @@ describe('ACP connection ownership', () => {
     const getAcpUrl = vi
       .fn()
       .mockRejectedValue(
-        new Error(`Error invoking remote method 'get-acp-url': ${GOOSE_SERVE_EXITED_USER_MESSAGE}`)
+        new Error(`Error invoking remote method 'get-acp-url': ${PLEUM_SERVE_EXITED_USER_MESSAGE}`)
       );
     window.electron.getAcpUrl = getAcpUrl;
     mockClientFactory.instances[0].resolveClosed();
     await Promise.resolve();
 
-    const connection = expect(getAcpClient()).rejects.toThrow(GOOSE_SERVE_EXITED_USER_MESSAGE);
+    const connection = expect(getAcpClient()).rejects.toThrow(PLEUM_SERVE_EXITED_USER_MESSAGE);
     await vi.advanceTimersByTimeAsync(250);
     await connection;
 
@@ -161,17 +161,17 @@ describe('ACP connection ownership', () => {
     const getAcpUrl = vi
       .fn()
       .mockRejectedValue(
-        new Error(`Error invoking remote method 'get-acp-url': ${GOOSE_SERVE_EXITED_USER_MESSAGE}`)
+        new Error(`Error invoking remote method 'get-acp-url': ${PLEUM_SERVE_EXITED_USER_MESSAGE}`)
       );
     window.electron.getAcpUrl = getAcpUrl;
     mockClientFactory.instances[0].resolveClosed();
     await Promise.resolve();
 
-    const failedRecovery = expect(getAcpClient()).rejects.toThrow(GOOSE_SERVE_EXITED_USER_MESSAGE);
+    const failedRecovery = expect(getAcpClient()).rejects.toThrow(PLEUM_SERVE_EXITED_USER_MESSAGE);
     await vi.advanceTimersByTimeAsync(250);
     await failedRecovery;
 
-    await expect(getAcpClient()).rejects.toThrow(GOOSE_SERVE_EXITED_USER_MESSAGE);
+    await expect(getAcpClient()).rejects.toThrow(PLEUM_SERVE_EXITED_USER_MESSAGE);
 
     expect(getAcpUrl).toHaveBeenCalledTimes(2);
     expect(mockClientFactory.instances).toHaveLength(1);

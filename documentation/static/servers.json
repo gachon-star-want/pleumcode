@@ -72,8 +72,8 @@
     "name": "Auto Visualiser",
     "description": "Automatic data visualisation via MCP-UI",
     "command": "",
-    "link": "https://github.com/aaif-goose/goose/tree/main/crates/goose-mcp/src/autovisualiser",
-    "installation_notes": "This is a built-in extension that comes with goose. No installation required.",
+    "link": "https://github.com/gachon-star-want/pleumcode/tree/main/crates/pleum-mcp/src/autovisualiser",
+    "installation_notes": "This is a built-in extension that comes with pleum. No installation required.",
     "is_builtin": true,
     "endorsed": true,
     "environmentVariables": []
@@ -160,8 +160,8 @@
     "name": "Computer Controller",
     "description": "Built-in computer controls for webscraping, file caching, and automations",
     "command": "",
-    "link": "https://github.com/aaif-goose/goose/tree/main/crates/goose-mcp/src/computercontroller",
-    "installation_notes": "This is a built-in extension that comes with goose. No installation required.",
+    "link": "https://github.com/gachon-star-want/pleumcode/tree/main/crates/pleum-mcp/src/computercontroller",
+    "installation_notes": "This is a built-in extension that comes with pleum. No installation required.",
     "is_builtin": true,
     "endorsed": true,
     "environmentVariables": []
@@ -169,7 +169,7 @@
   {
     "id": "container-use",
     "name": "Container Use",
-    "description": "Integrate container workflows with goose using the Container-Use MCP",
+    "description": "Integrate container workflows with pleum using the Container-Use MCP",
     "command": "npx -y mcp-remote https://container-use.com/mcp",
     "link": "https://container-use.com",
     "installation_notes": "Requires Node.js and Docker.",
@@ -226,8 +226,8 @@
     "name": "Code Mode",
     "description": "Execute JavaScript code to interact with MCP tools efficiently",
     "command": "",
-    "link": "https://github.com/aaif-goose/goose/tree/main/crates/goose/src/agents/platform_extensions/code_execution.rs",
-    "installation_notes": "This is a built-in platform extension that comes with goose. No installation required.",
+    "link": "https://github.com/gachon-star-want/pleumcode/tree/main/crates/pleum/src/agents/platform_extensions/code_execution.rs",
+    "installation_notes": "This is a built-in platform extension that comes with pleum. No installation required.",
     "is_builtin": true,
     "endorsed": true,
     "environmentVariables": []
@@ -237,8 +237,8 @@
     "name": "Developer",
     "description": "Built-in developer tools for file editing and shell command execution",
     "command": "",
-    "link": "https://github.com/aaif-goose/goose/tree/main/crates/goose-mcp/src/developer",
-    "installation_notes": "This is a built-in extension that comes with goose and is enabled by default. No installation required.",
+    "link": "https://github.com/gachon-star-want/pleumcode/tree/main/crates/pleum-mcp/src/developer",
+    "installation_notes": "This is a built-in extension that comes with pleum and is enabled by default. No installation required.",
     "is_builtin": true,
     "endorsed": true,
     "environmentVariables": []
@@ -365,10 +365,10 @@
     "environmentVariables": []
   },
   {
-    "id": "goose-docs",
-    "name": "goose Docs",
-    "description": "GitMCP for goose documentation",
-    "command": "npx mcp-remote https://block.gitmcp.io/goose/",
+    "id": "pleum-docs",
+    "name": "pleum Docs",
+    "description": "GitMCP for pleum documentation",
+    "command": "npx mcp-remote https://block.gitmcp.io/pleum/",
     "link": "https://github.com/idosal/git-mcp",
     "is_builtin": false,
     "endorsed": false,
@@ -441,8 +441,8 @@
     "name": "Memory",
     "description": "Built-in memory system for persistent context and information storage",
     "command": "",
-    "link": "https://github.com/aaif-goose/goose/tree/main/crates/goose-mcp/src/memory",
-    "installation_notes": "This is a built-in extension that comes with goose. No installation required.",
+    "link": "https://github.com/gachon-star-want/pleumcode/tree/main/crates/pleum-mcp/src/memory",
+    "installation_notes": "This is a built-in extension that comes with pleum. No installation required.",
     "is_builtin": true,
     "endorsed": true,
     "environmentVariables": []
@@ -560,7 +560,7 @@
     "name": "Pieces",
     "description": "Provides access to your Pieces long-term memory. You need to have Pieces installed to use this.",
     "command": "uvx --from pieces-cli pieces --ignore-onboarding mcp start",
-    "link": "https://pieces.app?utm_source=goose&utm_medium=collab&utm_campaign=mcp",
+    "link": "https://pieces.app?utm_source=pleum&utm_medium=collab&utm_campaign=mcp",
     "installation_notes": "Install PiecesOS first.",
     "is_builtin": false,
     "endorsed": true,
@@ -697,8 +697,8 @@
     "name": "Summon",
     "description": "Load skills and delegate tasks to subagents",
     "command": "",
-    "link": "https://github.com/aaif-goose/goose/tree/main/crates/goose/src/agents/platform_extensions/summon.rs",
-    "installation_notes": "This is a built-in platform extension that comes with goose. No installation required.",
+    "link": "https://github.com/gachon-star-want/pleumcode/tree/main/crates/pleum/src/agents/platform_extensions/summon.rs",
+    "installation_notes": "This is a built-in platform extension that comes with pleum. No installation required.",
     "is_builtin": true,
     "endorsed": true,
     "environmentVariables": []
@@ -741,20 +741,20 @@
   {
     "id": "tom",
     "name": "Top of Mind",
-    "description": "Inject persistent instructions into goose's working memory every turn",
+    "description": "Inject persistent instructions into pleum's working memory every turn",
     "command": "",
-    "link": "https://github.com/aaif-goose/goose/tree/main/crates/goose/src/agents/platform_extensions/tom.rs",
-    "installation_notes": "This is a built-in platform extension that comes with goose and is enabled by default. Configure via GOOSE_MOIM_MESSAGE_TEXT or GOOSE_MOIM_MESSAGE_FILE environment variables.",
+    "link": "https://github.com/gachon-star-want/pleumcode/tree/main/crates/pleum/src/agents/platform_extensions/tom.rs",
+    "installation_notes": "This is a built-in platform extension that comes with pleum and is enabled by default. Configure via PLEUM_MOIM_MESSAGE_TEXT or PLEUM_MOIM_MESSAGE_FILE environment variables.",
     "is_builtin": true,
     "endorsed": true,
     "environmentVariables": [
       {
-        "name": "GOOSE_MOIM_MESSAGE_TEXT",
+        "name": "PLEUM_MOIM_MESSAGE_TEXT",
         "description": "Literal text injected into working memory each turn",
         "required": false
       },
       {
-        "name": "GOOSE_MOIM_MESSAGE_FILE",
+        "name": "PLEUM_MOIM_MESSAGE_FILE",
         "description": "Path to a file whose contents are injected (supports ~/)",
         "required": false
       }
@@ -765,8 +765,8 @@
     "name": "Tutorial",
     "description": "Built-in tutorial and learning management system",
     "command": "",
-    "link": "https://github.com/aaif-goose/goose/tree/main/crates/goose-mcp/src/tutorial",
-    "installation_notes": "This is a built-in extension that comes with goose. No installation required.",
+    "link": "https://github.com/gachon-star-want/pleumcode/tree/main/crates/pleum-mcp/src/tutorial",
+    "installation_notes": "This is a built-in extension that comes with pleum. No installation required.",
     "is_builtin": true,
     "endorsed": false,
     "environmentVariables": []

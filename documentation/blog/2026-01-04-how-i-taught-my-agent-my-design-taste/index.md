@@ -12,14 +12,14 @@ Can you automate taste? The short answer is no, you cannot automate taste, but I
 
 But for those interested in my experiment, I'll share the longer answer: I wanted to participate in [Genuary](https://genuary.art/), the annual challenge where people create one piece of creative coding every day in January. 
 
-My goal here wasn't to "outsource" my creativity. Instead, I wanted to use Genuary as a sandbox to learn agentic engineering workflows. These workflows are becoming the standard for how developers work with technology. To keep my skills sharp, I used [goose](/) to experiment with these workflows in small, daily bursts.
+My goal here wasn't to "outsource" my creativity. Instead, I wanted to use Genuary as a sandbox to learn agentic engineering workflows. These workflows are becoming the standard for how developers work with technology. To keep my skills sharp, I used [pleum](/) to experiment with these workflows in small, daily bursts.
 
 <!--truncate-->
 
-By building a system where goose handles the execution, I could test different architectures side-by-side. This experiment allowed me to determine which parts of an agentic workflow actually add value and which parts I should ditch. I spent a few hours focused on infrastructure to buy myself an entire month of workflow data.
+By building a system where pleum handles the execution, I could test different architectures side-by-side. This experiment allowed me to determine which parts of an agentic workflow actually add value and which parts I should ditch. I spent a few hours focused on infrastructure to buy myself an entire month of workflow data.
 
 :::tip
-[Skills](/docs/guides/context-engineering/using-skills) are reusable sets of instructions and resources that teach goose how to perform specific tasks.
+[Skills](/docs/guides/context-engineering/using-skills) are reusable sets of instructions and resources that teach pleum how to perform specific tasks.
 :::
 
 ## The Inspiration
@@ -36,10 +36,10 @@ My approach is typically very vanilla, and I lean heavily on prompting, but I wa
 
 Inspired by that conversation, I built two versions of the same workflow to see how they handled the same daily Genuary prompts.
 
-- **Approach 1: Harness + [Recipe](/docs/tutorials/recipes-tutorial)**: This lives in `/genuary`. Following Zig's lead, I wrote a shell script to act as the harness. It handles the scaffolding, creating folders and surfacing the daily prompt, so goose doesn't have to guess where to go. The recipe is about 300 lines long and fully self-contained.
+- **Approach 1: Harness + [Recipe](/docs/tutorials/recipes-tutorial)**: This lives in `/genuary`. Following Zig's lead, I wrote a shell script to act as the harness. It handles the scaffolding, creating folders and surfacing the daily prompt, so pleum doesn't have to guess where to go. The recipe is about 300 lines long and fully self-contained.
 - **Approach 2: Skills + Recipe**: This lives in `/genuary-skills`. This recipe is much leaner because it delegates the "how" to a skill. The skill contains the design philosophy, references, and examples. I wanted to see how the work changed when the agent had to "discover" its instructions in a bundle rather than following a flat script.
 
-I spent one focused session building the entire system: [recipes](https://github.com/blackgirlbytes/genuary2026/blob/main/genuary/genuary.yaml), [skills](https://github.com/blackgirlbytes/genuary2026/blob/main/genuary-skills/.goose/skills/genuary/SKILL.md), harness scripts, templates, and [GitHub Actions](https://github.com/blackgirlbytes/genuary2026/tree/main/.github/workflows). (This happened in the quiet hours of my December break, with my one-year-old sleeping on my lap.) This was about trading short-term effort for long-term leverage. From that point on, the system did the daily work.
+I spent one focused session building the entire system: [recipes](https://github.com/blackgirlbytes/genuary2026/blob/main/genuary/genuary.yaml), [skills](https://github.com/blackgirlbytes/genuary2026/blob/main/genuary-skills/.pleum/skills/genuary/SKILL.md), harness scripts, templates, and [GitHub Actions](https://github.com/blackgirlbytes/genuary2026/tree/main/.github/workflows). (This happened in the quiet hours of my December break, with my one-year-old sleeping on my lap.) This was about trading short-term effort for long-term leverage. From that point on, the system did the daily work.
 
 ## On Taste
 
@@ -51,15 +51,15 @@ That's when I started to think about the discourse on how you can't teach an age
 - Knowing what's overplayed because you've seen it too much.
 - Following people with "good taste" and absorbing their patterns.
 
-Obviously, I approached goose about this problem: 
+Obviously, I approached pleum about this problem: 
 
 > "I noticed it always does salmon colored circles..i know we said creative..any ideas on how to make sure it thinks outside the box"
 
 ![Salmon colored circles - a common AI generated cliché](salmon-circles.png)
 
-goose shared that it was following a p5.js template it retrieved, which included a `fill(255, 100, 100)` (salmon!) value and an ellipse example. Since LLMs anchor heavily on concrete examples, the agent was following the code more than my "creative" instructions.
+pleum shared that it was following a p5.js template it retrieved, which included a `fill(255, 100, 100)` (salmon!) value and an ellipse example. Since LLMs anchor heavily on concrete examples, the agent was following the code more than my "creative" instructions.
 
-I removed the salmon circle from the template, but then I took it further: I asked how to ban common AI generated clichés altogether. goose searched discussions, pulled examples, and produced a banned list of patterns that scream "AI-generated."
+I removed the salmon circle from the template, but then I took it further: I asked how to ban common AI generated clichés altogether. pleum searched discussions, pulled examples, and produced a banned list of patterns that scream "AI-generated."
 
 ### BANNED CLICHÉS
 
@@ -79,7 +79,7 @@ I removed the salmon circle from the template, but then I took it further: I ask
 | Inspiration Sources | Natural phenomena: starlings murmurating, fireflies, aurora, smoke, water. |
 | The Gold Rule | If it sparks joy and someone would want to share it, you're on the right track. |
 
-goose determined this list through pattern recognition. So perhaps, agents can use patterns to reflect my taste, not because they understand beauty, but because I'm explicitly teaching them what I personally respond to.
+pleum determined this list through pattern recognition. So perhaps, agents can use patterns to reflect my taste, not because they understand beauty, but because I'm explicitly teaching them what I personally respond to.
 
 I showed Andrew my favorite output of the three days: butterflies lining themselves in a Fibonacci sequence.
 
@@ -89,11 +89,11 @@ His response was validating:
 
 > "WOW that's an incredible Fibonacci… I'd be really curious to know your aesthetic prompting. Mine leans more pixel art and mathematical color manipulation because I've conditioned it that way… I like that yours leaned softer and tried to not look computer-created… like phone wallpaper practically lol..How did you even get that cool thinned line art on the butterflies? It looks like a base image. It's so cool. Did it draw SVGs? Like where did those come from?"
 
-Because I'd specifically told goose to look at "natural phenomena" and "organic growth," it used Bezier curves for the wings and shifted the colors based on the spiral position to create depth, and a warm amber-to-blue gradient instead of stark black.
+Because I'd specifically told pleum to look at "natural phenomena" and "organic growth," it used Bezier curves for the wings and shifted the colors based on the spiral position to create depth, and a warm amber-to-blue gradient instead of stark black.
 
 ## Scaling Visual Feedback Loops
 
-Both workflows use the [Chrome DevTools MCP server](/docs/mcp/chrome-devtools-mcp) so goose can see the output and iterate on it. This created a conflict where multiple instances couldn't use the same Chrome profile. I didn't want a manual step, so I asked the agent if it was possible to run Chrome DevTools in parallel. The solution was assigning separate user data directories.
+Both workflows use the [Chrome DevTools MCP server](/docs/mcp/chrome-devtools-mcp) so pleum can see the output and iterate on it. This created a conflict where multiple instances couldn't use the same Chrome profile. I didn't want a manual step, so I asked the agent if it was possible to run Chrome DevTools in parallel. The solution was assigning separate user data directories.
 
 ```yaml
 # genuary recipe example
@@ -124,12 +124,12 @@ The code and full transcripts live in [my Genuary 2026 repo](https://github.com/
 <head>
   <meta property="og:title" content="How I Taught My Agent My Design Taste" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://goose-docs.ai/blog/2026/01/04/how-i-taught-my-agent-my-design-taste" />
+  <meta property="og:url" content="https://docs.pleum.ai/blog/2026/01/04/how-i-taught-my-agent-my-design-taste" />
   <meta property="og:description" content="I used Agent Skills and recipes to automate execution so I could study taste, constraint design, feedback loops, and avoid AI smells." />
-  <meta property="og:image" content="https://goose-docs.ai/assets/images/automate-taste-9a928fdbc3c8e4d335dba61401ede6bc.png" />
+  <meta property="og:image" content="https://docs.pleum.ai/assets/images/automate-taste-9a928fdbc3c8e4d335dba61401ede6bc.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:domain" content="goose-docs.ai" />
+  <meta property="twitter:domain" content="docs.pleum.ai" />
   <meta name="twitter:title" content="How I Taught My Agent My Design Taste" />
   <meta name="twitter:description" content="I used Agent Skills and recipes to automate execution so I could study taste, constraint design, feedback loops, and avoid AI smells." />
-  <meta name="twitter:image" content="https://goose-docs.ai/assets/images/automate-taste-9a928fdbc3c8e4d335dba61401ede6bc.png" />
+  <meta name="twitter:image" content="https://docs.pleum.ai/assets/images/automate-taste-9a928fdbc3c8e4d335dba61401ede6bc.png" />
 </head>

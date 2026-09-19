@@ -13,12 +13,12 @@ import { defineMessages, useIntl } from '../i18n';
 const i18n = defineMessages({
   heading: {
     id: 'telemetryConsentPrompt.heading',
-    defaultMessage: 'Help improve goose',
+    defaultMessage: 'Help improve pleum',
   },
   description: {
     id: 'telemetryConsentPrompt.description',
     defaultMessage:
-      'Would you like to share anonymous usage data to help improve goose? We never collect your conversations, code, or personal data.',
+      'Would you like to share anonymous usage data to help improve pleum? We never collect your conversations, code, or personal data.',
   },
   learnMore: {
     id: 'telemetryConsentPrompt.learnMore',
@@ -34,7 +34,7 @@ const i18n = defineMessages({
   },
 });
 
-const TELEMETRY_CONFIG_KEY = 'GOOSE_TELEMETRY_ENABLED';
+const TELEMETRY_CONFIG_KEY = 'PLEUM_TELEMETRY_ENABLED';
 
 export default function TelemetryConsentPrompt() {
   const intl = useIntl();
@@ -48,7 +48,7 @@ export default function TelemetryConsentPrompt() {
 
     (async () => {
       try {
-        const provider = await read('GOOSE_PROVIDER', false);
+        const provider = await read('PLEUM_PROVIDER', false);
         if (!provider || provider === '') return;
 
         const telemetryValue = await read(TELEMETRY_CONFIG_KEY, false);

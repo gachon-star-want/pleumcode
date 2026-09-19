@@ -1,0 +1,28 @@
+{
+  "name": "@aaif/pleum-binary-linux-x64",
+  "version": "1.51.0",
+  "description": "Pleum binary for Linux x64",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gachon-star-want/pleumcode.git"
+  },
+  "keywords": [
+    "pleum",
+    "ai",
+    "agent",
+    "binary"
+  ],
+  "os": [
+    "linux"
+  ],
+  "cpu": [
+    "x64"
+  ],
+  "bin": {
+    "pleum-binary-linux-x64": "./bin/pleum"
+  },
+  "files": [
+    "bin/pleum"
+  ]
+}

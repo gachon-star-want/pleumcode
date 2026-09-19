@@ -1,11 +1,11 @@
 ---
-title: "Code Mode MCP in goose"
-description: An emerging approach to MCP tool calling gets an open source implementation in goose
+title: "Code Mode MCP in pleum"
+description: An emerging approach to MCP tool calling gets an open source implementation in pleum
 authors:
     - alexhancock
 ---
 
-![code mode MCP in goose!](header-image.jpg)
+![code mode MCP in pleum!](header-image.jpg)
 
 # Code Mode MCP
 
@@ -31,9 +31,9 @@ posts. Since the approach and the benefits are clearly laid out in those posts I
 * The model can chain tool call results into inputs to further tool calls without the intermediate results needing to flow back to the model - this saves on tokens and avoids exposing potentially sensitive data to the model unnecessarily
 * The models pre-training datasets have made them very efficient at analyzing large programmatic APIs and writing code to call them, as compared to having been trained only on contrived examples of MCP tool calling
 
-## In goose
+## In pleum
 
-In v1.17.0 of goose, we've introduced an open source implementation of this idea in a new platform extension called: Code Mode.
+In v1.17.0 of pleum, we've introduced an open source implementation of this idea in a new platform extension called: Code Mode.
 Our implementation generates a JavaScript interface representing the connected MCP tools and then lets the model write code to run
 against it in [boa](https://github.com/boa-dev/boa) which is an embeddable JavaScript engine. One neat feature of boa we were able
 to take advantage of was the concept of [NativeFunction](https://docs.rs/boa_engine/latest/boa_engine/native_function/struct.NativeFunction.html).
@@ -44,23 +44,23 @@ MCP server with ease!
 
 ## Help us evaluate it
 
-Our hope is that we improve tool calling performance and handling of large numbers of tools in goose, but
+Our hope is that we improve tool calling performance and handling of large numbers of tools in pleum, but
 also provide an open source implementation of this emerging approach.
 
-* Try out the feature by enabling the ["Code Mode" extension](https://github.com/aaif-goose/goose/blob/main/crates/goose/src/agents/platform_extensions/code_execution.rs) in v1.17.0 or later of goose by clicking extensions on the left side of the desktop app or running `goose configure` on cli
+* Try out the feature by enabling the ["Code Mode" extension](https://github.com/gachon-star-want/pleumcode/blob/main/crates/pleum/src/agents/platform_extensions/code_execution.rs) in v1.17.0 or later of pleum by clicking extensions on the left side of the desktop app or running `pleum configure` on cli
 * Please give us feedback on how it works for you by joining our [discord](https://discord.gg/n8R5VaWDAn).
 
 Kudos to my colleague [Mic Neale](https://github.com/michaelneale) for collaborating with me on the implementation!
 
 <head>
-  <meta property="og:title" content="Code Mode MCP in goose" />
+  <meta property="og:title" content="Code Mode MCP in pleum" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://goose-docs.ai/blog/2025/12/15/code-mode-mcp-in-goose" />
-  <meta property="og:description" content="An emerging approach to MCP tool calling gets an open source implementation in goose" />
-  <meta property="og:image" content="https://goose-docs.ai/assets/images/header-image-1fa39f1d26aea7722e2c10fc424804f5.jpg" />
+  <meta property="og:url" content="https://docs.pleum.ai/blog/2025/12/15/code-mode-mcp-in-pleum" />
+  <meta property="og:description" content="An emerging approach to MCP tool calling gets an open source implementation in pleum" />
+  <meta property="og:image" content="https://docs.pleum.ai/assets/images/header-image-1fa39f1d26aea7722e2c10fc424804f5.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:domain" content="goose-docs.ai" />
-  <meta name="twitter:title" content="Code Mode MCP in goose" />
-  <meta name="twitter:description" content="An emerging approach to MCP tool calling gets an open source implementation in goose" />
-  <meta name="twitter:image" content="https://goose-docs.ai/assets/images/header-image-1fa39f1d26aea7722e2c10fc424804f5.jpg" />
+  <meta property="twitter:domain" content="docs.pleum.ai" />
+  <meta name="twitter:title" content="Code Mode MCP in pleum" />
+  <meta name="twitter:description" content="An emerging approach to MCP tool calling gets an open source implementation in pleum" />
+  <meta name="twitter:image" content="https://docs.pleum.ai/assets/images/header-image-1fa39f1d26aea7722e2c10fc424804f5.jpg" />
 </head>

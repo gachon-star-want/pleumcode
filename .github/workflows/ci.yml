@@ -32,8 +32,8 @@ jobs:
             code:
               - '!documentation/**'
 
-  goose-acp-npm-packages:
-    name: goose ACP npm packages
+  pleum-acp-npm-packages:
+    name: pleum ACP npm packages
     runs-on: ubuntu-latest
     needs: changes
     if: needs.changes.outputs.code == 'true' || github.event_name != 'pull_request'
@@ -47,19 +47,19 @@ jobs:
       - name: Check npm versions
         run: source bin/activate-hermit && node ui/scripts/npm-versions.mjs check
 
-      - name: Test goose-acp
-        run: source bin/activate-hermit && pnpm --dir ui/goose-acp test
+      - name: Test pleum-acp
+        run: source bin/activate-hermit && pnpm --dir ui/pleum-acp test
 
       - name: Pack npm packages
         run: |
           source bin/activate-hermit
           set -euo pipefail
-          client_pack_dir="$RUNNER_TEMP/goose-acp-client"
-          wrapper_pack_dir="$RUNNER_TEMP/goose-acp"
+          client_pack_dir="$RUNNER_TEMP/pleum-acp-client"
+          wrapper_pack_dir="$RUNNER_TEMP/pleum-acp"
           mkdir -p "$client_pack_dir" "$wrapper_pack_dir"
 
-          pnpm --dir ui/goose-acp-client pack --pack-destination "$client_pack_dir"
-          pnpm --dir ui/goose-acp pack --pack-destination "$wrapper_pack_dir"
+          pnpm --dir ui/pleum-acp-client pack --pack-destination "$client_pack_dir"
+          pnpm --dir ui/pleum-acp pack --pack-destination "$wrapper_pack_dir"
 
           wrapper_tarball=$(find "$wrapper_pack_dir" -name '*.tgz' -print -quit)
           tar -xzf "$wrapper_tarball" -C "$wrapper_pack_dir"
@@ -111,8 +111,8 @@ jobs:
         env:
           RUST_MIN_STACK: 8388608
 
-  goose-sdk-uniffi:
-    name: Check goose-sdk UniFFI
+  pleum-sdk-uniffi:
+    name: Check pleum-sdk UniFFI
     runs-on: ubuntu-latest
     needs: changes
     if: needs.changes.outputs.code == 'true' || github.event_name != 'pull_request'
@@ -130,8 +130,8 @@ jobs:
       - name: Check UniFFI feature
         run: |
           export CARGO_INCREMENTAL=0
-          cargo check -p goose-sdk --features uniffi --locked
-          cargo test -p goose-sdk --features uniffi --locked
+          cargo check -p pleum-sdk --features uniffi --locked
+          cargo test -p pleum-sdk --features uniffi --locked
         env:
           RUST_MIN_STACK: 8388608
 
@@ -177,10 +177,10 @@ jobs:
         run: |
           gnome-keyring-daemon --components=secrets --daemonize --unlock <<< 'foobar'
           export CARGO_INCREMENTAL=0
-          cargo test -p goose --no-default-features --features ${{ matrix.tls-feature }},code-mode
-          cargo test -p goose-providers --no-default-features --features ${{ matrix.tls-feature }}
-          cargo test -p goose-cli --no-default-features --features ${{ matrix.tls-feature }},code-mode -- --skip scenario_tests::scenarios::tests
-          cargo test -p goose-cli --no-default-features --features ${{ matrix.tls-feature }},code-mode --jobs 1 scenario_tests::scenarios::tests
+          cargo test -p pleum --no-default-features --features ${{ matrix.tls-feature }},code-mode
+          cargo test -p pleum-providers --no-default-features --features ${{ matrix.tls-feature }}
+          cargo test -p pleum-cli --no-default-features --features ${{ matrix.tls-feature }},code-mode -- --skip scenario_tests::scenarios::tests
+          cargo test -p pleum-cli --no-default-features --features ${{ matrix.tls-feature }},code-mode --jobs 1 scenario_tests::scenarios::tests
         env:
           RUST_MIN_STACK: 8388608
 
@@ -210,9 +210,9 @@ jobs:
         run: |
           gnome-keyring-daemon --components=secrets --daemonize --unlock <<< 'foobar'
           export CARGO_INCREMENTAL=0
-          cargo test -p goose-roaming
-          cargo build -p goose-cli --features roaming
-          cargo test -p goose-cli --features roaming --test roam_acp_client
+          cargo test -p pleum-roaming
+          cargo build -p pleum-cli --features roaming
+          cargo test -p pleum-cli --features roaming --test roam_acp_client
         env:
           RUST_MIN_STACK: 8388608
 
@@ -328,7 +328,7 @@ jobs:
       - name: Check ACP Client SDK
         run: |
           source ./bin/activate-hermit
-          cd ui/goose-acp-client
+          cd ui/pleum-acp-client
           pnpm run lint
 
   gdk-release-config-check:
@@ -339,7 +339,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
 
       - name: Check GDK crate membership and publication order
-        run: python3 crates/goose-sdk/scripts/gdk-release.py check-config
+        run: python3 crates/pleum-sdk/scripts/gdk-release.py check-config
 
   gdk-api-docs-check:
     name: Check GDK API Reference is Up-to-Date

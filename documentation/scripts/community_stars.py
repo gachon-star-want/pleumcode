@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Community Stars Analysis Script for aaif-goose/goose repository
+Community Stars Analysis Script for gachon-star-want/pleumcode repository
 
 # TODO: Update BLOCK_ORGS, is_block_employee(), and team categorization logic
-# for the AAIF org structure after the transfer from block/goose.
+# for the AAIF org structure after the transfer from gachon-star-want/pleumcode.
 
 This script analyzes GitHub contributor statistics and generates rankings for:
 - Top 5 Community All-Stars (External contributors)
-- Top 5 Team Stars (Block employees, non-goose team)
+- Top 5 Team Stars (Block employees, non-pleum team)
 - Monthly Leaderboard (all eligible contributors)
 
 The script automatically:
@@ -36,7 +36,7 @@ from datetime import datetime
 from pathlib import Path
 
 # GitHub URL for team list file
-TEAMS_FILE_URL = "https://raw.githubusercontent.com/aaif-goose/goose/main/documentation/scripts/community_stars_teams.txt"
+TEAMS_FILE_URL = "https://raw.githubusercontent.com/gachon-star-want/pleumcode/main/documentation/scripts/community_stars_teams.txt"
 LOCAL_TEAMS_FILE = Path(__file__).parent / "community_stars_teams.txt"
 
 # Block-related organizations to check
@@ -102,9 +102,9 @@ def load_team_lists():
             sys.exit(1)
 
     # Parse the team lists
-    goose_maintainers = set()
-    block_non_goose = set()
-    external_goose = set()
+    pleum_maintainers = set()
+    block_non_pleum = set()
+    external_pleum = set()
     bots = set()
 
     current_section = None
@@ -114,28 +114,28 @@ def load_team_lists():
         # Skip comments and empty lines
         if not line or line.startswith("#"):
             # Check for section headers in comments
-            if "# Goose Maintainers" in line:
-                current_section = "goose_maintainers"
-            elif "# Block, non-goose" in line:
-                current_section = "block_non_goose"
-            elif "# External, goose" in line:
-                current_section = "external_goose"
+            if "# Pleum Maintainers" in line:
+                current_section = "pleum_maintainers"
+            elif "# Block, non-pleum" in line:
+                current_section = "block_non_pleum"
+            elif "# External, pleum" in line:
+                current_section = "external_pleum"
             elif "# Bots" in line:
                 current_section = "bots"
             continue
 
         # Add username to appropriate set (lowercase for case-insensitive matching)
         username = line.lower()
-        if current_section == "goose_maintainers":
-            goose_maintainers.add(username)
-        elif current_section == "block_non_goose":
-            block_non_goose.add(username)
-        elif current_section == "external_goose":
-            external_goose.add(username)
+        if current_section == "pleum_maintainers":
+            pleum_maintainers.add(username)
+        elif current_section == "block_non_pleum":
+            block_non_pleum.add(username)
+        elif current_section == "external_pleum":
+            external_pleum.add(username)
         elif current_section == "bots":
             bots.add(username)
 
-    return goose_maintainers, block_non_goose, external_goose, bots
+    return pleum_maintainers, block_non_pleum, external_pleum, bots
 
 
 def parse_date_range(date_input):
@@ -201,7 +201,7 @@ def main():
         sys.exit(1)
 
     # Load team lists
-    goose_maintainers, block_non_goose, external_goose, bots = load_team_lists()
+    pleum_maintainers, block_non_pleum, external_pleum, bots = load_team_lists()
 
     # Load GitHub data
     github_data_file = "/tmp/github_contributors.json"
@@ -238,7 +238,7 @@ def main():
 
         for attempt in range(max_retries):
             try:
-                url = "https://api.github.com/repos/aaif-goose/goose/stats/contributors"
+                url = "https://api.github.com/repos/gachon-star-want/pleumcode/stats/contributors"
                 with urllib.request.urlopen(url, timeout=30) as response:
                     contributors_data = json.loads(response.read().decode("utf-8"))
 
@@ -305,8 +305,8 @@ def main():
         # Skip excluded categories (case-insensitive matching)
         if (
             username_lower in bots
-            or username_lower in goose_maintainers
-            or username_lower in external_goose
+            or username_lower in pleum_maintainers
+            or username_lower in external_pleum
         ):
             continue
 
@@ -326,9 +326,9 @@ def main():
         if period_commits > 0:
             total_lines = period_additions + period_deletions
 
-            # Categorize (only Block non-goose and External now)
-            if username_lower in block_non_goose:
-                category = "block_non_goose"
+            # Categorize (only Block non-pleum and External now)
+            if username_lower in block_non_pleum:
+                category = "block_non_pleum"
             else:
                 # Check if user is in a Block org (with caching)
                 if username not in checked_orgs:
@@ -337,7 +337,7 @@ def main():
                     time.sleep(0.1)
 
                 if checked_orgs[username]:
-                    category = "block_non_goose"
+                    category = "block_non_pleum"
                     print(f"  ✓ Detected Block employee: @{username}", file=sys.stderr)
                 else:
                     category = "external"
@@ -358,7 +358,7 @@ def main():
     contributor_stats.sort(key=lambda x: x["score"], reverse=True)
 
     # Separate by category
-    block_list = [c for c in contributor_stats if c["category"] == "block_non_goose"]
+    block_list = [c for c in contributor_stats if c["category"] == "block_non_pleum"]
     external_list = [c for c in contributor_stats if c["category"] == "external"]
 
     # Get top 5 from each
@@ -385,7 +385,7 @@ def main():
         print("No external contributors found for this period.")
 
     print()
-    print("⭐ TOP 5 TEAM STARS (Block, non-goose)")
+    print("⭐ TOP 5 TEAM STARS (Block, non-pleum)")
     print("-" * 70)
     if top_internal:
         for i, contrib in enumerate(top_internal, 1):
@@ -410,10 +410,10 @@ def main():
     print()
     print("=" * 70)
     print(
-        f"Total contributors (excluding bots, goose maintainers, external goose): {len(contributor_stats)}"
+        f"Total contributors (excluding bots, pleum maintainers, external pleum): {len(contributor_stats)}"
     )
     print(f"  External: {len(external_list)}")
-    print(f"  Block (non-goose): {len(block_list)}")
+    print(f"  Block (non-pleum): {len(block_list)}")
     print("=" * 70)
 
 

@@ -15,7 +15,7 @@ import {
 } from "./github_manager.mjs";
 
 const issue = {
-  repository: "aaif-goose/goose",
+  repository: "gachon-star-want/pleumcode",
   number: 123,
 };
 
@@ -25,14 +25,14 @@ test("matches current and legacy issue channels", () => {
       {
         name: "123 short title",
         description:
-          "Discussion for aaif-goose/goose#123: https://github.com/aaif-goose/goose/issues/123",
+          "Discussion for gachon-star-want/pleumcode#123: https://github.com/gachon-star-want/pleumcode/issues/123",
       },
       issue,
     ),
     true,
   );
   assert.equal(
-    channelMatchesIssue({ name: "aaif-goose/goose #123" }, issue),
+    channelMatchesIssue({ name: "gachon-star-want/pleumcode #123" }, issue),
     true,
   );
   assert.equal(channelMatchesIssue({ name: "#123 title" }, issue), true);
@@ -53,9 +53,9 @@ test("does not match another repository from an explicit reference", () => {
 
 test("parses a legacy channel ending at the issue number", () => {
   assert.deepEqual(
-    issueReferenceFromChannel({ name: "aaif-goose/goose #123" }),
+    issueReferenceFromChannel({ name: "gachon-star-want/pleumcode #123" }),
     {
-      repository: "aaif-goose/goose",
+      repository: "gachon-star-want/pleumcode",
       number: 123,
       kind: null,
       source: "legacy-name",
@@ -67,7 +67,7 @@ test("prefers an explicit issue channel over a bare numeric name", () => {
   const explicit = {
     channel_id: "explicit",
     name: "123 real issue",
-    description: "https://github.com/aaif-goose/goose/issues/123",
+    description: "https://github.com/gachon-star-want/pleumcode/issues/123",
   };
   const stray = {
     channel_id: "stray",
@@ -81,7 +81,7 @@ test("does not adopt a pull-request channel", () => {
     channelMatchesIssue(
       {
         name: "123 pull request",
-        description: "https://github.com/aaif-goose/goose/pull/123",
+        description: "https://github.com/gachon-star-want/pleumcode/pull/123",
       },
       issue,
     ),
@@ -115,7 +115,7 @@ test("retries a project read that changes while being listed", () => {
   const issueItem = {
     content: {
       type: "Issue",
-      repository: "aaif-goose/goose",
+      repository: "gachon-star-want/pleumcode",
       number: 123,
     },
   };
@@ -129,9 +129,9 @@ test("retries a project read that changes while being listed", () => {
     {
       command: "gh",
       projectNumber: 1,
-      projectOwner: "aaif-goose",
+      projectOwner: "gachon-star-want",
       projectLimit: 1000,
-      repository: "aaif-goose/goose",
+      repository: "gachon-star-want/pleumcode",
     },
   );
   assert.equal(calls, 2);
@@ -142,7 +142,7 @@ test("matches project repository names without case sensitivity", () => {
   const issueItem = {
     content: {
       type: "Issue",
-      repository: "AAIF-Goose/Goose",
+      repository: "AAIF-Pleum/Pleum",
       number: 123,
     },
   };
@@ -151,9 +151,9 @@ test("matches project repository names without case sensitivity", () => {
     {
       command: "gh",
       projectNumber: 1,
-      projectOwner: "aaif-goose",
+      projectOwner: "gachon-star-want",
       projectLimit: 1000,
-      repository: "aaif-goose/goose",
+      repository: "gachon-star-want/pleumcode",
     },
   );
   assert.equal(result.byNumber.get(123), issueItem);
@@ -166,20 +166,20 @@ test("normalizes paginated REST issues and excludes pull requests", () => {
         {
           number: 123,
           title: "Issue",
-          html_url: "https://github.com/aaif-goose/goose/issues/123",
+          html_url: "https://github.com/gachon-star-want/pleumcode/issues/123",
           assignees: [{ login: "person" }],
         },
         { number: 124, pull_request: {} },
       ],
     ],
-    { command: "gh", repository: "aaif-goose/goose" },
+    { command: "gh", repository: "gachon-star-want/pleumcode" },
   );
   assert.deepEqual(issues, [
     {
       number: 123,
       title: "Issue",
-      url: "https://github.com/aaif-goose/goose/issues/123",
-      repository: "aaif-goose/goose",
+      url: "https://github.com/gachon-star-want/pleumcode/issues/123",
+      repository: "gachon-star-want/pleumcode",
       assignees: [{ login: "person" }],
     },
   ]);

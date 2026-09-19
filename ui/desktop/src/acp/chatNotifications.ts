@@ -1,7 +1,7 @@
 import type {
-  GooseSessionNotification_unstable,
+  PleumSessionNotification_unstable,
   ProviderDeviceCodeNotification_unstable,
-} from '@aaif/goose-acp-client';
+} from '@aaif/pleum-acp-client';
 import type { SessionNotification } from '@agentclientprotocol/sdk';
 import { AppEvents } from '../constants/events';
 import { maybeHandlePlatformEvent } from '../utils/platform_events';
@@ -46,16 +46,16 @@ function maybeHandleLivePlatformEvent(notification: SessionNotification): void {
   }
 }
 
-export function handleAcpGooseSessionNotification(
-  notification: GooseSessionNotification_unstable
+export function handleAcpPleumSessionNotification(
+  notification: PleumSessionNotification_unstable
 ): Promise<void> {
-  acpChatSessionActions.applyAcpGooseSessionNotification(notification);
+  acpChatSessionActions.applyAcpPleumSessionNotification(notification);
   return Promise.resolve();
 }
 
 export function handleAcpProviderDeviceCodeNotification(
   notification: ProviderDeviceCodeNotification_unstable
 ): Promise<void> {
-  window.dispatchEvent(new CustomEvent('goose:device-code', { detail: notification }));
+  window.dispatchEvent(new CustomEvent('pleum:device-code', { detail: notification }));
   return Promise.resolve();
 }

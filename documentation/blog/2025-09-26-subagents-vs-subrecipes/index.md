@@ -1,5 +1,5 @@
 ---
-title: "How to Choose Between Subagents and Subrecipes in goose"
+title: "How to Choose Between Subagents and Subrecipes in pleum"
 description: When you need to break complex work into multiple AI tasks, should you use subagents or subrecipes? Learn the key differences and when to use each approach.
 authors: 
     - ian
@@ -7,7 +7,7 @@ authors:
 
 ![Subagents vs Subrecipes](subrecipes-vs-subagents.png)
 
-When you're working on complex projects with goose, you'll often need to break work into multiple tasks and run them with AI agents. Goose gives you two powerful ways to do this: [subagents](/docs/guides/context-engineering/subagents/) and [subrecipes](/docs/tutorials/subrecipes-in-parallel/). Both can run multiple AI instances in parallel, but they work  differently. Picking which one to use can be confusing, so we're going to guide you to a decision.
+When you're working on complex projects with pleum, you'll often need to break work into multiple tasks and run them with AI agents. Pleum gives you two powerful ways to do this: [subagents](/docs/guides/context-engineering/subagents/) and [subrecipes](/docs/tutorials/subrecipes-in-parallel/). Both can run multiple AI instances in parallel, but they work  differently. Picking which one to use can be confusing, so we're going to guide you to a decision.
 
 I've been using both approaches, and the choice between them depends on what you're trying to accomplish. Let me break down when to use each method and show you real examples.
 
@@ -26,7 +26,7 @@ Also, both are still in 'experimental' status, so there's always a possibility t
 
 ## Subagents: Quick and Flexible
 
-Subagents excel when you're in a goose session and just want task delegation without setup overhead. Here's how simple they are to use:
+Subagents excel when you're in a pleum session and just want task delegation without setup overhead. Here's how simple they are to use:
 
 ```
 Build a simple task management web app doing these 3 tasks in parallel:
@@ -38,7 +38,7 @@ Build a simple task management web app doing these 3 tasks in parallel:
 Each task should work independently and complete their part simultaneously.
 ```
 
-Goose automatically spawns three independent AI instances, and each works on a different component. You get real-time progress tracking and they all work in parallel from that prompt. You're off and running: no setup, no configuration files, just natural language instructions.
+Pleum automatically spawns three independent AI instances, and each works on a different component. You get real-time progress tracking and they all work in parallel from that prompt. You're off and running: no setup, no configuration files, just natural language instructions.
 
 ### What Makes Subagents Great
 
@@ -60,14 +60,14 @@ Goose automatically spawns three independent AI instances, and each works on a d
 
 Subrecipes solve the reusability problem. While main "parent" recipes can be in YAML or JSON, subrecipes can only be written in YAML format. These files define structured workflows with parameters, validation, extensions to use, and even allow you to pick a different provider/model to use for the work.
 
-For detailed subrecipe examples and implementation guides, check out our [subrecipes blog post](/blog/2025/09/15/subrecipes-in-goose) and [advanced recipe tips](https://www.youtube.com/watch?v=1szmJSKInnU) video on YouTube.
+For detailed subrecipe examples and implementation guides, check out our [subrecipes blog post](/blog/2025/09/15/subrecipes-in-pleum) and [advanced recipe tips](https://www.youtube.com/watch?v=1szmJSKInnU) video on YouTube.
 
 ### What Makes Subrecipes Powerful
 
 * **High reusability** -- Recipe files can be shared and version controlled across projects.
 * **Structured parameters** -- Type-safe parameter handling with validation and documentation.
 * **Template support** -- Dynamic parameter injection using template syntax.
-* **Full tool access** -- Subrecipes can use any extensions and tools available to goose.
+* **Full tool access** -- Subrecipes can use any extensions and tools available to pleum.
 * **LLM customization** -- Each subrecipe can specify its own LLM model to use.
 * **Conditional logic** -- Smart parameter passing based on conversation context.
 * **Workflow orchestration** -- Complex multi-step processes with dependencies and execution order control.
@@ -112,19 +112,19 @@ The choice depends on your specific needs and workflow requirements. Quick tasks
 
 Your workflow requirements should drive the decision.
 
-Share your subagent prompts or subrecipe ideas with us on our [Discord community](https://discord.gg/n8R5VaWDAn) or [GitHub discussions](https://github.com/aaif-goose/goose/discussions).
+Share your subagent prompts or subrecipe ideas with us on our [Discord community](https://discord.gg/n8R5VaWDAn) or [GitHub discussions](https://github.com/gachon-star-want/pleumcode/discussions).
 
 
 
 <head>
-  <meta property="og:title" content="How to Choose Between Subagents and Subrecipes in goose" />
+  <meta property="og:title" content="How to Choose Between Subagents and Subrecipes in pleum" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://goose-docs.ai/blog/2025-09-26-subagents-vs-subrecipes" />
+  <meta property="og:url" content="https://docs.pleum.ai/blog/2025-09-26-subagents-vs-subrecipes" />
   <meta property="og:description" content="When you need to break complex work into multiple AI tasks, should you use subagents or subrecipes? Learn the key differences and when to use each approach." />
-  <meta property="og:image" content="https://goose-docs.ai/assets/images/subrecipes-vs-subagents-19bca16b86a951e4618be8ab6ce90fb2.png" />
+  <meta property="og:image" content="https://docs.pleum.ai/assets/images/subrecipes-vs-subagents-19bca16b86a951e4618be8ab6ce90fb2.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:domain" content="goose-docs.ai" />
-  <meta name="twitter:title" content="How to Choose Between Subagents and Subrecipes in goose" />
+  <meta property="twitter:domain" content="docs.pleum.ai" />
+  <meta name="twitter:title" content="How to Choose Between Subagents and Subrecipes in pleum" />
   <meta name="twitter:description" content="When you need to break complex work into multiple AI tasks, should you use subagents or subrecipes? Learn the key differences and when to use each approach." />
-  <meta name="twitter:image" content="https://goose-docs.ai/assets/images/subrecipes-vs-subagents-19bca16b86a951e4618be8ab6ce90fb2.png" />
+  <meta name="twitter:image" content="https://docs.pleum.ai/assets/images/subrecipes-vs-subagents-19bca16b86a951e4618be8ab6ce90fb2.png" />
 </head>

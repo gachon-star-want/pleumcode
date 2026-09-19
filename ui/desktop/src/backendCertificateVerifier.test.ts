@@ -80,7 +80,7 @@ describe('backend certificate verifier wiring', () => {
     const source = fs.readFileSync(path.resolve('src/main.ts'), 'utf8');
 
     expect(source).toMatch(
-      /installBackendCertificateVerifiers\([\s\S]{0,200}session\.defaultSession[\s\S]{0,200}session\.fromPartition\('persist:goose'\)/
+      /installBackendCertificateVerifiers\([\s\S]{0,200}session\.defaultSession[\s\S]{0,200}session\.fromPartition\('persist:pleum'\)/
     );
   });
 

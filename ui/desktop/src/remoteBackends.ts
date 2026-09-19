@@ -255,7 +255,7 @@ const probeAcp = (
       if (hop.status === 401 || hop.status === 403) {
         return {
           ok: false,
-          detail: `The backend rejected the secret key (HTTP ${hop.status}). It must match GOOSE_SERVER__SECRET_KEY on the backend.${proxyNote(hop)}`,
+          detail: `The backend rejected the secret key (HTTP ${hop.status}). It must match PLEUM_SERVER__SECRET_KEY on the backend.${proxyNote(hop)}`,
           retryable: false,
         };
       }

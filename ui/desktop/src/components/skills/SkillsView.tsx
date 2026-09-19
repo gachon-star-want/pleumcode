@@ -28,7 +28,7 @@ const i18n = defineMessages({
   noSkillsDescription: {
     id: 'skillsView.noSkillsDescription',
     defaultMessage:
-      'Skills are loaded from SKILL.md files in ~/.config/agents/skills/, .goose/skills/, or other supported directories.',
+      'Skills are loaded from SKILL.md files in ~/.config/agents/skills/, .pleum/skills/, or other supported directories.',
   },
   noMatchingSkills: {
     id: 'skillsView.noMatchingSkills',
@@ -48,7 +48,7 @@ const i18n = defineMessages({
   },
   skillsDescription: {
     id: 'skillsView.skillsDescription',
-    defaultMessage: 'View installed skills that extend Goose capabilities. {shortcut} to search.',
+    defaultMessage: 'View installed skills that extend Pleum capabilities. {shortcut} to search.',
   },
   searchSkillsPlaceholder: {
     id: 'skillsView.searchSkillsPlaceholder',
