@@ -476,6 +476,7 @@ impl HookManager {
         self.rules.get(&event).is_some_and(|r| !r.is_empty())
     }
 
+    #[allow(clippy::too_many_arguments)]
     async fn run_action(
         &self,
         event: HookEvent,
@@ -484,6 +485,7 @@ impl HookManager {
         command: &str,
         payload: &str,
         timeout: Duration,
+        working_dir: Option<&str>,
     ) -> Result<HookRun> {
         let span = tracing::info_span!(
             target: "pleum::hooks",
@@ -500,6 +502,7 @@ impl HookManager {
             payload,
             timeout,
             self.use_login_shell_path,
+            working_dir,
         )
         .instrument(span.clone())
         .await;
@@ -533,6 +536,7 @@ impl HookManager {
             event,
             ctx.matcher_context.as_deref(),
             &ctx.session_id,
+            ctx.working_dir.as_deref(),
             &payload,
         )
         .await;
@@ -554,16 +558,19 @@ impl HookManager {
             event,
             payload.context.matcher_context.as_deref(),
             &payload.context.session_id,
+            payload.context.working_dir.as_deref(),
             &json,
         )
         .await;
     }
 
+    #[allow(clippy::too_many_arguments)]
     async fn emit_serialized(
         &self,
         event: HookEvent,
         matcher_context: Option<&str>,
         session_id: &str,
+        working_dir: Option<&str>,
         payload: &str,
     ) {
         let Some(rules) = self.rules.get(&event) else {
@@ -589,7 +596,15 @@ impl HookManager {
                     "Running plugin hook",
                 );
                 let res = self
-                    .run_action(event, session_id, rule, command, payload, *timeout)
+                    .run_action(
+                        event,
+                        session_id,
+                        rule,
+                        command,
+                        payload,
+                        *timeout,
+                        working_dir,
+                    )
                     .await
                     .and_then(|run| {
                         if run.output.status.success() {
@@ -662,6 +677,7 @@ impl HookManager {
                     &payload,
                     *timeout,
                     self.use_login_shell_path,
+                    ctx.working_dir.as_deref(),
                 )
                 .await
                 {
@@ -732,7 +748,15 @@ impl HookManager {
                 on_failure,
             } = action;
             let (verdict, evaluated, already_logged) = match self
-                .run_action(event, &ctx.session_id, rule, command, &payload, *timeout)
+                .run_action(
+                    event,
+                    &ctx.session_id,
+                    rule,
+                    command,
+                    &payload,
+                    *timeout,
+                    ctx.working_dir.as_deref(),
+                )
                 .await
             {
                 Ok(run) => {
@@ -1053,10 +1077,17 @@ async fn run_command_hook(
     payload: &str,
     timeout: Duration,
     use_login_shell_path: bool,
+    working_dir: Option<&str>,
 ) -> Result<HookRun> {
     match tokio::time::timeout(
         timeout,
-        run_command_hook_inner(raw_command, plugin_root, payload, use_login_shell_path),
+        run_command_hook_inner(
+            raw_command,
+            plugin_root,
+            payload,
+            use_login_shell_path,
+            working_dir,
+        ),
     )
     .await
     {
@@ -1070,14 +1101,34 @@ async fn run_command_hook_inner(
     plugin_root: &Path,
     payload: &str,
     use_login_shell_path: bool,
+    working_dir: Option<&str>,
 ) -> Result<HookRun> {
     let command = expand_plugin_root(raw_command, plugin_root);
+    // See `sandbox::reject_embedded_nul`: must run before any Command is built,
+    // since `wrap` can't recover a NUL-containing arg from one after the fact.
+    crate::sandbox::reject_embedded_nul(&command)
+        .with_context(|| format!("running hook `{command}`"))?;
     let path = if use_login_shell_path {
         hook_path().await
     } else {
         None
     };
-    let mut process = hook_command(&command, plugin_root, path.as_deref());
+    let process = hook_command(&command, plugin_root, path.as_deref());
+    // Hard OS sandbox (pleumcode): same policy as the shell tool, no opt-out. A
+    // hook is repo/plugin-authored code running with the plugin author's intent,
+    // not the user typing a command, so it gets no more trust than the shell tool
+    // does. Falls back to the process cwd when no session working_dir is known
+    // (matches the shell tool's own fallback). `wrap` returns a fresh Command
+    // (the sandbox launcher), so stdio must be set on it, not on `process`.
+    // `session.working_dir` defaults to an empty PathBuf, not `None`, when a session
+    // is created without one (e.g. some ACP/test paths) — treat that the same as
+    // "unknown" rather than sandboxing to an empty path (which fails to canonicalize).
+    let workspace = match working_dir.filter(|dir| !dir.is_empty()) {
+        Some(dir) => std::path::PathBuf::from(dir),
+        None => std::env::current_dir().context("sandbox: no workspace for hook")?,
+    };
+    let mut process = crate::sandbox::wrap(process, &workspace, &[])
+        .with_context(|| format!("sandboxing hook `{command}`"))?;
     process
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
@@ -2214,6 +2265,7 @@ mod tests {
             "{}",
             Duration::from_secs(5),
             true,
+            Some(tmp.path().to_str().unwrap()),
         )
         .await
         .unwrap();
