@@ -1,0 +1,13 @@
+{
+  "name": "pleum",
+  "engine": "openai",
+  "display_name": "PleumRouter",
+  "description": "PleumRouter gateway (OpenAI-compatible). Model IDs, including policy/<slug> and orch/<slug>, are passed through to the gateway untouched.",
+  "api_key_env": "PLEUM_API_KEY",
+  "base_url": "https://apirouter.pleum.ai/v1",
+  "models": [
+    { "name": "gpt-5.4-mini", "context_limit": 128000 }
+  ],
+  "supports_streaming": true,
+  "requires_auth": true
+}
