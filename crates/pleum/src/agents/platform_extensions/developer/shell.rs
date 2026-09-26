@@ -568,6 +568,10 @@ async fn run_command(
 ) -> Result<ExecutionOutput, String> {
     let timeout_secs = Some(resolve_shell_timeout(timeout_secs));
 
+    // See `sandbox::reject_embedded_nul`: must run before any Command is built,
+    // since `wrap` can't recover a NUL-containing arg from one after the fact.
+    crate::sandbox::reject_embedded_nul(command_line)
+        .map_err(|e| format!("Refusing to run shell command: {e}"))?;
     let command = build_shell_command(command_line, working_dir, login_path, session_id);
     // Hard OS sandbox (pleumcode): no opt-out. Fails closed if unsupported on this platform.
     let workspace = match working_dir {
@@ -1286,6 +1290,10 @@ mod tests {
     #[cfg(any(target_os = "macos", target_os = "linux"))]
     #[tokio::test]
     async fn shell_tool_is_sandboxed() {
+        // `sandbox::wrap` reads PATH/HOME/etc for its env allowlist; serialize against
+        // any other test (e.g. command_hooks_repair_path_when_enabled in hooks::tests)
+        // that mutates those same process-global vars under env_lock.
+        let _env_guard = env_lock::lock_env(std::iter::empty::<(&str, Option<&str>)>());
         // Parent under $HOME (not the temp dir, which is writable by policy).
         let base = tempfile::Builder::new()
             .prefix("pleum-shell-sbx")

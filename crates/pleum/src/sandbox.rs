@@ -12,6 +12,11 @@
 //! - no network at all
 //! - credential dirs (`~/.ssh`, `~/.aws`, `~/.gnupg`, pleum config) unreadable,
 //!   since anything a command prints ends up in the model's context
+//! - environment is not inherited wholesale: only a small non-secret allowlist
+//!   (`ENV_ALLOWLIST`) plus whatever the caller explicitly set on `cmd` — the
+//!   pleumcode process's own env holds `PLEUM_API_KEY`, and neither backend's
+//!   namespace/profile isolation touches envp, so without this a command could
+//!   just run `env` and hand the key straight back into the model's context
 //!
 //! Backends: macOS Seatbelt (`sandbox-exec`) and Linux bubblewrap (`bwrap`, namespaces:
 //! read-only root, private net/pid/ipc). Every other OS, and Linux without `bwrap`, fails
@@ -23,6 +28,16 @@
 use std::io;
 use std::path::{Path, PathBuf};
 use tokio::process::Command;
+
+/// Env vars inherited from the pleumcode process's own environment into every
+/// sandboxed command, on top of whatever the caller explicitly set on `cmd`.
+/// Deliberately an allowlist, not a denylist of "secret-shaped" names: a
+/// denylist only ever catches patterns someone thought to name (`*_API_KEY`,
+/// `*_TOKEN`, ...), while PLEUM_API_KEY and anything else in the process's
+/// env stays out unless it's named here.
+const ENV_ALLOWLIST: &[&str] = &[
+    "PATH", "HOME", "USER", "LOGNAME", "SHELL", "TERM", "TZ", "LANG", "LC_ALL", "LC_CTYPE",
+];
 
 #[cfg(target_os = "macos")]
 const SANDBOX_EXEC: &str = "/usr/bin/sandbox-exec";
@@ -55,10 +70,32 @@ const PROFILE: &str = r#"(version 1)
   (literal (string-append (param "WS") "/.git/config")))
 "#;
 
+/// `wrap` rebuilds the sandboxed command from `cmd.as_std().get_args()` — the only
+/// public way to read args back off an already-built [`Command`]. That accessor is
+/// display-only: on Unix, an arg containing an embedded NUL byte is stored for a
+/// real exec-time error but *read back* as the literal text `<string-with-nul>`,
+/// silently losing the original bytes rather than surfacing an error. Callers must
+/// therefore reject a NUL byte in any string they are about to turn into an `arg()`
+/// themselves, before building the `Command` at all — after that point the real
+/// bytes are unrecoverable and `wrap` would rebuild the wrong command instead of
+/// refusing to run it.
+pub fn reject_embedded_nul(s: &str) -> io::Result<()> {
+    if s.contains('\0') {
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidInput,
+            "sandbox: command contains a nul byte",
+        ));
+    }
+    Ok(())
+}
+
 /// Returns `cmd` re-targeted so it runs inside the sandbox, confined to `workspace`.
 /// `readable` are host paths the command must still be able to read even where the
 /// backend hides the host's temp dir (the shell tool's saved full-output files).
 /// Program, args, env and cwd are preserved. Fails closed if the sandbox is unavailable.
+///
+/// Callers must have already run every string they put into `cmd`'s args through
+/// [`reject_embedded_nul`] — see its doc comment for why.
 pub fn wrap(cmd: Command, workspace: &Path, readable: &[&Path]) -> io::Result<Command> {
     let home = std::env::var_os("HOME")
         .map(PathBuf::from)
@@ -162,6 +199,18 @@ fn wrap_with(
         };
 
         out.arg(std_cmd.get_program()).args(std_cmd.get_args());
+        // Start from nothing, not "inherit everything" (Command's default): see
+        // `ENV_ALLOWLIST` above for why. `PLEUM_CONFIG` above is this sandbox's own
+        // `-D` parameter and unrelated to the child's env.
+        out.env_clear();
+        for name in ENV_ALLOWLIST {
+            if let Some(value) = std::env::var_os(name) {
+                out.env(name, value);
+            }
+        }
+        // The caller's own explicit `.env()`/`.env_remove()` calls (e.g. PLUGIN_ROOT,
+        // AGENT_SESSION_ID, an explicitly resolved PATH) are a deliberate ask and win
+        // over the allowlist above.
         for (k, v) in std_cmd.get_envs() {
             match v {
                 Some(v) => out.env(k, v),
@@ -237,6 +286,10 @@ mod tests {
 
     #[tokio::test]
     async fn confines_writes_network_and_secrets() {
+        // `wrap` now reads PATH/HOME/etc for the env allowlist; serialize against
+        // any other test (e.g. hooks::tests::command_hooks_repair_path_when_enabled)
+        // that mutates those same process-global vars under env_lock.
+        let _env_guard = env_lock::lock_env(std::iter::empty::<(&str, Option<&str>)>());
         // Parent lives under $HOME, not the temp dir (temp is writable by policy),
         // so `..` from the workspace lands somewhere that must be denied.
         let dir = tempfile::Builder::new()
@@ -293,6 +346,10 @@ mod tests {
 
     #[tokio::test]
     async fn credential_dirs_are_unreadable() {
+        // `wrap` now reads PATH/HOME/etc for the env allowlist; serialize against
+        // any other test (e.g. hooks::tests::command_hooks_repair_path_when_enabled)
+        // that mutates those same process-global vars under env_lock.
+        let _env_guard = env_lock::lock_env(std::iter::empty::<(&str, Option<&str>)>());
         let dir = tempfile::tempdir().unwrap();
         let (home, ws, cfg) = (
             dir.path().join("home"),
@@ -342,6 +399,10 @@ mod tests {
     #[cfg(target_os = "linux")]
     #[tokio::test]
     async fn linux_temp_is_private_and_readable_paths_are_read_only() {
+        // `wrap` now reads PATH/HOME/etc for the env allowlist; serialize against
+        // any other test (e.g. hooks::tests::command_hooks_repair_path_when_enabled)
+        // that mutates those same process-global vars under env_lock.
+        let _env_guard = env_lock::lock_env(std::iter::empty::<(&str, Option<&str>)>());
         let base = tempfile::Builder::new()
             .prefix("pleum-sbx-ws")
             .tempdir_in(dirs::home_dir().unwrap())
@@ -377,6 +438,10 @@ mod tests {
 
     #[tokio::test]
     async fn preserves_env_cwd_and_exit_code() {
+        // `wrap` now reads PATH/HOME/etc for the env allowlist; serialize against
+        // any other test (e.g. hooks::tests::command_hooks_repair_path_when_enabled)
+        // that mutates those same process-global vars under env_lock.
+        let _env_guard = env_lock::lock_env(std::iter::empty::<(&str, Option<&str>)>());
         let dir = tempfile::tempdir().unwrap();
         let mut c = Command::new("/bin/sh");
         c.arg("-c")
@@ -391,6 +456,26 @@ mod tests {
             String::from_utf8_lossy(&o.stdout).trim(),
             real.to_str().unwrap()
         );
+    }
+
+    /// A sandboxed command must not be able to read `PLEUM_API_KEY` (or any other
+    /// var outside `ENV_ALLOWLIST`) back out via `env` — that's the whole point of
+    /// `env_clear` in `wrap_with`: the process's own env is not the child's env.
+    #[tokio::test]
+    async fn secrets_outside_the_allowlist_are_not_inherited() {
+        let _env_guard = env_lock::lock_env([
+            ("PLEUM_API_KEY", Some("s3cr3t-token")),
+            ("PATH", std::env::var("PATH").ok().as_deref()),
+        ]);
+        let dir = tempfile::tempdir().unwrap();
+        let mut c = Command::new("/bin/sh");
+        c.arg("-c").arg("env").current_dir(dir.path());
+        let o = wrap(c, dir.path(), &[]).unwrap().output().await.unwrap();
+        let stdout = String::from_utf8_lossy(&o.stdout);
+        assert!(!stdout.contains("PLEUM_API_KEY"), "leaked env: {stdout}");
+        assert!(!stdout.contains("s3cr3t-token"), "leaked env: {stdout}");
+        // A sanity check that the child ran at all and PATH (allowlisted) did come through.
+        assert!(stdout.contains("PATH="), "got: {stdout}");
     }
 }
 
