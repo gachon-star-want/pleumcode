@@ -15,6 +15,29 @@ pub(in crate::plugins) struct PluginConfigEntry {
     pub enabled: bool,
 }
 
+/// Every plugin root ever discovered on disk, regardless of scope or enabled
+/// state. Deliberately separate from [`PLUGINS_CONFIG_KEY`]: that map is a trust
+/// decision (which `filter_by_config` won't auto-write for a project-scope
+/// plugin — see its doc comment), while this is pure "have we ever seen a
+/// plugin at this path" bookkeeping, safe to record unconditionally. Consumers
+/// like [`crate::plugins::configured_project_plugin_skill_dirs`] use it to
+/// recognize a project-plugin-owned path (so a symlink-following fallback
+/// lookup never serves it) independent of whether that plugin is enabled.
+pub(in crate::plugins) const KNOWN_PLUGIN_PATHS_KEY: &str = "known_plugin_paths";
+
+pub(in crate::plugins) fn record_known_plugin_path(config: &Config, root: &Path) {
+    let mut known: HashSet<String> = config.get_param(KNOWN_PLUGIN_PATHS_KEY).unwrap_or_default();
+    if known.insert(root.to_string_lossy().into_owned()) {
+        if let Err(e) = config.set_param(KNOWN_PLUGIN_PATHS_KEY, known) {
+            tracing::warn!(error = %e, "Failed to persist known plugin path");
+        }
+    }
+}
+
+pub(crate) fn known_plugin_paths(config: &Config) -> HashSet<String> {
+    config.get_param(KNOWN_PLUGIN_PATHS_KEY).unwrap_or_default()
+}
+
 /// A plugin found on disk and not disabled by any settings file.
 #[derive(Debug, Clone)]
 pub struct DiscoveredPlugin {
@@ -85,7 +108,13 @@ pub(crate) fn discover_enabled_plugins_with_config(
 
     let mut enabled_plugins: Vec<DiscoveredPlugin> = filter_by_config(found, config)
         .into_iter()
-        .filter(|plugin| is_enabled(&plugin.name, &scoped_settings))
+        // `decided`: config.yaml already recorded a `true` for this plugin, from
+        // outside the repo (an explicit prior entry, or the auto-write below for a
+        // user-scope plugin) — that decision is authoritative on its own. Anything
+        // left undecided (a project-scope plugin nobody has approved yet) still has
+        // to clear the settings.json scope gate in `is_enabled`.
+        .filter(|(plugin, decided)| *decided || is_enabled(plugin, &scoped_settings))
+        .map(|(plugin, _)| plugin)
         .collect();
     enabled_plugins.sort_by(|left, right| {
         plugin_scope_rank(left.scope)
@@ -117,27 +146,43 @@ fn plugin_scope_rank(scope: PluginScope) -> u8 {
     }
 }
 
-/// Apply the `plugins` map in `config.yaml`. Newly discovered plugins are added
-/// to the map with `enabled: true`; plugins explicitly set to `enabled: false`
-/// are dropped.
-fn filter_by_config(plugins: Vec<DiscoveredPlugin>, config: &Config) -> Vec<DiscoveredPlugin> {
+/// Apply the `plugins` map in `config.yaml`, which lives outside any repo
+/// (`~/.config/pleum/config.yaml`, or under `PLEUM_PATH_ROOT`) and so can only be
+/// written by the user or another trusted local component — never by the repo
+/// itself. An existing `true` entry (however it got there) is returned as
+/// already `decided`, meaning the caller can skip the settings.json trust-scope
+/// gate for it. A plugin with no entry yet is auto-added as `enabled: true`
+/// (and marked `decided`) only for [`PluginScope::User`] — that scope only ever
+/// gets populated by an explicit `pleum plugin install`, so first sight already
+/// *is* the trust decision. A [`PluginScope::Project`] plugin is just a file
+/// that showed up in a repo someone opened; it is passed through undecided,
+/// leaving [`is_enabled`]'s scope-gated default (closed) to apply instead of
+/// silently writing an unearned `true` into the user's own config.
+fn filter_by_config(
+    plugins: Vec<DiscoveredPlugin>,
+    config: &Config,
+) -> Vec<(DiscoveredPlugin, bool)> {
     let mut entries: HashMap<String, PluginConfigEntry> =
         config.get_param(PLUGINS_CONFIG_KEY).unwrap_or_default();
 
     let mut dirty = false;
-    let mut enabled = Vec::new();
+    let mut kept = Vec::new();
     for plugin in plugins {
+        record_known_plugin_path(config, &plugin.root);
         let key = plugin.root.to_string_lossy().to_string();
         match entries.get(&key) {
             Some(entry) => {
                 if entry.enabled {
-                    enabled.push(plugin);
+                    kept.push((plugin, true));
                 }
             }
             None => {
-                entries.insert(key, PluginConfigEntry { enabled: true });
-                dirty = true;
-                enabled.push(plugin);
+                let decided = plugin.scope == PluginScope::User;
+                if decided {
+                    entries.insert(key, PluginConfigEntry { enabled: true });
+                    dirty = true;
+                }
+                kept.push((plugin, decided));
             }
         }
     }
@@ -148,10 +193,22 @@ fn filter_by_config(plugins: Vec<DiscoveredPlugin>, config: &Config) -> Vec<Disc
         }
     }
 
-    enabled
+    kept
 }
 
-fn is_enabled(plugin_name: &str, scoped_settings: &[(SettingsScope, PluginSettings)]) -> bool {
+/// A [`PluginScope::Project`] plugin lives inside the repo someone just opened, so
+/// it is untrusted by default: its own repo-committed `settings.json` (Project
+/// scope) may still *disable* it (restricting your own repo is always safe), but
+/// may never be the reason it turns *on* — otherwise a hostile repo would just
+/// re-enable itself by shipping the matching `enabledPlugins` entry alongside it.
+/// Only `settings.local.json` (Local, git-ignored by convention) or the user's own
+/// `~/.config/pleum/settings.json` (User, outside any repo) can enable it. A
+/// [`PluginScope::User`] plugin was already an explicit `pleum plugin install`, so
+/// any scope enabling it (the old, unrestricted behavior) is fine.
+fn is_enabled(
+    plugin: &DiscoveredPlugin,
+    scoped_settings: &[(SettingsScope, PluginSettings)],
+) -> bool {
     for scope in [
         SettingsScope::Local,
         SettingsScope::Project,
@@ -164,18 +221,21 @@ fn is_enabled(plugin_name: &str, scoped_settings: &[(SettingsScope, PluginSettin
             continue;
         };
 
-        let listed_disabled = settings.disabled.iter().any(|n| n == plugin_name);
-        let listed_enabled = settings.enabled.iter().any(|n| n == plugin_name);
-
-        if listed_disabled {
+        if settings.disabled.iter().any(|n| n == plugin.name.as_str()) {
             return false;
         }
-        if listed_enabled {
+        let listed_enabled = settings.enabled.iter().any(|n| n == plugin.name.as_str());
+        let scope_may_enable =
+            scope != SettingsScope::Project || plugin.scope != PluginScope::Project;
+        if listed_enabled && scope_may_enable {
             return true;
         }
+        // Mentioned in `enabledPlugins` but by an ineligible scope (a project-scope
+        // plugin's own committed settings): not a valid signal either way, keep
+        // scanning later scopes instead of treating this as "settled".
     }
 
-    true
+    plugin.scope == PluginScope::User
 }
 
 fn project_plugin_dir(project_root: &Path) -> PathBuf {
@@ -296,24 +356,54 @@ mod tests {
         discover_with_config(project, &test_config(cfg_dir.path()))
     }
 
+    /// The core fix: a plugin that merely showed up in a repo you opened (nothing
+    /// installed it, nothing enabled it) must not run. This is the CVE-2025-59536
+    /// shape — a hostile repo shipping a plugin whose SessionStart hook would
+    /// otherwise fire, unsandboxed, the moment you `cd` in and start a session.
     #[test]
-    fn finds_project_scope_plugin() {
+    fn project_scope_plugin_is_not_enabled_by_default() {
         let tmp = tempfile::tempdir().unwrap();
         let project = tmp.path();
         write_plugin_dir(&project.join(".agents").join("plugins"), "demo");
 
         let found = discover(project);
-        let names: Vec<_> = found.iter().map(|p| p.name.as_str()).collect();
-        assert!(names.contains(&"demo"), "got: {names:?}");
-        let demo = found.iter().find(|p| p.name == "demo").unwrap();
-        assert_eq!(demo.scope, PluginScope::Project);
+        assert!(
+            found.iter().all(|p| p.name != "demo"),
+            "a bare project-scope plugin must default to disabled; got: {:?}",
+            found.iter().map(|p| &p.name).collect::<Vec<_>>()
+        );
     }
 
+    /// And it stays untrusted even across repeated sessions: nothing about
+    /// discovering it once persists a silent "enabled" decision into the user's
+    /// own config (contrast `newly_discovered_user_plugin_is_added_to_config_as_enabled`).
+    #[test]
+    fn project_scope_plugin_is_not_persisted_to_config() {
+        let tmp = tempfile::tempdir().unwrap();
+        let project = tmp.path();
+        let plugin_root = project.join(".agents/plugins/demo");
+        write_plugin_dir(&project.join(".agents").join("plugins"), "demo");
+
+        let cfg_dir = tempfile::tempdir().unwrap();
+        let config = test_config(cfg_dir.path());
+        discover_with_config(project, &config);
+
+        let entries: HashMap<String, PluginConfigEntry> =
+            config.get_param(PLUGINS_CONFIG_KEY).unwrap_or_default();
+        assert!(
+            entries
+                .get(&plugin_root.to_string_lossy().into_owned())
+                .is_none(),
+            "got: {entries:?}"
+        );
+    }
+
+    /// A repo can still restrict its own project-scope plugin via its own
+    /// committed settings.json — disabling is always safe, only enabling isn't.
     #[test]
     fn disabled_in_project_settings_drops_plugin() {
         let tmp = tempfile::tempdir().unwrap();
         let project = tmp.path();
-        let plugin_root = project.join(".agents/plugins/demo");
         write_plugin_dir(&project.join(".agents").join("plugins"), "demo");
 
         write_settings(
@@ -321,20 +411,15 @@ mod tests {
             r#"{"disabledPlugins":["demo"]}"#,
         );
 
-        let cfg_dir = tempfile::tempdir().unwrap();
-        let config = test_config(cfg_dir.path());
-        let found = discover_with_config(project, &config);
+        let found = discover(project);
         assert!(found.iter().all(|p| p.name != "demo"));
-
-        let entries: HashMap<String, PluginConfigEntry> =
-            config.get_param(PLUGINS_CONFIG_KEY).unwrap();
-        assert!(entries
-            .get(&plugin_root.to_string_lossy().into_owned())
-            .is_some_and(|entry| entry.enabled));
     }
 
+    /// Listing a project-scope plugin in `enabledPlugins` does nothing for that
+    /// plugin (its own repo can't self-enable) and, since the setting exists but
+    /// doesn't mention "other" at all, "other" stays on its own default (also off).
     #[test]
-    fn explicit_enabled_filters_out_unlisted_plugins() {
+    fn project_settings_enabled_list_does_not_enable_project_scope_plugins() {
         let tmp = tempfile::tempdir().unwrap();
         let project = tmp.path();
         write_plugin_dir(&project.join(".agents").join("plugins"), "demo");
@@ -347,8 +432,29 @@ mod tests {
 
         let found = discover(project);
         let names: Vec<_> = found.iter().map(|p| p.name.as_str()).collect();
+        assert!(!names.contains(&"demo"), "got: {names:?}");
+        assert!(!names.contains(&"other"), "got: {names:?}");
+    }
+
+    /// `settings.local.json` is git-ignored by convention (same pattern as this
+    /// repo's own `.claude/settings.local.json`), so it's a real per-machine user
+    /// decision, not something a repo can ship — eligible to enable.
+    #[test]
+    fn local_settings_enabled_list_enables_project_scope_plugin() {
+        let tmp = tempfile::tempdir().unwrap();
+        let project = tmp.path();
+        write_plugin_dir(&project.join(".agents").join("plugins"), "demo");
+        write_plugin_dir(&project.join(".agents").join("plugins"), "other");
+
+        write_local_settings(
+            &project.join(".config").join("pleum"),
+            r#"{"enabledPlugins":["demo"]}"#,
+        );
+
+        let found = discover(project);
+        let names: Vec<_> = found.iter().map(|p| p.name.as_str()).collect();
         assert!(names.contains(&"demo"), "got: {names:?}");
-        assert!(names.contains(&"other"), "got: {names:?}");
+        assert!(!names.contains(&"other"), "got: {names:?}");
     }
 
     #[test]
@@ -374,8 +480,13 @@ mod tests {
         );
     }
 
+    /// A repo cannot re-enable, via its own committed settings.json, a
+    /// project-scope plugin of its own that the user disabled globally. Before
+    /// the fix this was the reverse: project scope unconditionally beat user
+    /// scope, so a hostile repo could override a global disable just by shipping
+    /// the matching `enabledPlugins` entry next to the plugin.
     #[test]
-    fn project_scope_overrides_user_scope() {
+    fn project_settings_cannot_override_user_disable() {
         let tmp = tempfile::tempdir().unwrap();
         let project = tmp.path();
         write_plugin_dir(&project.join(".agents").join("plugins"), "demo");
@@ -399,8 +510,8 @@ mod tests {
         };
 
         assert!(
-            found.iter().any(|p| p.name == "demo"),
-            "project scope should win over user; got: {:?}",
+            found.iter().all(|p| p.name != "demo"),
+            "got: {:?}",
             found.iter().map(|p| &p.name).collect::<Vec<_>>()
         );
     }
@@ -447,26 +558,27 @@ mod tests {
         assert_eq!(demo[0].root, user_plugins.join("demo"));
     }
 
+    /// Unlike a project-scope plugin, a user-scope one only ever gets there via an
+    /// explicit `pleum plugin install` — first sight already is the trust
+    /// decision, so it's fine to persist `enabled: true` on discovery.
     #[test]
-    fn newly_discovered_plugin_is_added_to_config_as_enabled() {
-        let tmp = tempfile::tempdir().unwrap();
-        let project = tmp.path();
-        write_plugin_dir(&project.join(".agents").join("plugins"), "demo");
+    fn newly_discovered_user_plugin_is_added_to_config_as_enabled() {
+        let path_root = tempfile::tempdir().unwrap();
+        let user_plugins = path_root.path().join(".agents/plugins");
+        write_plugin_dir(&user_plugins, "demo");
 
         let cfg_dir = tempfile::tempdir().unwrap();
         let config = test_config(cfg_dir.path());
-
-        let found = discover_with_config(project, &config);
+        let found = {
+            let _guard =
+                env_lock::lock_env([("PLEUM_PATH_ROOT", Some(path_root.path().to_str().unwrap()))]);
+            discover_enabled_plugins_with_config(None, &config)
+        };
         assert!(found.iter().any(|p| p.name == "demo"));
 
         let entries: HashMap<String, PluginConfigEntry> =
             config.get_param(PLUGINS_CONFIG_KEY).unwrap();
-        let key = project
-            .join(".agents")
-            .join("plugins")
-            .join("demo")
-            .to_string_lossy()
-            .to_string();
+        let key = user_plugins.join("demo").to_string_lossy().to_string();
         assert!(
             entries.get(&key).is_some_and(|e| e.enabled),
             "got: {entries:?}"
@@ -528,6 +640,12 @@ mod tests {
         let project = tempfile::tempdir().unwrap();
         write_plugin_dir(&project.path().join(".agents/plugins"), "z-project-plugin");
         write_plugin_dir(&project.path().join(".agents/plugins"), "a-project-plugin");
+        // Project-scope plugins default closed; enable them via Local scope (a
+        // real per-machine decision) so this test isolates ordering from trust.
+        write_local_settings(
+            &project.path().join(".config").join("pleum"),
+            r#"{"enabledPlugins":["z-project-plugin","a-project-plugin"]}"#,
+        );
 
         let path_root = tempfile::tempdir().unwrap();
         write_plugin_dir(&path_root.path().join(".agents/plugins"), "z-user-plugin");

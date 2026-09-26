@@ -108,14 +108,23 @@ fn is_project_plugin_install_dir(path: &Path) -> bool {
 }
 
 pub(crate) fn configured_project_plugin_skill_dirs(config: &Config) -> Vec<PathBuf> {
+    // Union of both stores a plugin root can be known through: `known_plugin_paths`
+    // (every path `discover_enabled_plugins` has ever seen, written regardless of
+    // enabled state) and `PLUGINS_CONFIG_KEY` (an explicit trust decision, however it
+    // got there — including set directly, not just via discovery). Either is enough:
+    // this check exists to stop a symlink from reaching a project-plugin's skill dir
+    // through the generic inference fallback, and that must hold whether or not the
+    // plugin is actually enabled right now.
+    let mut known = discovery::known_plugin_paths(config);
     let entries: HashMap<String, discovery::PluginConfigEntry> = config
         .get_param(discovery::PLUGINS_CONFIG_KEY)
         .unwrap_or_default();
+    known.extend(entries.into_keys());
     let user_plugins_dir = plugin_install_dir();
     let mut seen = HashSet::new();
 
-    entries
-        .into_keys()
+    known
+        .into_iter()
         .map(PathBuf::from)
         .filter(|path| is_project_plugin_install_dir(path) && !path.starts_with(&user_plugins_dir))
         .flat_map(|path| formats::open_plugins::installed_skill_dirs(&path))
