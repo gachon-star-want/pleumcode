@@ -52,6 +52,7 @@
             var isDark = document.documentElement.style.colorScheme === "dark";
             mermaid.initialize({
                 startOnLoad: false,
+                securityLevel: "sandbox",
                 theme: isDark ? "dark" : "default",
                 themeVariables: isDark
                     ? {

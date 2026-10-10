@@ -32,4 +32,7 @@ COPY crates ./codebase/crates
 # Empty index.ts for discraft start to detect
 RUN touch index.ts
 
+ENV HOME=/tmp
+USER 10001:10001
+
 CMD ["bun", "run", "start"]

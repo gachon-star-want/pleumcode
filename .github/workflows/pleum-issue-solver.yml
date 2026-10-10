@@ -1,14 +1,10 @@
 name: pleum Issue Solver
 
 on:
+  issues:
+    types: [labeled]
   issue_comment:
     types: [created]
-  workflow_dispatch:
-    inputs:
-      issue_number:
-        description: 'Issue number to solve'
-        required: true
-        type: string
 
 env:
   PLEUM_RECIPE: |
@@ -64,7 +60,7 @@ env:
 
       The issue is saved at /tmp/issue.json
 
-      Trigger comment:
+      Trigger context:
       ${TRIGGER_COMMENT}
 
       Write this to your TODO immediately and update as you progress:
@@ -110,25 +106,53 @@ env:
       Run `git add` for any new files required for the fix.
       Do NOT commit. Leave changes in the working directory for the workflow to handle.
 
-permissions:
-  contents: write
-  pull-requests: write
-  issues: write
+permissions: {}
 
 concurrency:
-  group: pleum-issue-${{ github.event.issue.number || github.event.inputs.issue_number }}
+  group: pleum-issue-${{ github.event.issue.number }}
   cancel-in-progress: false
 
 jobs:
-  solve-issue:
+  validate-trigger:
     if: |
-      github.event_name == 'workflow_dispatch' ||
-      (!github.event.issue.pull_request &&
-       startsWith(github.event.comment.body, '/pleum') &&
-       contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association))
+      !github.event.issue.pull_request &&
+      ((github.event_name == 'issue_comment' &&
+        startsWith(github.event.comment.body, '/pleum') &&
+        contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)) ||
+       (github.event_name == 'issues' && github.event.action == 'labeled'))
+
+    runs-on: ubuntu-latest
+    permissions: {}
+    outputs:
+      is_collaborator: ${{ steps.collaborator.outputs.is_collaborator }}
+
+    steps:
+      - name: Verify trigger actor is a collaborator
+        id: collaborator
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+          TRIGGER_ACTOR: ${{ github.event.sender.login }}
+        run: |
+          status="$(curl --silent --output /dev/null --write-out '%{http_code}' \
+            --header "Accept: application/vnd.github+json" \
+            --header "Authorization: Bearer $GH_TOKEN" \
+            "https://api.github.com/repos/$REPOSITORY/collaborators/$TRIGGER_ACTOR")"
+          if [ "$status" = 204 ]; then
+            echo "is_collaborator=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "is_collaborator=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  solve-issue:
+    needs: validate-trigger
+    if: needs.validate-trigger.outputs.is_collaborator == 'true'
 
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    permissions:
+      contents: write
+      pull-requests: write
 
     container:
       image: ghcr.io/gachon-star-want/pleumcode:latest
@@ -136,45 +160,25 @@ jobs:
       env:
         PLEUM_PROVIDER: ${{ vars.PLEUM_PROVIDER || 'anthropic' }}
         PLEUM_MODEL: ${{ vars.PLEUM_MODEL || 'claude-opus-4-5' }}
-        ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         HOME: /tmp/pleum-home
 
     steps:
-      - name: Acknowledge trigger
-        if: github.event_name == 'issue_comment'
-        run: |
-          curl -sL -X POST \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ github.repository }}/issues/comments/${{ github.event.comment.id }}/reactions" \
-            -d '{"content":"eyes"}'
-
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
           ref: main
           fetch-depth: 1
+          persist-credentials: false
 
       - name: Install tools
         run: |
           apt-get update
           apt-get install -y jq gettext curl build-essential pkg-config libssl-dev
-          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
-          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-          apt-get update
-          apt-get install -y gh
 
-      - name: Get issue details (issue_comment)
-        if: github.event_name == 'issue_comment'
+      - name: Get issue details
         env:
           ISSUE_JSON: ${{ toJSON(github.event.issue) }}
         run: printenv ISSUE_JSON > /tmp/issue.json
-
-      - name: Get issue details (workflow_dispatch)
-        if: github.event_name == 'workflow_dispatch'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh api /repos/${{ github.repository }}/issues/${{ github.event.inputs.issue_number }} > /tmp/issue.json
 
       - name: Set issue outputs
         id: issue
@@ -190,9 +194,10 @@ jobs:
       - name: Run pleum
         id: pleum
         env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           ISSUE_NUMBER: ${{ steps.issue.outputs.number }}
           ISSUE_TITLE: ${{ steps.issue.outputs.title }}
-          TRIGGER_COMMENT: ${{ github.event.comment.body || 'Triggered via workflow_dispatch' }}
+          TRIGGER_COMMENT: ${{ github.event.comment.body || format('Issue labeled: {0}', github.event.label.name) }}
         run: |
           mkdir -p $HOME/.local/share/pleum/sessions
           mkdir -p $HOME/.config/pleum
@@ -216,9 +221,9 @@ jobs:
       - name: Verify no workflow changes
         if: steps.pleum.outputs.has_changes == 'true'
         run: |
-          if git diff --name-only | grep -q "^\.github/"; then
+          if [ -n "$(git status --porcelain -- .github/)" ]; then
             echo "::error::Changes to .github/ are not allowed"
-            git checkout -- .github/
+            exit 1
           fi
 
       - name: Create Pull Request

@@ -13,11 +13,12 @@ function generateWebUrl(filePath: string): string {
 }
 
 function findDocFile(partialPath: string): string | null {
-  const docsDir = getDocsDir();
+  const docsPath = getDocsDir();
 
-  if (!fs.existsSync(docsDir)) {
+  if (!fs.existsSync(docsPath)) {
     return null;
   }
+  const docsDir = fs.realpathSync(docsPath);
 
   const searchTerm = partialPath.toLowerCase().replace(/\.md$/, "");
   let foundPath: string | null = null;
@@ -25,18 +26,18 @@ function findDocFile(partialPath: string): string | null {
   function walkDir(dir: string) {
     if (foundPath) return;
 
-    const files = fs.readdirSync(dir);
+    const files = fs.readdirSync(dir, { withFileTypes: true });
 
-    for (const file of files) {
-      const filePath = path.join(dir, file);
-      const stat = fs.statSync(filePath);
+    for (const entry of files) {
+      if (entry.isSymbolicLink()) continue;
+      const filePath = path.join(dir, entry.name);
 
-      if (stat.isDirectory()) {
-        if (file === "assets" || file === "docker") {
+      if (entry.isDirectory()) {
+        if (entry.name === "assets" || entry.name === "docker") {
           continue;
         }
         walkDir(filePath);
-      } else {
+      } else if (entry.isFile()) {
         const relativePath = path.relative(docsDir, filePath);
         if (relativePath.toLowerCase().includes(searchTerm)) {
           foundPath = relativePath;
@@ -55,11 +56,14 @@ function getDocChunk(
   startLine: number = 0,
   lineCount: number = 1500,
 ): { fileName: string; content: string; webUrl: string } {
-  const docsDir = path.resolve(getDocsDir());
-  const fullPath = path.join(docsDir, filePath);
+  const docsPath = path.resolve(getDocsDir());
+  if (!fs.existsSync(docsPath)) {
+    throw new Error(`Documentation file not found: ${filePath}`);
+  }
+  const docsDir = fs.realpathSync(docsPath);
+  const fullPath = path.resolve(docsDir, filePath);
 
-  const normalizedPath = path.resolve(fullPath);
-  if (!normalizedPath.startsWith(docsDir + "/")) {
+  if (!fullPath.startsWith(docsDir + path.sep)) {
     throw new Error("Invalid file path - directory traversal not allowed");
   }
 
@@ -67,8 +71,13 @@ function getDocChunk(
     throw new Error(`Documentation file not found: ${filePath}`);
   }
 
+  const realPath = fs.realpathSync(fullPath);
+  if (!realPath.startsWith(docsDir + path.sep)) {
+    throw new Error("Invalid file path - symbolic links outside docs are not allowed");
+  }
+
   try {
-    const content = fs.readFileSync(fullPath, "utf-8");
+    const content = fs.readFileSync(realPath, "utf-8");
     const lines = content.split("\n");
 
     const actualStartLine = Math.max(0, Math.min(startLine, lines.length - 1));

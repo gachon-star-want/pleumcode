@@ -206,20 +206,21 @@
 
         function mergeDeep(target, source) {
             var out = Object.assign({}, target);
-            for (var key in source) {
+            Object.keys(source).forEach(function (key) {
+                if (key === "__proto__" || key === "constructor" || key === "prototype") return;
                 if (source[key] && typeof source[key] === "object" && !Array.isArray(source[key])) {
                     out[key] = mergeDeep(target[key] || {}, source[key]);
                 } else {
                     out[key] = source[key];
                 }
-            }
+            });
             return out;
         }
 
         function processDatasets(datasets, type) {
             return datasets.map(function (ds, i) {
                 var p = palette[i % palette.length];
-                var out = Object.assign({}, ds);
+                var out = mergeDeep({}, ds);
 
                 if (!out.borderColor) out.borderColor = p.solid;
                 var lineColor = out.borderColor;

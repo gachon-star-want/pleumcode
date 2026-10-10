@@ -31,10 +31,10 @@ function initializeSearch(): MiniSearch<DocFile> {
     return miniSearch;
   }
 
-  const docsDir = path.resolve(getDocsDir());
+  const docsPath = path.resolve(getDocsDir());
 
-  if (!fs.existsSync(docsDir)) {
-    logger.warn(`Docs directory not found at ${docsDir}`);
+  if (!fs.existsSync(docsPath)) {
+    logger.warn(`Docs directory not found at ${docsPath}`);
     miniSearch = new MiniSearch({
       fields: ["content", "fileName", "path"],
       storeFields: ["path", "fileName", "content", "lineCount"],
@@ -42,29 +42,30 @@ function initializeSearch(): MiniSearch<DocFile> {
     return miniSearch;
   }
 
+  const docsDir = fs.realpathSync(docsPath);
   const docs: DocFile[] = [];
 
   function walkDir(dir: string) {
     try {
-      const files = fs.readdirSync(dir);
+      const files = fs.readdirSync(dir, { withFileTypes: true });
 
-      for (const file of files) {
-        const filePath = path.join(dir, file);
-        const stat = fs.statSync(filePath);
+      for (const entry of files) {
+        if (entry.isSymbolicLink()) continue;
+        const filePath = path.join(dir, entry.name);
 
-        if (stat.isDirectory()) {
-          if (file === "assets" || file === "docker") {
+        if (entry.isDirectory()) {
+          if (entry.name === "assets" || entry.name === "docker") {
             continue;
           }
           walkDir(filePath);
-        } else {
+        } else if (entry.isFile()) {
           try {
             const content = fs.readFileSync(filePath, "utf-8");
             const relativePath = path.relative(docsDir, filePath);
             const docFile: DocFile = {
               id: relativePath,
               path: relativePath,
-              fileName: file,
+              fileName: entry.name,
               content,
               lineCount: content.split("\n").length,
             };

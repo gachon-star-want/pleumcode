@@ -22,18 +22,22 @@ jobs:
         github.event.workflow_run.event == 'merge_group'
       )
     runs-on: ubuntu-latest
+    permissions: {}
     steps:
       - name: Notify Discord
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_PLEUM_STATUS }}
+          WORKFLOW_NAME: ${{ github.event.workflow_run.name }}
+          HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          WORKFLOW_URL: ${{ github.event.workflow_run.html_url }}
         run: |
+          payload="$(jq -n \
+            --arg workflow "$WORKFLOW_NAME" \
+            --arg branch "$HEAD_BRANCH" \
+            --arg commit "$HEAD_SHA" \
+            --arg url "$WORKFLOW_URL" \
+            '{embeds:[{title:"❌ Build Failed",description:("**Workflow:** " + $workflow + "\n**Branch:** " + $branch + "\n**Commit:** " + $commit),url:$url,color:15158332}]}')"
           curl -sS --fail-with-body -H "Content-Type: application/json" \
-            -d '{
-              "embeds": [{
-                "title": "❌ Build Failed",
-                "description": "**Workflow:** ${{ github.event.workflow_run.name }}\n**Branch:** ${{ github.event.workflow_run.head_branch }}\n**Commit:** ${{ github.event.workflow_run.head_sha }}",
-                "url": "${{ github.event.workflow_run.html_url }}",
-                "color": 15158332
-              }]
-            }' \
+            -d "$payload" \
             "$DISCORD_WEBHOOK_URL"

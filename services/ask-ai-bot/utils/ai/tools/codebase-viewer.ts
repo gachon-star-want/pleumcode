@@ -1,11 +1,8 @@
 import fs from "fs";
 import path from "path";
+import { getCodebaseDir, resolveCodebasePath } from "./codebase-path";
 
 const GITHUB_BASE_URL = "https://github.com/gachon-star-want/pleumcode/blob/main";
-
-function getCodebaseDir(): string {
-  return process.env.CODEBASE_PATH || path.join(process.cwd(), "../..");
-}
 
 function generateGitHubUrl(filePath: string, startLine?: number): string {
   const url = `${GITHUB_BASE_URL}/${filePath}`;
@@ -25,12 +22,8 @@ function getCodeChunk(
   totalLines: number;
   githubUrl: string;
 } {
-  const baseDir = path.resolve(getCodebaseDir());
-  const fullPath = path.resolve(path.join(baseDir, filePath));
-
-  if (!fullPath.startsWith(baseDir + "/")) {
-    throw new Error("Invalid file path - directory traversal not allowed");
-  }
+  const baseDir = getCodebaseDir();
+  const fullPath = resolveCodebasePath(filePath);
 
   if (!fs.existsSync(fullPath)) {
     throw new Error(`File not found: ${filePath}`);

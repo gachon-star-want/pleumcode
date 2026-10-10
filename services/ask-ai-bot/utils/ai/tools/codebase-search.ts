@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { logger } from "../../logger";
+import { getCodebaseDir, resolveCodebasePath } from "./codebase-path";
 
 export interface CodeSearchResult {
   filePath: string;
@@ -39,12 +40,8 @@ const IGNORED_DIRS = new Set([
   "coverage",
 ]);
 
-function getCodebaseDir(): string {
-  return process.env.CODEBASE_PATH || path.join(process.cwd(), "../..");
-}
-
 function getSearchableDirs(): { name: string; path: string }[] {
-  const base = path.resolve(getCodebaseDir());
+  const base = getCodebaseDir();
   return [
     { name: "ui", path: path.join(base, "ui") },
     { name: "crates", path: path.join(base, "crates") },
@@ -120,6 +117,7 @@ function walkAndSearch(
 
     for (const entry of entries) {
       if (results.length >= maxResults) return;
+      if (entry.isSymbolicLink()) continue;
 
       if (entry.isDirectory()) {
         if (shouldSkipDir(entry.name)) continue;
@@ -170,10 +168,11 @@ export function searchCodebase(
       continue;
     }
 
+    const safeDir = resolveCodebasePath(dir.name);
     walkAndSearch(
-      dir.path,
+      safeDir,
       pattern,
-      path.resolve(getCodebaseDir()),
+      getCodebaseDir(),
       allResults,
       limit,
     );
@@ -188,12 +187,7 @@ export function searchCodebase(
 export function listCodebaseFiles(
   directory: string,
 ): { filePath: string; isDirectory: boolean }[] {
-  const baseDir = path.resolve(getCodebaseDir());
-  const targetDir = path.resolve(path.join(baseDir, directory));
-
-  if (!targetDir.startsWith(baseDir + "/")) {
-    throw new Error("Invalid path - directory traversal not allowed");
-  }
+  const targetDir = resolveCodebasePath(directory);
 
   if (!fs.existsSync(targetDir)) {
     throw new Error(`Directory not found: ${directory}`);

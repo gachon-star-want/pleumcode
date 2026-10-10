@@ -674,6 +674,7 @@ struct TelegramFile {
 
 #[derive(Debug, Deserialize)]
 struct TelegramUser {
+    id: i64,
     first_name: String,
     last_name: Option<String>,
     #[allow(dead_code)]
@@ -947,7 +948,11 @@ impl TelegramGateway {
     fn to_platform_user(tg_msg: &TelegramMessage) -> PlatformUser {
         PlatformUser {
             platform: "telegram".to_string(),
-            user_id: tg_msg.chat.id.to_string(),
+            user_id: tg_msg
+                .from
+                .as_ref()
+                .map(|user| user.id.to_string())
+                .unwrap_or_else(|| tg_msg.chat.id.to_string()),
             display_name: tg_msg.from.as_ref().map(|u| {
                 let mut name = u.first_name.clone();
                 if let Some(ref last) = u.last_name {
